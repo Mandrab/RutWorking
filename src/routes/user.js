@@ -3,17 +3,11 @@ const controller = require("../controllers/user")
 
 module.exports = function (app) {
     // register a new user
-    app.post("/user/:userID", (request, result) => {
-        controller.register(request.params.userID, request.body.password, request.body.role, result)
-    })
+    app.post("/user/:userID", controller.register)
 
     // get info
-    app.get("/user/:userID", [authJwt.userOrAdmin], function (_, result) {
-        result.status(200).send('TODO')
-    })
+    app.get("/user/:userID", [authJwt.userOrAdmin], controller.getUserInfo)
 
-    // block user
-    app.delete("/user/:userID", [authJwt.userOrAdmin], function (_, result) {
-        result.status(200).send('TODO')
-    })
+    // block user TODO or only admin ?
+    app.delete("/user/:userID", [authJwt.userOrAdmin], controller.blockUser)
 }

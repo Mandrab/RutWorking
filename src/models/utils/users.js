@@ -5,13 +5,33 @@ const User = db.user
 const Role = db.role
 
 /**
+ * Register a new user to the system
+ *
+ * @param userID id of the user (must not be yet in db)
+ * @param password of the user
+ * @param role in the system
+ * @param next callback that must accept a structure containing operation code and message
+ */
+exports.register = (userID, password, role, next) => {
+    Role.findOne({ name: role }).then(role => {
+        if (!role) return next({ code: 400, msg: 'Role missing or not valid!' })
+
+        User({ username: userID, password: password, role: role._id }).save((err, _) => {
+            if (err) return next({ code: 404, msg: 'User already existent!' })
+            
+            next({ code: 201, msg: 'Successfully registered!' })
+        })
+    })
+}
+
+/**
  * Check if passed token is valid and return binded user
  *
  * @param token the token to check
  * @param next callback that must accept an object containing a field '_id'
  *      or a error code plus an error message
  */
-exports.verifyToken = (token, next) => {
+exports.validate = (token, next) => {
     if (!token) return next({ err: 403, msg: 'Token not provided!' })
 
     jwt.verify(token, config.secret, (err, decoded) => {
