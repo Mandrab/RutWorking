@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken')
+const bcrypt = require("bcrypt")
 const config = require('../../config/auth.js')
 const db = require('../../models')
 const User = db.user
@@ -21,6 +22,27 @@ exports.register = (userID, password, role, next) => {
             
             next({ code: 201, msg: 'Successfully registered!' })
         })
+    })
+}
+
+/**
+ * Log the user and get a token for him
+ *
+ * @param username of the user
+ * @param password of the user
+ * @param next callback that must accept an object containing a field 'accessToken'
+ *      or a error code plus an error message
+ */
+exports.login = (username, password, next) => {
+    User.findOne({ username: username }, function(err, user) {
+        if (err) return next({ err: 500, msg: 'Internal error has occurred!' })
+
+        if (!user) return next({ err: 404, msg: 'Unable to login!' })
+
+        var passwordIsValid = bcrypt.compareSync(password, user.password)
+        if (!passwordIsValid) return next({ err: 401, msg: 'Unable to login!' })
+
+        next({ accessToken: jwt.sign({ id: user.id }, config.secret, { expiresIn: 86400 }) }) // 24 hours
     })
 }
 

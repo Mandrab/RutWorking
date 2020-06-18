@@ -9,6 +9,21 @@ exports.register = (request, result) => {
     )
 }
 
+exports.login = (request, result) => {
+    users.login(
+        request.body.username,
+        request.body.password,
+        token => {
+            if (token.err) return result.status(token.err).send(token.msg)
+
+            result.status(200).send({
+                username: request.body.username,
+                accessToken: token.accessToken // 24 hours
+            })
+        }
+    )
+}
+
 exports.getUserInfo = (_, result) => {
     result.status(200).send('TODO')
 }

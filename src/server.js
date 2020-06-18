@@ -21,7 +21,6 @@ db.mongoose.connect(`mongodb://${dbConfig.HOST}:${dbConfig.PORT}/${dbConfig.DB}`
 })
 
 // routes
-//require('./routes/auth')(app);
 require('./routes/user')(app);
 
 app.use((_, result) => { result.status(404).end() })
