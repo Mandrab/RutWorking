@@ -20,7 +20,8 @@ const UserSchema = mongoose.Schema({
     // a.t.m., only user or admin. Not both
     role: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Role"
+        ref: "Role",
+        required: true
     }
 })
 
