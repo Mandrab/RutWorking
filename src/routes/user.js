@@ -8,12 +8,12 @@ module.exports = function (app) {
     })
 
     // get info
-    app.get("/user/:userID", [authJwt.verifyToken, authJwt.userOrAdmin], function (_, result) {
+    app.get("/user/:userID", [authJwt.userOrAdmin], function (_, result) {
         result.status(200).send('TODO')
     })
 
     // block user
-    app.delete("/user/:userID", [authJwt.verifyToken, authJwt.userOrAdmin], function (_, result) {
+    app.delete("/user/:userID", [authJwt.userOrAdmin], function (_, result) {
         result.status(200).send('TODO')
     })
 }

@@ -44,7 +44,7 @@ exports.idOfAdmin = (_id, next) => {
  *      or a structure specifing error code and message
  */
 exports.userIsAdmin = (user, next) => {
-    Role.findById(user.role, (err, role) => {console.log(role);console.log(role.name);
+    Role.findById(user.role, (err, role) => {
         if (err) return next({ err: 404, msg: 'Role not found!' })
 
         next(role.name === 'admin')
