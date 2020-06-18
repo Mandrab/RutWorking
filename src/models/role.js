@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 mongoose.set('useCreateIndex', true)
 
-const RoleSchema = new mongoose.Schema({
+const RoleSchema = mongoose.Schema({
     name: {
         type: String,
         required: true,
