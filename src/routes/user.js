@@ -1,16 +1,19 @@
-const authJwt = require("../auths/jwt")
-const controller = require("../controllers/user")
+const authJwt = require('../auths/jwt')
+const controller = require('../controllers/user')
 
 module.exports = function (app) {
-    // register a new user
-    app.post("/user/:userID", controller.register)
+    // login a user and get a token
+    app.post('/login', controller.login)
 
-    // user login
-    app.post("/login", controller.login)
+    // an ADMIN can register a new user (we are in a corporate context)
+    app.post('/user/:userEmail', [authJwt.isAdmin], controller.register)
 
-    // get info
-    app.get("/user/:userID", [authJwt.userOrAdmin], controller.getUserInfo)
+    // the USER can change his password
+    app.put('/user/:userEmail', [authJwt.isUser], controller.changePassword)
 
-    // block user TODO or only admin ?
-    app.delete("/user/:userID", [authJwt.userOrAdmin], controller.blockUser)
+    // get info of a user
+    app.get('/user/:userEmail', [authJwt.userOrAdmin], controller.getUserInfo)
+
+    // an ADMIN can block a user
+    app.delete('/user/:userEmail', [authJwt.userOrAdmin], controller.blockUser)
 }
