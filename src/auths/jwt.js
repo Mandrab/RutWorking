@@ -33,7 +33,7 @@ exports.isAdmin = (request, result, next) => {
     })
 }
 
-exports.userOrAdmin = (request, result, next) => {
+exports.isUserOrAdmin = (request, result, next) => {
     this.validate(request, result, () => {
         user.findById(request.userEmail, function (_, user) {
             if (!user) return result.status(404).send('User not found!')

@@ -25,6 +25,8 @@ exports.login = (userEmail, password, next) => {
         var passwordIsValid = bcrypt.compareSync(password, user.password)
         if (!passwordIsValid) return next({ err: 401, msg: 'Unable to login!' })
 
+        if (!user.active) return next({ err: 403, msg: 'Unable to login! Account has been deactivated!' })
+
         next({ accessToken: jwt.sign({ id: user.id }, config.secret, { expiresIn: 86400 }) }) // 24 hours
     })
 }
@@ -71,6 +73,14 @@ exports.changePassword = (userEmail, oldPassword, newPassword, next) => {
         })
     })
     User.findOneAndUpdate({ userEmail: userEmail }, { password: newPassword })
+}
+
+exports.blockUser = (userEmail, next) => {
+    User.findOneAndUpdate({ userEmail: userEmail }, { active: false }, function (err, _) {
+        if (err) return next({ err: 404, msg: 'User not found!' })
+
+        return next(true)
+    })
 }
 
 /**

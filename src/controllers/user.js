@@ -42,6 +42,10 @@ exports.getUserInfo = (_, result) => {
     result.status(200).send('TODO')
 }
 
-exports.blockUser = (_, result) => {
-    result.status(200).send('TODO')
+exports.blockUser = (request, result) => {
+    users.blockUser(request.params.userEmail, res => {
+        if (res.err) return result.status(res.err).send(res.msg)
+
+        return result.status(200).send('User has been blocked!')
+    })
 }

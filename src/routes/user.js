@@ -12,8 +12,8 @@ module.exports = function (app) {
     app.put('/user/:userEmail', [authJwt.isUser], controller.changePassword)
 
     // get info of a user
-    app.get('/user/:userEmail', [authJwt.userOrAdmin], controller.getUserInfo)
+    app.get('/user/:userEmail', [authJwt.isUserOrAdmin], controller.getUserInfo)
 
     // an ADMIN can block a user
-    app.delete('/user/:userEmail', [authJwt.userOrAdmin], controller.blockUser)
+    app.delete('/user/:userEmail', [authJwt.isAdmin], controller.blockUser)
 }
