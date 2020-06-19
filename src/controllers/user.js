@@ -1,3 +1,9 @@
+/**
+ * Manage input-output request for a user
+ * 
+ * @author Paolo Baldini
+ */
+
 const users = require('../models/utils/users.js')
 const communication = require('./communication.js')
 

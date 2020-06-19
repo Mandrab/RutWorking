@@ -1,3 +1,9 @@
+/**
+ * Routes of RESTful API regarding users
+ * 
+ * @author Paolo Baldini
+ */
+
 const authJwt = require('../auths/jwt')
 const controller = require('../controllers/user')
 

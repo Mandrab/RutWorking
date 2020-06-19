@@ -1,3 +1,9 @@
+/**
+ * Schema of ROLE document in the DB
+ *
+ * @author Paolo Baldini
+ */
+
 const mongoose = require("mongoose")
 mongoose.set('useCreateIndex', true)
 

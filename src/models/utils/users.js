@@ -1,3 +1,9 @@
+/**
+ * Contains utilities to work on users
+ * 
+ * @author Paolo Baldini
+ */
+
 const jwt = require('jsonwebtoken')
 const bcrypt = require("bcrypt")
 const config = require('../../config/auth.js')
@@ -51,6 +57,14 @@ exports.register = (userEmail, password, role, next) => {
     })
 }
 
+/**
+ * Change password of an user
+ * 
+ * @param userEmail email address of the user to which change password
+ * @param oldPassword a password can only be changed if the previous one is known
+ * @param newPassword the new password to set
+ * @param next callback of the operation
+ */
 exports.changePassword = (userEmail, oldPassword, newPassword, next) => {
     User.findOne({ userEmail: userEmail }, function (err, user) {
         bcrypt.compare(oldPassword, user.password, function(err, res) {
@@ -75,6 +89,12 @@ exports.changePassword = (userEmail, oldPassword, newPassword, next) => {
     User.findOneAndUpdate({ userEmail: userEmail }, { password: newPassword })
 }
 
+/**
+ * Block an user (without deleting it explicitly)
+ * 
+ * @param userEmail email address of the user to block
+ * @param next callback of the operation
+ */
 exports.blockUser = (userEmail, next) => {
     User.findOneAndUpdate({ userEmail: userEmail }, { active: false }, function (err, _) {
         if (err) return next({ err: 404, msg: 'User not found!' })

@@ -1,3 +1,9 @@
+/**
+ * Utilities functions to validate and identify user through json-web-token
+ *
+ * @author Paolo Baldini
+ */
+
 const user = require('../models/user.js')
 const users = require('../models/utils/users.js')
 
