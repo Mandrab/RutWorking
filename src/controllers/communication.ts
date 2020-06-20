@@ -5,14 +5,14 @@
  * @author Paolo Baldini
  */
 
-const nodemailer = require('nodemailer');
-const config = require('../config/email')
+import { createTransport } from 'nodemailer'
+import { config as emailConfig } from '../config/email'
 
-const transporter = nodemailer.createTransport({
-    service: config.service,
+const transporter = createTransport({
+    service: emailConfig.service,
     auth: {
-        user: config.email,
-        pass: config.password
+        user: emailConfig.email,
+        pass: emailConfig.password
     }
 })
 
@@ -24,11 +24,11 @@ const transporter = nodemailer.createTransport({
  * @param message body of the email
  * @param next callback
  */
-exports.sendEmail = (address, subject, message, next) => {
+export function sendEmail(address: string, subject: string, message: string, next: Function) {
     transporter.sendMail({
-        from: config.email,
+        from: emailConfig.email,
         to: address,
         subject: subject,
         text: message
-    }, (err, info) => next(err, info))
+    }, (err: any, info: any) => next(err, info))
 }
