@@ -13,12 +13,13 @@ import {
 import { sendEmail } from './communication'
 
 export async function login(request: any, result: any) {
-    _login(request.body.userEmail, request.body.password).then((token: any) =>{
+    try {
+        let token = await _login(request.body.userEmail, request.body.password)
         result.status(200).send({ accessToken: token }) // 24 hours
-    }).catch((err: any) => {
+    } catch (err) {
         if (err.code && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
-    })
+    }
 }
 
 export async function register(request: any, result: any) {

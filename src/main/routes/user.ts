@@ -3,7 +3,6 @@
  * 
  * @author Paolo Baldini
  */
-
 import { isActive, isUser, isAdmin, isUserOrAdmin } from '../auths/jwt'
 import { login, register, blockUser, changePassword, getUserInfo } from '../controllers/user'
 

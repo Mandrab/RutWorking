@@ -8,8 +8,8 @@ import { sign as jwtSign, verify as jwtVerify } from 'jsonwebtoken'
 import { genSalt, hash, compare } from "bcrypt"
 import { secret as authSecret } from '../../config/auth'
 import { set as mongooseSet } from 'mongoose'
-import { User, SALT_WORK_FACTOR } from '../../models/user'
-import { Role } from '../../models/role'
+import { User, SALT_WORK_FACTOR } from '../user'
+import { Role } from '../role'
 import { Result } from '../result'
 import { ObjectId } from 'mongodb'
 
@@ -24,15 +24,20 @@ mongooseSet('useFindAndModify', false)
  */
 export function login(userEmail: string, password: string): Promise<string> {
     return new Promise(async (resolve: Function, reject: Function) => {
-        let user = await User.findOne({ email: userEmail })
-        if (!user) return reject({ code: 404, message: 'Unable to login!' })
+        try {
+            let user = await User.findOne({ email: userEmail })
+            if (!user) return reject({ code: 404, message: 'Unable to login!' })
 
-        let passwordIsValid = await compare(password, user.password)
-        if (!passwordIsValid) return reject({ code: 401, message: 'Unable to login!' })
+            let passwordIsValid = await compare(password, user.password)
+            if (!passwordIsValid) return reject({ code: 401, message: 'Unable to login!' })
 
-        if (!user.active) return reject({ code: 403, message: 'Unable to login! Account has been deactivated!' })
+            if (!user.active) return reject({ code: 403, message: 'Unable to login! Account has been deactivated!' })
 
-        resolve(jwtSign({ id: user.id },authSecret, { expiresIn: 86400 })) // 24 hours
+            resolve(jwtSign({ id: user.id },authSecret, { expiresIn: 86400 })) // 24 hours
+        } catch (err) {
+            if (err.code && err.message) reject(err)
+            else reject({ code: 500, message: 'Internal error!' })
+        }
     })
 }
 
