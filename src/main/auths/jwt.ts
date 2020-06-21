@@ -3,28 +3,17 @@
  *
  * @author Paolo Baldini
  */
-
-import { User } from '../models/user'
-import {
-    validate as _validate,
-    isActive as _isActive,
-    isUser as _isUser,
-    isAdmin as _isAdmin
-} from '../models/utils/users'
-import { Project } from '../models/project'
+import { User, Roles, Project } from "../models"
 
 export async function validate(request: any, result: any, next?: Function): Promise<void> {
     return new Promise(async (resolve: Function, _: Function) => {
         try {
-            let bToken = request.headers['authorization']
-            var token = bToken.split(' ')[1] // Bearer TOKEN
+            let user = (await User.findByToken(request.body.toke))
 
-            let userID = await _validate(token)
-            
-            request.userID = userID
+            request.userID = user._id()
 
+            resolve()
             if (next) next()
-            else resolve()
         } catch (err) {
             if (err.code && err.message) result.status(err.code).send(err.message)
             else result.status(500).send('Internal error')
@@ -36,7 +25,7 @@ export async function isActive(request: any, result: any, next: Function) {
     try {
         await validate(request, result)
 
-        let isActive = await _isActive(request.userID)
+        let isActive = (await User.findById(request.userID)).isActive()
 
         if (!isActive) result.status(403).send('This account is blocked')
         else next()
@@ -50,7 +39,7 @@ export async function isUser(request: any, result: any, next: Function) {
     try {
         await validate(request, result)
 
-        let isUser = await _isUser(request.userID, request.params.userEmail)
+        let isUser = (await (await User.findById(request.userID)).role()).name() === Roles.USER.toString()
 
         if (!isUser) result.status(403).send('Unauthorized')
         else next()
@@ -64,7 +53,7 @@ export async function isAdmin(request: any, result: any, next: Function) {
     try {
         await validate(request, result)
 
-        let isAdmin = await _isAdmin(request.userID)
+        let isAdmin = (await (await User.findById(request.userID)).role()).name() === Roles.ADMIN.toString()
 
         if (!isAdmin) result.status(403).send('Unauthorized')
         else next()
@@ -79,11 +68,9 @@ export async function isUserOrAdmin(request: any, result: any, next: Function) {
         await validate(request, result)
 
         let user = await User.findById(request.userID)
-        if (!user) return result.status(404).send('User not found!')
 
-        if (request.params.userEmail === user.email) return next()
-
-        let isAdmin = await _isAdmin(user._id)
+        if (request.params.userEmail === user.email()) return next()
+        let isAdmin = (await user.role()).name() === Roles.ADMIN.toString()
 
         if (!isAdmin) result.status(403).send('Unauthorized')
         else next()
@@ -98,12 +85,10 @@ export async function isChiefOrAdmin(request: any, result: any, next: Function) 
         await validate(request, result)
         
         let user = await User.findById(request.userID)
-        if (!user) return result.status(404).send('User not found!')
 
-        let project = await Project.findOne({ name: request.params.name })
-        if (!project) return result.status(404).send('Project not found!')
+        let project = await Project.findByName(request.params.name)
 
-        if (project.chief === user._id) return result.status(403).send('Unauthorized')
+        if (project.chiefID() === user._id()) return result.status(403).send('Unauthorized')
 
         throw new Error("TODO");
         //TODO

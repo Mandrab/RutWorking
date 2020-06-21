@@ -1,18 +1,14 @@
 /**
- * Groups interesting model entities
+ * Groups interesting model entities and related
  *
  * @author Paolo Baldini
  */
-export { IUser } from './user'
+export { User } from './user'
 
-export { IRole } from './role'
-export let ROLES = ['admin', 'user']
+export { Role, Roles } from './role'
 
-export { IProject } from './project'
+export { State, States } from './status'
 
-export { IModule } from './module'
+export { Project } from './project'
 
-export { IStatus } from './status'
-export let STATUS = ['To-Do', 'In-Progress', 'Done']
-
-export { Result } from './result'
+export { Module } from './module'

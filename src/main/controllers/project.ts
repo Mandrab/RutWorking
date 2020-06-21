@@ -4,7 +4,7 @@
  * @author Paolo Baldini
  */
 
-import { newProject as _newProject } from '../models/utils/projects'
+import { newProject as _newProject } from '../models/projects'
 
 export async function newProject(request: any, result: any) {
     _newProject(request.params.name, request.userID).then(() => {

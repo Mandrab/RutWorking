@@ -7,10 +7,9 @@
 import {
     login as _login,
     register as _register,
-    blockUser as _blockUser,
-    changePassword as _changePassword
-} from '../models/utils/users'
+} from '../models/users'
 import { sendEmail } from './communication'
+import { User } from '../models'
 
 export async function login(request: any, result: any) {
     try {
@@ -43,13 +42,11 @@ export async function changePassword(request: any, result: any) {
         if (!request.body.oldPassword || !request.body.newPassword)
             return result.status(400).send('Info missing in body!')
 
-        let succeded = await _changePassword(
-            request.params.userEmail,
-            request.body.oldPassword,
-            request.body.newPassword
-        )
-        if (!succeded) return result.status(401).send('Invalid password!')
-        result.status(200).send('Successfully updated!')
+        let user = await User.findByEmail(request.params.userEmail)
+        if (user.comparePassword(request.body.oldPassword)) {
+            await user.changePassword(request.body.newPassword)
+            result.status(200).send('Successfully updated!')
+        } else result.status(401).send('Invalid password!')        
     } catch (err) {
         if (err.code && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
@@ -61,10 +58,12 @@ export async function getUserInfo(_: any, result: any) {
 }
 
 export async function blockUser(request: any, result: any) {
-    _blockUser(request.params.userEmail).then(() => {
+    try {
+        let user = await User.findByEmail(request.params.userEmail)
+        user.block()
         result.status(200).send('User has been blocked!')
-    }).catch((err: any) => {
+    } catch(err) {
         if (err.code && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
-    })
+    }
 }
