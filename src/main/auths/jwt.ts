@@ -8,7 +8,7 @@ import { User, Roles, Project } from "../models"
 export async function validate(request: any, result: any, next?: Function): Promise<void> {
     return new Promise(async (resolve: Function, _: Function) => {
         try {
-            let user = (await User.findByToken(request.body.toke))
+            let user = (await User.findByToken(request.headers['authorization']))
 
             request.userID = user._id()
 

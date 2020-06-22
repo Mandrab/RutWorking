@@ -9,7 +9,7 @@ import {
     register as _register,
 } from '../models/users'
 import { sendEmail } from './communication'
-import { User } from '../models'
+import { User, Role, Roles } from '../models'
 
 export async function login(request: any, result: any) {
     try {
@@ -26,7 +26,7 @@ export async function register(request: any, result: any) {
         if (!request.body.role) return result.status(400).send('Role missing in body!')
 
         let password = Math.random().toString(36).substring(2)
-        let res = await _register(request.params.userEmail, password, request.body.role)
+        let res = await _register(request.params.userEmail, password, Roles.toRoles(request.body.role))
 
         sendEmail(request.params.userEmail, 'Registration', password, (_1: any,_2: any) => {})
         result.status(res.code).send(res.message)

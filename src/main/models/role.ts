@@ -10,6 +10,13 @@ export enum Roles {
     ADMIN = 'admin',
     USER = 'user'
 }
+export namespace Roles {
+    export function toRoles(s: string): Roles {
+        if (s === Roles.ADMIN) return Roles.ADMIN
+        if (s === Roles.USER) return Roles.USER
+        throw { code: 404, message: 'Role exists!' }
+    }
+}
 
 /**
  * Represent a role in the system with some utility methods
