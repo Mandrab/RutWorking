@@ -108,12 +108,12 @@ export class User {
     static findByToken(token: string): Promise<User> {
         return new Promise((resolve: any, reject: any) => {
             try {
-                if (token.startsWith('Bearer ')) token = token.split(' ')[1]
+                if (token && token.startsWith('Bearer ')) token = token.split(' ')[1]
                 if (!token) reject({ code: 500, message: 'Token has not been passed!' })
 
                 verify(token, secret, (err: any, decoded: any) => {
                     if (err) return reject({ code: 401, message: 'Invalid token!' })
-    
+
                     resolve(User.findById(decoded.id))
                 })
             } catch (err) { reject({ code: 500, message: 'Internal error!' }) }

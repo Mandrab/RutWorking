@@ -83,15 +83,14 @@ export async function isUserOrAdmin(request: any, result: any, next: Function) {
 export async function isChiefOrAdmin(request: any, result: any, next: Function) {
     try {
         await validate(request, result)
-        
+
         let user = await User.findById(request.userID)
+        let userRole = await user.role()
 
         let project = await Project.findByName(request.params.name)
 
-        if (project.chiefID() === user._id()) return result.status(403).send('Unauthorized')
-
-        throw new Error("TODO");
-        //TODO
+        if (project.chiefID().toString() === user._id().toString() || userRole.name() === Roles.ADMIN) next()
+        else result.status(403).send('Unauthorized')
     } catch (err) {
         if (err.code && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
