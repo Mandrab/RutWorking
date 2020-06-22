@@ -24,6 +24,8 @@ const NEW_USER_EMAIL = 'new@new.new'
 const NEW_USER2_EMAIL = 'new2@new2.new2'
 const NEW_USER2_PASSWORD = 'new2'
 
+const USER2DELETE_EMAIL = 'delete@delete.delete'
+
 before(async function () {
     // connect to db
     await connect(`mongodb://${dbConfig.HOST}:${dbConfig.PORT}/${dbConfig.DB}`, {
@@ -37,8 +39,10 @@ before(async function () {
         await Promise.all([
             // add an initial admin.. if yet exist ok!
             register(ADMIN_EMAIL, ADMIN_PASSWORD, Roles.ADMIN),
-            // add an initial admin.. if yet exist ok!
-            register(BLOCKED_USER_EMAIL, BLOCKED_USER_PASSWORD, Roles.USER)
+            // add an initial blocked user
+            register(BLOCKED_USER_EMAIL, BLOCKED_USER_PASSWORD, Roles.USER),
+            // add a user to delete
+            register(USER2DELETE_EMAIL, '123', Roles.USER)
         ])
     } catch (err) { if (err.code !== 406) { throw err } }
 
@@ -170,6 +174,38 @@ describe('test change password', function() {
         // correct one
         request.put('/user/' + NEW_USER2_EMAIL).set({ 'Authorization': token })
         .send({ oldPassword: NEW_USER2_PASSWORD, newPassword: '123456' })
+        .expect(200).end((err: any) => { if (err) { console.log(err); return Promise.reject() } })
+
+        return Promise.resolve()
+    })
+})
+
+/**********************************************************************************************************************
+    DELETE 
+**********************************************************************************************************************/
+
+describe('test register', function() {
+    it('test register', async function() {
+        let user = await User.findByEmail(ADMIN_EMAIL)
+        let token = sign({ id: user._id() }, secret, { expiresIn: 86400 })
+
+        // no email specified
+        request.delete('/user').expect(404).end((err: any) => { if (err) {
+            console.log(err); return Promise.reject() }
+        })
+
+        // no token passed
+        request.delete('/user/' + USER2DELETE_EMAIL).expect(500).end((err: any) => { if (err) {
+            console.log(err); return Promise.reject() }
+        })
+
+        // no binded token
+        request.delete('/user/' + USER2DELETE_EMAIL).set({ 'Authorization': 'john' }).expect(401).end((err: any) => {
+            if (err) { console.log(err); return Promise.reject() }
+        })
+
+        // correct one
+        request.delete('/user/' + USER2DELETE_EMAIL).set({ 'Authorization': token })
         .expect(200).end((err: any) => { if (err) { console.log(err); return Promise.reject() } })
 
         return Promise.resolve()
