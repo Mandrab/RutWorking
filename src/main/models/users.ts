@@ -10,6 +10,7 @@ import { set as mongooseSet } from 'mongoose'
 import { DBUser } from './db/user'
 import { Result } from './result'
 import { Role, User } from '.'
+import { Roles } from './role'
 
 mongooseSet('useFindAndModify', false)
 
@@ -47,13 +48,13 @@ export function login(userEmail: string, password: string): Promise<string> {
  * @param role in the system
  * @returns a result specifing operation result
  */
-export function register(userEmail: string, password: string, role: string): Promise<Result> {
+export function register(userEmail: string, password: string, role: Roles): Promise<Result> {
     return new Promise(async (resolve: Function, reject: Function) => {
         let roleSchema = await Role.findByName(role)
         if (!roleSchema) return reject({ code: 400, message: 'Role missing or not valid!' })
 
-        new DBUser({ email: userEmail, password: password, role: roleSchema._id }).save((err, _) => {
-            if (err) return reject({ code: 404, message: 'User already existent!' })
+        new DBUser({ email: userEmail, password: password, role: roleSchema._id() }).save((err, _) => {
+            if (err) return reject({ code: 406, message: 'User already existent!' })
 
             resolve({ code: 201, message: 'Successfully registered!' })
         })

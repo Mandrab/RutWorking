@@ -4,25 +4,31 @@ import { connect } from 'mongoose'
 import { json } from 'body-parser'
 import { config as dbConfig } from './config/db'
 
-const app = express()
+const setup = async () => { 
+    const app = express()
 
-app.use(cors({ origin: "http://localhost:8081" })) // ??
+    app.use(cors({ origin: "http://localhost:8081" })) // ??
 
-// parse requests of content-type application/json
-app.use(json())
+    // parse requests of content-type application/json
+    app.use(json())
 
-// connect to db
-connect(`mongodb://${dbConfig.HOST}:${dbConfig.PORT}/${dbConfig.DB}`, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-})
+    // connect to db
+    await connect(`mongodb://${dbConfig.HOST}:${dbConfig.PORT}/${dbConfig.DB}`, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    })
+    /*await register('ADMIN_EMAIL', 'ADMIN_PASSWORD', Roles.ADMIN).catch((err: any) => {
+        if (err.code !== 406) throw err
+    })*/
+    console.log('Successfully connected to MongoDB')
 
-console.log('Successfully connected to MongoDB')
+    // routes
+    require('./routes/project')(app);
+    require('./routes/user')(app);
 
-// routes
-require('./routes/project')(app);
-require('./routes/user')(app);
+    app.use((_, result) => { result.status(404).end() })
 
-app.use((_, result) => { result.status(404).end() })
+    app.listen(8080)
+}
 
-app.listen(8080)
+setup()

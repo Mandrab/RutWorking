@@ -12,3 +12,5 @@ export { State, States } from './status'
 export { Project } from './project'
 
 export { Module } from './module'
+
+export { login, register } from './users'
