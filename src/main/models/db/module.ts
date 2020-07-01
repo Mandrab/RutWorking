@@ -1,4 +1,4 @@
-import { Document, Schema, model as mongooseModel, set as mongooseSet } from 'mongoose'
+import { Document, Schema, set as mongooseSet } from 'mongoose'
 
 mongooseSet('useCreateIndex', true)
 
@@ -37,11 +37,10 @@ export interface IDBKanbanItem extends Document {
     assignee: Schema.Types.ObjectId,
 }
 
-const moduleSchema = new Schema({
+export const ModuleSchema = new Schema({
     name: {
         type: String,
-        required: true,
-        unique: true
+        required: true
     },
     chief: {
         type: Schema.Types.ObjectId,
@@ -72,5 +71,3 @@ const moduleSchema = new Schema({
         }
     }]
 })
-
-export let DBModule = mongooseModel<IDBModule>('Module', moduleSchema)

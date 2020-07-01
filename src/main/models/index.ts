@@ -5,12 +5,14 @@
  */
 export { User } from './user'
 
+export { login, register } from './users'
+
 export { Role, Roles } from './role'
 
 export { State, States } from './status'
 
 export { Project } from './project'
 
-export { Module } from './module'
+export { newProject, newModule } from './projects'
 
-export { login, register } from './users'
+export { Module } from './module'

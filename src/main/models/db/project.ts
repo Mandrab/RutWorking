@@ -1,4 +1,5 @@
 import { Document, Schema, model as mongooseModel, set as mongooseSet } from 'mongoose'
+import { ModuleSchema, IDBModule } from './module'
 
 mongooseSet('useCreateIndex', true)
 
@@ -10,7 +11,7 @@ mongooseSet('useCreateIndex', true)
 export interface IDBProject extends Document {
     name: string
     chief: Schema.Types.ObjectId
-    modules: Array<Schema.Types.ObjectId>
+    modules: Array<IDBModule>
 }
 
 const projectSchema = new Schema({
@@ -24,10 +25,7 @@ const projectSchema = new Schema({
         ref: "User",
         required: true
     },
-    modules: [ {
-        type: Schema.Types.ObjectId,
-        ref: "Module"
-    } ]
+    modules: [ ModuleSchema ]
 })
 
 export let DBProject = mongooseModel<IDBProject>('Project', projectSchema)

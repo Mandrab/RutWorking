@@ -1,5 +1,5 @@
 import { Schema } from "mongoose";
-import { IDBProject, DBProject } from "./db";
+import { IDBProject, DBProject, IDBModule } from "./db";
 import { User, Module } from ".";
 
 /**
@@ -12,12 +12,27 @@ export class Project {
     name(): string { return this.project.name }
     chiefID(): Schema.Types.ObjectId { return this.project.chief }
     chief(): Promise<User> { return User.findById(this.project.chief) }
-    modulesIDs(): Array<Schema.Types.ObjectId> { return this.project.modules }
-    modules(): Array<Promise<Module>> {
-        return this.project.modules.map((moduleID: Schema.Types.ObjectId) => { return Module.findById(moduleID) })
-    }
+    modules(): Array<Module> { return this.project.modules.map(it => new Module(it)) }
 
     private constructor(private project: IDBProject) { }
+    
+    /**
+     * Add a new module to the project
+     * 
+     * @param _name of the module
+     * @param chiefID id of module chief
+     */
+    async newModule(_name: string, chiefID: Schema.Types.ObjectId) {
+        await DBProject.updateOne({_id: this._id(), "modules.name": { "$ne": _name } }, {
+            $push: { modules: {
+                name: _name,
+                chief: chiefID,
+                developers: [],
+                chatMessages: [],
+                kanbanItems: []
+            } as IDBModule }
+        })
+    }
 
     /**
      * Create a project object by the project found throught the `searchStrategy`

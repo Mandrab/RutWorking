@@ -69,22 +69,22 @@ describe('test project creation', function() {
         let userToken = sign({ id: user._id() }, secret, { expiresIn: 86400 })
 
         // no token passed
-        request.post('/project/' + PROJECT_NAME).expect(500).expect('Token has not been passed!').end((err: any) => {
+        request.post('/projects/' + PROJECT_NAME).expect(500).expect('Token has not been passed!').end((err: any) => {
             if (err) { console.log(err); return Promise.reject() }
         })
 
         // invalid token
-        request.post('/project/' + PROJECT_NAME).set({ 'Authorization': 'john' }).expect(401).end((err: any) => {
+        request.post('/projects/' + PROJECT_NAME).set({ 'Authorization': 'john' }).expect(401).end((err: any) => {
             if (err) { console.log(err); return Promise.reject() }
         })
 
         // valid token but admin
-        request.post('/project/' + PROJECT_NAME).set({ 'Authorization': adminToken }).expect(403).end((err: any) => {
+        request.post('/projects/' + PROJECT_NAME).set({ 'Authorization': adminToken }).expect(403).end((err: any) => {
             if (err) { console.log(err); return Promise.reject() }
         })
 
         // valid token
-        request.post('/project/' + PROJECT_NAME).set({ 'Authorization': userToken }).expect(201).end((err: any) => {
+        request.post('/projects/' + PROJECT_NAME).set({ 'Authorization': userToken }).expect(201).end((err: any) => {
             if (err) { console.log(err); return Promise.reject() }
         })
 
@@ -107,30 +107,26 @@ describe('test project deletion', function() {
         try { await new DBProject({ name: PROJECT2_NAME, chief: user._id(), modules: [] }).save() } catch (_) {}
 
         // no project with this name
-        request.delete('/project/X'+PROJECT2_NAME).expect(500).expect('Token has not been passed!').end((err: any) => {
-            if (err) { console.log(err); return Promise.reject() }
-        })
+        request.delete('/projects/X' + PROJECT2_NAME).expect(500).expect('Token has not been passed!')
+            .end((err: any) => { if (err) { console.log(err); return Promise.reject() } })
 
         // invalid token
-        request.delete('/project/' + PROJECT2_NAME).set({ 'Authorization': 'john' }).expect(401).end((err: any) => {
-            if (err) { console.log(err); return Promise.reject() }
-        })
+        request.delete('/projects/' + PROJECT2_NAME).set({ 'Authorization': 'john' }).expect(401)
+            .end((err: any) => { if (err) { console.log(err); return Promise.reject() } })
 
         // valid token but not chief
-        request.delete('/project/' + PROJECT2_NAME).set({ 'Authorization': user2Token }).expect(403)
-        .end((err: any) => { if (err) { console.log(err); return Promise.reject() } })
+        request.delete('/projects/' + PROJECT2_NAME).set({ 'Authorization': user2Token }).expect(403)
+            .end((err: any) => { if (err) { console.log(err); return Promise.reject() } })
 
         // valid token and chief
-        request.delete('/project/' + PROJECT2_NAME).set({ 'Authorization': userToken }).expect(200).end((err: any) => {
-            if (err) { console.log(err); return Promise.reject() }
-        })
+        request.delete('/projects/' + PROJECT2_NAME).set({ 'Authorization': userToken }).expect(200)
+            .end((err: any) => { if (err) { console.log(err); return Promise.reject() } })
 
-        try { await new DBProject({ name: PROJECT3_NAME, chief: user._id(), modules: [] }).save() } catch(_) {}
+        try { await new DBProject({ name: PROJECT3_NAME, chief: user._id(), modules: [] }).save() } catch(err) {console.log(err)}
 
         // valid token and admin
-        request.delete('/project/' + PROJECT3_NAME).set({ 'Authorization': adminToken }).expect(200).end((err: any) => {
-            if (err) { console.log(err); return Promise.reject() }
-        })
+        request.delete('/projects/' + PROJECT3_NAME).set({ 'Authorization': adminToken }).expect(200)
+            .end((err: any) => { if (err) { console.log(err); return Promise.reject() } })
 
         return Promise.resolve()
     })

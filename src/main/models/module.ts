@@ -1,4 +1,4 @@
-import { IDBModule, DBModule, IDBMessage, IDBKanbanItem } from "./db"
+import { IDBModule, IDBMessage, IDBKanbanItem } from "./db"
 import { Schema } from "mongoose"
 import { User } from "."
 
@@ -23,42 +23,7 @@ export class Module {
         return this.module.kanbanItems.map((item: IDBKanbanItem) => new KanbanItem(item))
     }
 
-    private constructor(private module: IDBModule) { }
-
-    /**
-     * Create a module object by the module found throught the `searchStrategy`
-     *
-     * @param searchStrategy used to find module in DB
-     * @returns the module object
-     */
-    static find(searchStrategy: () => Promise<IDBModule> | IDBModule): Promise<Module> {
-        return new Promise(async (resolve: any, reject: any) => {
-            let module = await searchStrategy()
-            if (!module) return reject({ code: 404, message: 'Module not found!' })
-
-            resolve(new Module(module))
-        })
-    }
-
-    /**
-     * Create a module object by the module found throught his `id`
-     *
-     * @param _id of the module in the DB
-     * @returns the module object
-     */
-    static findById(_id: Schema.Types.ObjectId | string): Promise<Module> {
-        return Module.find(async () => DBModule.findById(_id))
-    }
-
-    /**
-     * Create a module object by the module found throught his `name`
-     *
-     * @param name of the module in the DB
-     * @returns the module object
-     */
-    static findByName(name: string): Promise<Module> {
-        return Module.find(async () => DBModule.findOne({ name: name }))
-    }
+    constructor(private module: IDBModule) { }
 }
 
 export interface IMessage {
