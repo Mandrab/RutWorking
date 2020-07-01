@@ -18,8 +18,8 @@ const ADMIN_PASSWORD = 'admin'
 const USER_EMAIL = 'user@user.user'
 const USER_PASSWORD = 'user'
 
-const USER2_EMAIL = 'user@user.user'
-const USER2_PASSWORD = 'user'
+const USER2_EMAIL = 'user2@user.user'
+const USER2_PASSWORD = 'user2'
 
 const PROJECT_NAME = 'tcejorp'
 const PROJECT2_NAME = '2tcejorp'
@@ -49,11 +49,11 @@ before(async function () {
 })
 
 var clean = async () => {
-    await DBUser.deleteOne({ email: USER_EMAIL })
-    await DBUser.deleteOne({ email: USER2_EMAIL })
-    await DBProject.deleteOne({ name: PROJECT_NAME })
-    await DBProject.deleteOne({ name: PROJECT2_NAME })
-    await DBProject.deleteOne({ name: PROJECT3_NAME })
+    try { await DBUser.deleteOne({ email: USER_EMAIL }) } catch (_) {}
+    try { await DBUser.deleteOne({ email: USER2_EMAIL }) } catch (_) {}
+    try { await DBProject.deleteOne({ name: PROJECT_NAME }) } catch (_) {}
+    try { await DBProject.deleteOne({ name: PROJECT2_NAME }) } catch (_) {}
+    try { await DBProject.deleteOne({ name: PROJECT3_NAME }) } catch (_) {}
     return Promise.resolve()
 }
 
@@ -104,7 +104,7 @@ describe('test project deletion', function() {
         let userToken = sign({ id: user._id() }, secret, { expiresIn: 86400 })
         let user2 = await User.findByEmail(USER2_EMAIL)
         let user2Token = sign({ id: user2._id() }, secret, { expiresIn: 86400 })
-        await new DBProject({ name: PROJECT2_NAME, chief: user._id(), modules: [] }).save()
+        try { await new DBProject({ name: PROJECT2_NAME, chief: user._id(), modules: [] }).save() } catch (_) {}
 
         // no project with this name
         request.delete('/project/X'+PROJECT2_NAME).expect(500).expect('Token has not been passed!').end((err: any) => {
@@ -125,7 +125,7 @@ describe('test project deletion', function() {
             if (err) { console.log(err); return Promise.reject() }
         })
 
-        await new DBProject({ name: PROJECT3_NAME, chief: user._id(), modules: [] }).save()
+        try { await new DBProject({ name: PROJECT3_NAME, chief: user._id(), modules: [] }).save() } catch(_) {}
 
         // valid token and admin
         request.delete('/project/' + PROJECT3_NAME).set({ 'Authorization': adminToken }).expect(200).end((err: any) => {
