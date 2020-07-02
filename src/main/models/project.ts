@@ -40,13 +40,11 @@ export class Project {
      * @param searchStrategy used to find project in DB
      * @returns the project object
      */
-    static find(searchStrategy: () => Promise<IDBProject> | IDBProject): Promise<Project> {
-        return new Promise(async (resolve: any, reject: any) => {
-            let project = await searchStrategy()
-            if (!project) return reject({ code: 404, message: 'Project not found!' })
+    static async find(searchStrategy: () => Promise<IDBProject> | IDBProject): Promise<Project> {
+        let project = await searchStrategy()
+        if (!project) throw { code: 404, message: 'Project not found!' }
 
-            resolve(new Project(project))
-        })
+        return new Project(project)
     }
 
     /**

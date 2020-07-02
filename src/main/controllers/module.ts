@@ -3,7 +3,6 @@
  * 
  * @author Paolo Baldini
  */
-
 import { newModule as _newModule, Project } from '../models'
 
 export async function newModule(request: any, result: any) {

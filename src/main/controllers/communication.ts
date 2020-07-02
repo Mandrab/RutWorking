@@ -4,7 +4,6 @@
  *
  * @author Paolo Baldini
  */
-
 import { createTransport } from 'nodemailer'
 import { config as emailConfig } from '../config/email'
 

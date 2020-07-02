@@ -1,4 +1,4 @@
-import { IDBModule, IDBMessage, IDBKanbanItem } from "./db"
+import { IDBModule, IDBMessage, IDBKanbanItem, DBProject } from "./db"
 import { Schema } from "mongoose"
 import { User } from "."
 
@@ -24,6 +24,22 @@ export class Module {
     }
 
     constructor(private module: IDBModule) { }
+
+    /**
+     * Add a new message to the module chat
+     * 
+     * @param id of the sender
+     * @param chiefID id of module chief
+     */
+    async newMessage(senderID: Schema.Types.ObjectId, body: string, projectID: Schema.Types.ObjectId) {
+        await DBProject.updateOne({_id: projectID, "modules._id": this._id() }, {
+            $push: { "modules.$.chatMessages": {
+                date: new Date(),
+                sender: senderID,
+                message: body
+            } as IDBMessage }
+        })
+    }
 }
 
 export interface IMessage {
@@ -44,6 +60,7 @@ class Message implements IMessage {
 }
 
 export interface IKanbanItem {
+    _id(): Schema.Types.ObjectId
     taskDescription(): string
     status(): Schema.Types.ObjectId
     assigneeID(): Schema.Types.ObjectId
@@ -51,6 +68,7 @@ export interface IKanbanItem {
 }
 
 class KanbanItem implements IKanbanItem {
+    _id(): Schema.Types.ObjectId { return this.kanbanItem._id }
     taskDescription(): string { return this.kanbanItem._id }
     status(): Schema.Types.ObjectId { return this.kanbanItem.status }
     assigneeID(): Schema.Types.ObjectId { return this.kanbanItem.assignee }

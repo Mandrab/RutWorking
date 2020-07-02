@@ -26,6 +26,15 @@ export interface IDBMessage extends Document {
     message: string
 }
 
+const MessageSchema = new Schema({
+    date: Date,
+    sender: {
+        type: Schema.Types.ObjectId,
+        ref: "User"
+    },
+    message: String
+}) 
+
 /**
  * Schema of KANBAN ITEM document in the DB
  *
@@ -51,14 +60,7 @@ export const ModuleSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "User"
     }],
-    chatMessages: [{
-        data: Date,
-        sender: {
-            type: Schema.Types.ObjectId,
-            ref: "User"
-        },
-        message: String
-    }],
+    chatMessages: [ MessageSchema ],
     kanbanItems: [{
         taskDescription: String,
         status: {

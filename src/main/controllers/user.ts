@@ -3,7 +3,6 @@
  * 
  * @author Paolo Baldini
  */
-
 import {
     login as _login,
     register as _register,
