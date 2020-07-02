@@ -16,7 +16,7 @@ export async function newMessage(request: any, result: any) {
 
         await module.newMessage(user, request.body.message, project._id()) // TODO parse to avoid code injection or strange things
 
-        result.status(201).send('Project succesfully created!')
+        result.status(201).send('Message succesfully created!')
     } catch(err) {
         if (err.code && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
