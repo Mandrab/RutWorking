@@ -7,12 +7,14 @@
 import { newProject as _newProject } from '../models/projects'
 
 export async function newProject(request: any, result: any) {
-    _newProject(request.params.name, request.userID).then(() => {
+    try {
+        await _newProject(request.params.name, request.userID)
+        
         result.status(201).send('Project succesfully created!')
-    }).catch((err: any) => {
+    } catch (err) {
         if (err.code && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
-    })
+    }
 }
 
 export async function getProjectInfo(request: any, result: any) { /* TODO */ }

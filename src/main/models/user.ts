@@ -70,13 +70,11 @@ export class User {
      * @param searchStrategy used to find user in DB
      * @returns the user object
      */
-    static find(searchStrategy: () => Promise<IDBUser> | IDBUser): Promise<User> {
-        return new Promise(async (resolve: any, reject: any) => {
-            let user = await searchStrategy()
-            if (!user) return reject({ code: 404, message: 'User not found!' })
+    static async find(searchStrategy: () => Promise<IDBUser> | IDBUser): Promise<User> {
+        let user = await searchStrategy()
+        if (!user) throw { code: 404, message: 'User not found!' }
 
-            resolve(new User(user))
-        })
+        return new User(user)
     }
 
     /**

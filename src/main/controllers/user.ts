@@ -26,10 +26,11 @@ export async function register(request: any, result: any) {
         if (!request.body.role) return result.status(400).send('Role missing in body!')
 
         let password = Math.random().toString(36).substring(2)
-        let res = await _register(request.params.userEmail, password, Roles.toRoles(request.body.role))
+        await _register(request.params.userEmail, password, Roles.toRoles(request.body.role))
 
         sendEmail(request.params.userEmail, 'Registration', password, (_1: any,_2: any) => {})
-        result.status(res.code).send(res.message)
+
+        result.status(201).send('Succesfully created!')
         //console.log('Generated password: ' + password) // TODO remove.. only to debug
     } catch (err) {
         if (err.code && err.message) result.status(err.code).send(err.message)

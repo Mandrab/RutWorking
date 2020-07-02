@@ -38,25 +38,20 @@ describe('test modules\' operations', function() {
 
         await clean()
 
-        try {
-            await Promise.all([
-                // add an initial chief.. if yet exist ok!
-                register(CHIEF.email, CHIEF.passwd, Roles.USER),
-                // add an initial user
-                register(USER.email, USER.passwd, Roles.USER)
-            ])
-        } catch (err) { if (err.code !== 406) { throw err } }
-
-        return Promise.resolve()
+        await Promise.all([
+            // add an initial chief.. if yet exist ok!
+            register(CHIEF.email, CHIEF.passwd, Roles.USER),
+            // add an initial user
+            register(USER.email, USER.passwd, Roles.USER)
+        ])
     })
 
     after(async function() { return clean() })
 
     var clean = async () => {
-        try { await DBUser.deleteOne({ email: CHIEF.email }) } catch (_) {}
-        try { await DBUser.deleteOne({ email: USER.email }) } catch (_) {}
-        try { await DBProject.deleteOne({ name: CHIEF.project.name }) } catch (_) {}
-        return Promise.resolve()
+        try { await DBUser.deleteOne({ email: CHIEF.email }) } catch (_) { }
+        try { await DBUser.deleteOne({ email: USER.email }) } catch (_) { }
+        try { await DBProject.deleteOne({ name: CHIEF.project.name }) } catch (_) { }
     }
 
 /**********************************************************************************************************************
