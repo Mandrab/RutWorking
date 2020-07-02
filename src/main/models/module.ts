@@ -1,6 +1,7 @@
 import { IDBModule, IDBMessage, IDBKanbanItem, DBProject } from "./db"
 import { Schema } from "mongoose"
 import { User } from "."
+import { KANBAN_STATES } from "./db/module"
 
 /**
  * Represent a project module in the system with some utility methods
@@ -30,6 +31,7 @@ export class Module {
      * 
      * @param id of the sender
      * @param chiefID id of module chief
+     * @param projectID parent project of the module
      */
     async newMessage(senderID: Schema.Types.ObjectId, body: string, projectID: Schema.Types.ObjectId) {
         await DBProject.updateOne({_id: projectID, "modules._id": this._id() }, {
@@ -38,6 +40,18 @@ export class Module {
                 sender: senderID,
                 message: body
             } as IDBMessage }
+        })
+    }
+
+    /**
+     * Add a new task to the module kanban
+     * 
+     * @param description tasks description
+     * @param projectID parent project of the module
+     */
+    async newTask(description: string, projectID: Schema.Types.ObjectId) {
+        await DBProject.updateOne({_id: projectID, "modules._id": this._id() }, {
+            $push: { "modules.$.kanbanItems": { taskDescription: description } }
         })
     }
 }

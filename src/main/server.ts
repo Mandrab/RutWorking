@@ -23,10 +23,11 @@ const setup = async () => {
     console.log('Successfully connected to MongoDB')
 
     // routes
-    require('./routes/chat')(app);
-    require('./routes/module')(app);
-    require('./routes/project')(app);
-    require('./routes/user')(app);
+    require('./routes/chat')(app)
+    require('./routes/kanban')(app)
+    require('./routes/module')(app)
+    require('./routes/project')(app)
+    require('./routes/user')(app)
 
     app.use((_, result) => { result.status(404).end() })
 

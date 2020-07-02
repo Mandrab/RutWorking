@@ -27,13 +27,26 @@ export interface IDBMessage extends Document {
 }
 
 const MessageSchema = new Schema({
-    date: Date,
+    date: {
+        type: Date,
+        required: true
+    },
     sender: {
         type: Schema.Types.ObjectId,
-        ref: "User"
+        ref: "User",
+        required: true
     },
-    message: String
-}) 
+    message: {
+        type: String,
+        required: true
+    }
+})
+
+export enum KANBAN_STATES {
+    TODO = 'TO-DO',
+    IN_PROGRESS = 'IN-PROGRESS',
+    DONE = 'DONE'
+}
 
 /**
  * Schema of KANBAN ITEM document in the DB
@@ -45,6 +58,27 @@ export interface IDBKanbanItem extends Document {
     status: Schema.Types.ObjectId,
     assignee: Schema.Types.ObjectId,
 }
+
+const KanbanItemSchema = new Schema({
+    taskDescription: {
+        type: String,
+        required: true
+    },
+    status: {
+        type: String,
+        enum: [
+            KANBAN_STATES.TODO,
+            KANBAN_STATES.IN_PROGRESS,
+            KANBAN_STATES.DONE
+        ],
+        required: true,
+        default: KANBAN_STATES.TODO
+    },
+    assignee: {
+        type: Schema.Types.ObjectId,
+        ref: "User"
+    }
+})
 
 export const ModuleSchema = new Schema({
     name: {
@@ -61,15 +95,5 @@ export const ModuleSchema = new Schema({
         ref: "User"
     }],
     chatMessages: [ MessageSchema ],
-    kanbanItems: [{
-        taskDescription: String,
-        status: {
-            type: Schema.Types.ObjectId,
-            ref: "Status"
-        },
-        assignee: {
-            type: Schema.Types.ObjectId,
-            ref: "User"
-        }
-    }]
+    kanbanItems: [ KanbanItemSchema ]
 })
