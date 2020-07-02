@@ -28,4 +28,4 @@ export async function newModule(request: any, result: any) {
 
 export async function getModuleInfo(request: any, result: any) { /* TODO */ }
 
-export async function endModule(request: any, result: any) { /* TODO */ }
+export async function endModule(request: any, result: any) { result.status(200).send('TODO')/* TODO */ }

@@ -87,7 +87,9 @@ export async function isChiefOrAdmin(request: any, result: any, next: Function) 
         let user = await User.findById(request.userID)
         let userRole = await user.role()
 
-        let project = await Project.findByName(request.params.name)
+        let projectName = request.params.projectName ? request.params.projectName : request.params.name
+        if (!projectName) return result.status(404).send('Project non specified')
+        let project = await Project.findByName(projectName)
 
         if (project.chiefID().toString() === user._id().toString() || userRole.name() === Roles.ADMIN) next()
         else result.status(403).send('Unauthorized')

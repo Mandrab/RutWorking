@@ -26,187 +26,154 @@ const NEW_USER2_PASSWORD = 'new2'
 
 const USER2DELETE_EMAIL = 'delete@delete.delete'
 
-before(async function () {
-    // connect to db
-    await connect(`mongodb://${dbConfig.HOST}:${dbConfig.PORT}/${dbConfig.DB}`, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
+describe('test users\' operations', function() {
+    before(async function () {
+        // connect to db
+        await connect(`mongodb://${dbConfig.HOST}:${dbConfig.PORT}/${dbConfig.DB}`, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        })
+
+        await clean()
+
+        try {
+            await Promise.all([
+                // add an initial admin.. if yet exist ok!
+                register(ADMIN_EMAIL, ADMIN_PASSWORD, Roles.ADMIN),
+                // add an initial blocked user
+                register(BLOCKED_USER_EMAIL, BLOCKED_USER_PASSWORD, Roles.USER),
+                // add a user to delete
+                register(USER2DELETE_EMAIL, '123', Roles.USER)
+            ])
+        } catch (err) { if (err.code !== 406) { throw err } }
+
+        let user = await User.findByEmail(BLOCKED_USER_EMAIL)
+        await user.block()
+
+        return Promise.resolve()
     })
 
-    await clean()
+    after(async function() { return clean() })
 
-    try {
-        await Promise.all([
-            // add an initial admin.. if yet exist ok!
-            register(ADMIN_EMAIL, ADMIN_PASSWORD, Roles.ADMIN),
-            // add an initial blocked user
-            register(BLOCKED_USER_EMAIL, BLOCKED_USER_PASSWORD, Roles.USER),
-            // add a user to delete
-            register(USER2DELETE_EMAIL, '123', Roles.USER)
-        ])
-    } catch (err) { if (err.code !== 406) { throw err } }
-
-    let user = await User.findByEmail(BLOCKED_USER_EMAIL)
-    await user.block()
-
-    return Promise.resolve()
-})
-
-var clean = async () => {
-    await DBUser.deleteOne({ email: BLOCKED_USER_EMAIL }),
-    await DBUser.deleteOne({ email: NEW_USER_EMAIL })
-    await DBUser.deleteOne({ email: NEW_USER2_EMAIL })
-    return Promise.resolve()
-}
+    var clean = async () => {
+        try { await DBUser.deleteOne({ email: BLOCKED_USER_EMAIL }) } catch (_) {}
+        try { await DBUser.deleteOne({ email: NEW_USER_EMAIL }) } catch (_) {}
+        try { await DBUser.deleteOne({ email: NEW_USER2_EMAIL }) } catch (_) {}
+        return Promise.resolve()
+    }
 
 /**********************************************************************************************************************
     LOGIN 
 **********************************************************************************************************************/
 
-describe('test login', function() {
-    it('test login', function(done) {
+    it('test login', async function() {
 
         // no email specified
-        request.post('/login').expect(404).end((err: any) => { if (err) { console.log(err); done(err) } })
+        await request.post('/login').expect(404)
 
         // user not found
-        request.post('/login').send({userEmail: 'john'}).expect(404).end((err: any) => { if (err) { console.log(err); done(err) } })
+        await request.post('/login').send({ userEmail: 'john' }).expect(404)
 
         // password missing
-        request.post('/login').send({userEmail: ADMIN_EMAIL}).expect(500)
-            .end((err: any) => { if (err) { console.log(err); done(err) } })
+        await request.post('/login').send({userEmail: ADMIN_EMAIL}).expect(500)
 
         // incorrect password
-        request.post('/login').send({
-            userEmail: ADMIN_EMAIL,
-            password: ADMIN_PASSWORD + '123456'
-        }).expect(401).end((err: any) => { if (err) { console.log(err); done(err) } })
+        await request.post('/login').send({ userEmail: ADMIN_EMAIL, password: ADMIN_PASSWORD + '123456' }).expect(401)
 
         // correct password
-        request.post('/login').send({
+        await request.post('/login').send({
             userEmail: ADMIN_EMAIL,
             password: ADMIN_PASSWORD
         }).expect(200).expect('Content-Type', /json/).expect(/{"accessToken":".*"}/)
-            .end((err: any) => { if (err) { console.log(err); done(err) } })
 
         // user not active
-        request.post('/login').send({
+        await request.post('/login').send({
             userEmail: BLOCKED_USER_EMAIL,
             password: BLOCKED_USER_PASSWORD
-        }).expect(403).end((err: any) => { if (err) { console.log(err); done(err) } })
+        }).expect(403)
 
         // not valid ops
-        request.put('/login').expect(404).end((err: any) => { if (err) { console.log(err); done(err) } })
-        request.get('/login').expect(404).end((err: any) => { if (err) { console.log(err); done(err) } })
-        request.delete('/login').expect(404).end((err: any) => { if (err) { console.log(err); done(err) } })
+        await request.put('/login').expect(404)
+        await request.get('/login').expect(404)
+        await request.delete('/login').expect(404)
 
-        done()
+        return Promise.resolve()
     })
-})
 
 /**********************************************************************************************************************
     REGISTER 
 **********************************************************************************************************************/
 
-describe('test register', function() {
     it('test register', async function() {
         let user = await User.findByEmail(ADMIN_EMAIL)
         let token = sign({ id: user._id() }, secret, { expiresIn: 86400 })
 
         // no email specified
-        request.post('/user').expect(404).end((err: any) => { if (err) {
-            console.log(err); return Promise.reject() }
-        })
+        await request.post('/user').expect(404)
 
         // no token passed
-        request.post('/user/' + ADMIN_EMAIL).expect(500).end((err: any) => { if (err) {
-            console.log(err); return Promise.reject() }
-        })
+        await request.post('/user/' + ADMIN_EMAIL).expect(500)
 
         // no binded token
-        request.post('/user/' + ADMIN_EMAIL).set({ 'Authorization': 'john' }).expect(401).end((err: any) => {
-            if (err) { console.log(err); return Promise.reject() }
-        })
+        await request.post('/user/' + ADMIN_EMAIL).set({ 'Authorization': 'john' }).expect(401)
 
         // token but no role
-        request.post('/user/' + ADMIN_EMAIL).set({ 'Authorization': token }).expect(400).end((err: any) => {
-            if (err) { console.log(err); return Promise.reject() }
-        })
+        await request.post('/user/' + ADMIN_EMAIL).set({ 'Authorization': token }).expect(400)
 
         // correct one
-        request.post('/user/' + NEW_USER_EMAIL).set({ 'Authorization': token }).send({ role: 'user' })
-        .expect(201).end((err: any) => { if (err) { console.log(err); return Promise.reject() } })
+        await request.post('/user/' + NEW_USER_EMAIL).set({ 'Authorization': token }).send({ role:'user' }).expect(201)
 
         return Promise.resolve()
     })
-})
 
 /**********************************************************************************************************************
     CHANGE PASSWORD 
 **********************************************************************************************************************/
 
-describe('test change password', function() {
     it('test change password', async function() {
         await register(NEW_USER2_EMAIL, NEW_USER2_PASSWORD, Roles.USER)
         let user = await User.findByEmail(NEW_USER2_EMAIL)
         let token = sign({ id: user._id() }, secret, { expiresIn: 86400 })
 
         // no email specified
-        request.put('/user').expect(404).end((err: any) => { if (err) {
-            console.log(err); return Promise.reject() }
-        })
+        await request.put('/user').expect(404)
 
         // no token passed
-        request.put('/user/' + NEW_USER2_EMAIL).expect(500).end((err: any) => { if (err) {
-            console.log(err); return Promise.reject() }
-        })
+        await request.put('/user/' + NEW_USER2_EMAIL).expect(500)
 
         // no binded token
-        request.put('/user/' + NEW_USER2_EMAIL).set({ 'Authorization': 'john' }).expect(401).end((err: any) => {
-            if (err) { console.log(err); return Promise.reject() }
-        })
+        await request.put('/user/' + NEW_USER2_EMAIL).set({ 'Authorization': 'john' }).expect(401)
 
         // token but passwords
-        request.put('/user/' + NEW_USER2_EMAIL).set({ 'Authorization': token }).expect(400).end((err: any) => {
-            if (err) { console.log(err); return Promise.reject() }
-        })
+        await request.put('/user/' + NEW_USER2_EMAIL).set({ 'Authorization': token }).expect(400)
 
         // correct one
-        request.put('/user/' + NEW_USER2_EMAIL).set({ 'Authorization': token })
-        .send({ oldPassword: NEW_USER2_PASSWORD, newPassword: '123456' })
-        .expect(200).end((err: any) => { if (err) { console.log(err); return Promise.reject() } })
+        await request.put('/user/' + NEW_USER2_EMAIL).set({ 'Authorization': token })
+        .send({ oldPassword: NEW_USER2_PASSWORD, newPassword: '123456' }).expect(200)
 
         return Promise.resolve()
     })
-})
 
 /**********************************************************************************************************************
     DELETE 
 **********************************************************************************************************************/
 
-describe('test register', function() {
     it('test register', async function() {
         let user = await User.findByEmail(ADMIN_EMAIL)
         let token = sign({ id: user._id() }, secret, { expiresIn: 86400 })
 
         // no email specified
-        request.delete('/user').expect(404).end((err: any) => { if (err) {
-            console.log(err); return Promise.reject() }
-        })
+        await request.delete('/user').expect(404)
 
         // no token passed
-        request.delete('/user/' + USER2DELETE_EMAIL).expect(500).end((err: any) => { if (err) {
-            console.log(err); return Promise.reject() }
-        })
+        await request.delete('/user/' + USER2DELETE_EMAIL).expect(500)
 
         // no binded token
-        request.delete('/user/' + USER2DELETE_EMAIL).set({ 'Authorization': 'john' }).expect(401).end((err: any) => {
-            if (err) { console.log(err); return Promise.reject() }
-        })
+        await request.delete('/user/' + USER2DELETE_EMAIL).set({ 'Authorization': 'john' }).expect(401)
 
         // correct one
-        request.delete('/user/' + USER2DELETE_EMAIL).set({ 'Authorization': token })
-        .expect(200).end((err: any) => { if (err) { console.log(err); return Promise.reject() } })
+        await request.delete('/user/' + USER2DELETE_EMAIL).set({ 'Authorization': token })
+        .expect(200)
 
         return Promise.resolve()
     })

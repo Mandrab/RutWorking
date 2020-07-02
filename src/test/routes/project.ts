@@ -25,43 +25,45 @@ const PROJECT_NAME = 'tcejorp'
 const PROJECT2_NAME = '2tcejorp'
 const PROJECT3_NAME = '3tcejorp'
 
-before(async function () {
-    // connect to db
-    await connect(`mongodb://${dbConfig.HOST}:${dbConfig.PORT}/${dbConfig.DB}`, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
+describe('test projects\' operations', function() {
+    before(async function () {
+        // connect to db
+        await connect(`mongodb://${dbConfig.HOST}:${dbConfig.PORT}/${dbConfig.DB}`, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        })
+
+        await clean()
+
+        try {
+            await Promise.all([
+                // add an initial admin.. if yet exist ok!
+                register(ADMIN_EMAIL, ADMIN_PASSWORD, Roles.ADMIN),
+                // add an initial user
+                register(USER_EMAIL, USER_PASSWORD, Roles.USER),
+                // add an initial user
+                register(USER2_EMAIL, USER2_PASSWORD, Roles.USER),
+            ])
+        } catch (err) { if (err.code !== 406) { throw err } }
+
+        return Promise.resolve()
     })
 
-    await clean()
+    after(async function() { return clean() })
 
-    try {
-        await Promise.all([
-            // add an initial admin.. if yet exist ok!
-            register(ADMIN_EMAIL, ADMIN_PASSWORD, Roles.ADMIN),
-            // add an initial user
-            register(USER_EMAIL, USER_PASSWORD, Roles.USER),
-            // add an initial user
-            register(USER2_EMAIL, USER2_PASSWORD, Roles.USER),
-        ])
-    } catch (err) { if (err.code !== 406) { throw err } }
-
-    return Promise.resolve()
-})
-
-var clean = async () => {
-    try { await DBUser.deleteOne({ email: USER_EMAIL }) } catch (_) {}
-    try { await DBUser.deleteOne({ email: USER2_EMAIL }) } catch (_) {}
-    try { await DBProject.deleteOne({ name: PROJECT_NAME }) } catch (_) {}
-    try { await DBProject.deleteOne({ name: PROJECT2_NAME }) } catch (_) {}
-    try { await DBProject.deleteOne({ name: PROJECT3_NAME }) } catch (_) {}
-    return Promise.resolve()
-}
+    var clean = async () => {
+        try { await DBUser.deleteOne({ email: USER_EMAIL }) } catch (_) {}
+        try { await DBUser.deleteOne({ email: USER2_EMAIL }) } catch (_) {}
+        try { await DBProject.deleteOne({ name: PROJECT_NAME }) } catch (_) {}
+        try { await DBProject.deleteOne({ name: PROJECT2_NAME }) } catch (_) {}
+        try { await DBProject.deleteOne({ name: PROJECT3_NAME }) } catch (_) {}
+        return Promise.resolve()
+    }
 
 /**********************************************************************************************************************
     PROJECT CREATION 
 **********************************************************************************************************************/
 
-describe('test project creation', function() {
     it('test project creation', async function() {
         let admin = await User.findByEmail(ADMIN_EMAIL)
         let adminToken = sign({ id: admin._id() }, secret, { expiresIn: 86400 })
@@ -69,34 +71,24 @@ describe('test project creation', function() {
         let userToken = sign({ id: user._id() }, secret, { expiresIn: 86400 })
 
         // no token passed
-        request.post('/projects/' + PROJECT_NAME).expect(500).expect('Token has not been passed!').end((err: any) => {
-            if (err) { console.log(err); return Promise.reject() }
-        })
+        await request.post('/projects/' + PROJECT_NAME).expect(500).expect('Token has not been passed!')
 
         // invalid token
-        request.post('/projects/' + PROJECT_NAME).set({ 'Authorization': 'john' }).expect(401).end((err: any) => {
-            if (err) { console.log(err); return Promise.reject() }
-        })
+        await request.post('/projects/' + PROJECT_NAME).set({ 'Authorization': 'john' }).expect(401)
 
         // valid token but admin
-        request.post('/projects/' + PROJECT_NAME).set({ 'Authorization': adminToken }).expect(403).end((err: any) => {
-            if (err) { console.log(err); return Promise.reject() }
-        })
+        await request.post('/projects/' + PROJECT_NAME).set({ 'Authorization': adminToken }).expect(403)
 
         // valid token
-        request.post('/projects/' + PROJECT_NAME).set({ 'Authorization': userToken }).expect(201).end((err: any) => {
-            if (err) { console.log(err); return Promise.reject() }
-        })
+        await request.post('/projects/' + PROJECT_NAME).set({ 'Authorization': userToken }).expect(201)
 
         return Promise.resolve()
     })
-})
 
 /**********************************************************************************************************************
     PROJECT DELETION 
 **********************************************************************************************************************/
 
-describe('test project deletion', function() {
     it('test project deletion', async function() {
         let admin = await User.findByEmail(ADMIN_EMAIL)
         let adminToken = sign({ id: admin._id() }, secret, { expiresIn: 86400 })
@@ -107,26 +99,22 @@ describe('test project deletion', function() {
         try { await new DBProject({ name: PROJECT2_NAME, chief: user._id(), modules: [] }).save() } catch (_) {}
 
         // no project with this name
-        request.delete('/projects/X' + PROJECT2_NAME).expect(500).expect('Token has not been passed!')
-            .end((err: any) => { if (err) { console.log(err); return Promise.reject() } })
+        await request.delete('/projects/X' + PROJECT2_NAME).expect(500).expect('Token has not been passed!')
 
         // invalid token
-        request.delete('/projects/' + PROJECT2_NAME).set({ 'Authorization': 'john' }).expect(401)
-            .end((err: any) => { if (err) { console.log(err); return Promise.reject() } })
+        await request.delete('/projects/' + PROJECT2_NAME).set({ 'Authorization': 'john' }).expect(401)
 
         // valid token but not chief
-        request.delete('/projects/' + PROJECT2_NAME).set({ 'Authorization': user2Token }).expect(403)
-            .end((err: any) => { if (err) { console.log(err); return Promise.reject() } })
+        await request.delete('/projects/' + PROJECT2_NAME).set({ 'Authorization': user2Token }).expect(403)
 
         // valid token and chief
-        request.delete('/projects/' + PROJECT2_NAME).set({ 'Authorization': userToken }).expect(200)
-            .end((err: any) => { if (err) { console.log(err); return Promise.reject() } })
+        await request.delete('/projects/' + PROJECT2_NAME).set({ 'Authorization': userToken }).expect(200)
 
-        try { await new DBProject({ name: PROJECT3_NAME, chief: user._id(), modules: [] }).save() } catch(err) {console.log(err)}
+        // create a project to delete
+        await new DBProject({ name: PROJECT3_NAME, chief: user._id(), modules: [] }).save()
 
         // valid token and admin
-        request.delete('/projects/' + PROJECT3_NAME).set({ 'Authorization': adminToken }).expect(200)
-            .end((err: any) => { if (err) { console.log(err); return Promise.reject() } })
+        await request.delete('/projects/' + PROJECT3_NAME).set({ 'Authorization': adminToken }).expect(200)
 
         return Promise.resolve()
     })

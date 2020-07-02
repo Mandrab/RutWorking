@@ -30,7 +30,7 @@ export async function register(request: any, result: any) {
 
         sendEmail(request.params.userEmail, 'Registration', password, (_1: any,_2: any) => {})
         result.status(res.code).send(res.message)
-        console.log('Generated password: ' + password) // TODO remove.. only to debug
+        //console.log('Generated password: ' + password) // TODO remove.. only to debug
     } catch (err) {
         if (err.code && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')

@@ -17,4 +17,4 @@ export async function newProject(request: any, result: any) {
 
 export async function getProjectInfo(request: any, result: any) { /* TODO */ }
 
-export async function blockProject(request: any, result: any) { /* TODO */ }
+export async function blockProject(request: any, result: any) { result.status(200).send('TODO')/* TODO */ }
