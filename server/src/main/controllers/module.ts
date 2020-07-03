@@ -3,7 +3,12 @@
  * 
  * @author Paolo Baldini
  */
-import { newModule as _newModule, addDevelop as _addDevelop, Project } from '../models'
+import {
+    newModule as _newModule,
+    addDevelop as _addDevelop,
+    getModuleInfo as _getModuleInfo,
+    Project
+} from '../models'
 
 export async function newModule(request: any, result: any) {
     try {
@@ -32,13 +37,24 @@ export async function addDevelop(request: any, result: any) {
         let userEmail = request.pramas.userEmail
 
         await _addDevelop(projectName, moduleName, userEmail)
-        result.status(20).send('Succesfully added!')
+        result.status(200).send('Succesfully added!')
     } catch(err) {
         if (err.code && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
 }
 
-export async function getModuleInfo(request: any, result: any) { /* TODO */ }
+export async function getModuleInfo(request: any, result: any) {
+    try {
+        let projectName = request.params.projectName
+        let moduleName = request.params.moduleName
+
+        let module = await _getModuleInfo(projectName, moduleName)
+        result.status(200).send(module)
+    } catch(err) {
+        if (err.code && err.message) result.status(err.code).send(err.message)
+        else result.status(500).send('Internal error')
+    }
+}
 
 export async function endModule(request: any, result: any) { result.status(200).send('TODO')/* TODO */ }
