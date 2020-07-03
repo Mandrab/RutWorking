@@ -8,7 +8,7 @@ import {
     register as _register,
 } from '../models/users'
 import { sendEmail } from './communication'
-import { User, Role, Roles } from '../models'
+import { User, Roles } from '../models'
 
 export async function login(request: any, result: any) {
     try {
@@ -61,8 +61,21 @@ export async function changePassword(request: any, result: any) {
     }
 }
 
-export async function getUserInfo(_: any, result: any) {
-    result.status(200).send('TODO')
+export async function getUserInfo(request: any, result: any) {
+    try {
+        let user = await User.findByEmail(request.params.userEmail)
+
+        result.status(200).send({
+            name: user.name(),
+            surname: user.surname(),
+            email: user.email(),
+            role: (await user.role()).name(),
+            blocked: !user.isActive()
+        })
+    } catch(err) {
+        if (err.code && err.message) result.status(err.code).send(err.message)
+        else result.status(500).send('Internal error')
+    }
 }
 
 export async function blockUser(request: any, result: any) {

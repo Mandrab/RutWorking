@@ -13,6 +13,8 @@ import { secret } from "../config/auth";
  */
 export class User {
     _id(): Schema.Types.ObjectId { return this.user._id }
+    name(): string { return this.user.name }
+    surname(): string { return this.user.surname }
     email(): string { return this.user.email }
     hashedPassword(): string { return this.user.password }
     roleID(): Schema.Types.ObjectId { return this.user.role }
