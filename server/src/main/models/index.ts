@@ -13,6 +13,6 @@ export { State, States } from './status'
 
 export { Project } from './project'
 
-export { newProject, newModule } from './projects'
+export { newProject, newModule, addDevelop } from './projects'
 
 export { Module } from './module'

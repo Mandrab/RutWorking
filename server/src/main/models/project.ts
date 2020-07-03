@@ -12,7 +12,7 @@ export class Project {
     name(): string { return this.project.name }
     chiefID(): Schema.Types.ObjectId { return this.project.chief }
     chief(): Promise<User> { return User.findById(this.project.chief) }
-    modules(): Array<Module> { return this.project.modules.map(it => new Module(it)) }
+    modules(): Array<Module> { return this.project.modules.map(it => new Module(it, this._id())) }
 
     private constructor(private project: IDBProject) { }
     
@@ -33,6 +33,8 @@ export class Project {
             } as IDBModule }
         })
     }
+
+    async refresh() { this.project = await DBProject.findById(this._id()) }
 
     /**
      * Create a project object by the project found throught the `searchStrategy`

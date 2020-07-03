@@ -1,6 +1,6 @@
 /**
  * Tests project routes
- *
+ * 
  * @author Paolo Baldini
  */
 import { connect } from "mongoose"
@@ -104,7 +104,7 @@ describe('test chats\' operations', function() {
         // valid token chief
         await request.post('/projects/' + CHIEF.project.name + '/modules/' + CHIEF.project.modules[0] + '/messages')
             .set({ 'Authorization': chiefToken }).send({ message: 'qwerty' }).expect(201)
-
+        
         // valid token developer
         await request.post('/projects/' + CHIEF.project.name + '/modules/' + CHIEF.project.modules[0] + '/messages')
             .set({ 'Authorization': developerToken }).send({ message: 'asd' }).expect(201)

@@ -9,7 +9,7 @@
             </div>
             <div class="form-group">
                 <label for="description">Description</label>
-                <input type="textarea" v-model="project.description" v-validate="'required'" name="description" class="form-control" :class="{ 'is-invalid': submitted && errors.has('description') }" />
+                <textarea rows=5 columns=10 v-model="project.description" v-validate="'required'" name="description" class="form-control" :class="{ 'is-invalid': submitted && errors.has('description') }" />
                 <div v-if="submitted && errors.has('description')" class="invalid-feedback">{{ errors.first('description') }}</div>
             </div>
             <div class="form-group">

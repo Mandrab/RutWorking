@@ -1,14 +1,52 @@
 <template>
-  <div class="home-page">
-    <h1>This is the home page</h1>
-    <div class="form-group">
-        <button @click="showProjectCreation" class="btn btn-primary" :disabled="creating">Create Project</button>
-        <createProjectForm v-if="creating" @done="hideProjectCreationForm"></createProjectForm>
-        <!--<img v-show="loggingIn" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />-->
-        <!--<router-link to="/projects" class="btn btn-link">Register</router-link>-->
-    </div>
+  <div class="container-fluid">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">RutWorking</a>
+<!--
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+-->
+        <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item dropdown">
+				    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				        {{ username }}
+				    </a>
+				<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+				  <a class="dropdown-item" href="#">Profile settings</a>
+				  <div class="dropdown-divider"></div>
+				  <a class="dropdown-item" href="#">Logout</a>
+				</div>
+			    </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="row mt-5"></div>
+
+    <div class="row">
+			<div class="col-12 col-md-4 col-xl-3">
+				<aside>
+					<ul class="list-group">
+					  <li class="list-group-item">My Projects
+                        <button @click="showProjectCreation" class="btn btn-primary" :disabled="creating">+</button>
+					  </li>
+                      <li class="list-group-item">Proj1</li>
+					  <li class="list-group-item">Proj2</li>
+					  <li class="list-group-item">Proj3</li>
+					</ul>
+				</aside>
+			</div>
+			<div class="col-12 col-md-8 col-xl-9">
+				<div>
+                    <createProjectForm v-if="creating" @done="hideProjectCreationForm"></createProjectForm>
+				</div>
+			</div>
+	</div>
   </div>
 </template>
+
 
 <script>
 import createProjectForm from '../components/CreateProjectForm.vue';
@@ -26,9 +64,12 @@ export default {
         createProjectForm
     },
     created () {
-        
+        this.showUserName();
     },
     methods: {
+        showUserName () {
+            this.username = JSON.parse(localStorage.getItem('user')).email;
+        },
         showProjectCreation () {
             this.creating = true;
         },

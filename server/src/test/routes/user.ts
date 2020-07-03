@@ -1,6 +1,6 @@
 /**
  * Tests user routes
- *
+ * 
  * @author Paolo Baldini
  */
 import { before, it } from 'mocha'
@@ -87,7 +87,7 @@ describe('test users\' operations', function() {
         }).expect(200).expect('Content-Type', /json/).expect(/{"accessToken":".*"}/)
 
         // user not active
-        await request.post('/login').send({
+        await request.post('/login').send({ 
             userEmail: BLOCKED_USER.email,
             password: BLOCKED_USER.password
         }).expect(403)

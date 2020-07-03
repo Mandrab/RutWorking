@@ -1,6 +1,6 @@
 /**
  * Manage input-output request for a user
- *
+ * 
  * @author Paolo Baldini
  */
 import {
@@ -30,7 +30,7 @@ export async function register(request: any, result: any) {
         sendEmail(request.params.userEmail, 'Registration', password, (_1: any,_2: any) => {})
 
         result.status(201).send('Succesfully created!')
-        console.log('Generated password: ' + password) // TODO remove.. only to debug
+        //console.log('Generated password: ' + password) // TODO remove.. only to debug
     } catch (err) {
         if (err.code && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
@@ -46,7 +46,7 @@ export async function changePassword(request: any, result: any) {
         if (user.comparePassword(request.body.oldPassword)) {
             await user.changePassword(request.body.newPassword)
             result.status(200).send('Successfully updated!')
-        } else result.status(401).send('Invalid password!')
+        } else result.status(401).send('Invalid password!')        
     } catch (err) {
         if (err.code && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')

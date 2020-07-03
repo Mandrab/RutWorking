@@ -1,10 +1,10 @@
 /**
  * Tests project routes
- *
+ * 
  * @author Paolo Baldini
  */
 import { connect } from "mongoose"
-import { register, Roles, User } from "../../main/models"
+import { register, Roles, User, Project } from "../../main/models"
 import { DBUser, DBProject } from "../../main/models/db"
 import { config as dbConfig } from '../../main/config/db'
 import { sign } from "jsonwebtoken"
@@ -23,12 +23,16 @@ const USER = [
     }, {
         email: 'user2@user.user',
         password: 'user2'
-    }
+    }, {
+        email: 'user3@user.user',
+        password: 'user3'
+    },
 ]
 const PROJECT = [
     { name: 'tcejorp' },
     { name: '2tcejorp' },
-    { name: '3tcejorp' }
+    { name: '3tcejorp' },
+    { name: '4tcejorp' }
 ]
 
 describe('test projects\' operations', function() {
@@ -47,7 +51,9 @@ describe('test projects\' operations', function() {
             // add an initial user
             register(USER[0].email, USER[0].password, Roles.USER),
             // add an initial user
-            register(USER[1].email, USER[1].password, Roles.USER)
+            register(USER[1].email, USER[1].password, Roles.USER),
+            // add an initial user
+            register(USER[2].email, USER[1].password, Roles.USER)
         ])
     })
 
@@ -57,16 +63,18 @@ describe('test projects\' operations', function() {
         try { await DBUser.deleteOne({ email: ADMIN.email }) } catch (_) { }
         try { await DBUser.deleteOne({ email: USER[0].email }) } catch (_) { }
         try { await DBUser.deleteOne({ email: USER[1].email }) } catch (_) { }
+        try { await DBUser.deleteOne({ email: USER[2].email }) } catch (_) { }
         try { await DBProject.deleteOne({ name: PROJECT[0].name }) } catch (_) { }
         try { await DBProject.deleteOne({ name: PROJECT[1].name }) } catch (_) { }
         try { await DBProject.deleteOne({ name: PROJECT[2].name }) } catch (_) { }
+        try { await DBProject.deleteOne({ name: PROJECT[3].name }) } catch (_) { }
     }
 
 /**********************************************************************************************************************
     PROJECT CREATION
 **********************************************************************************************************************/
 
-    it('test project creation', async function() {
+    it('create', async function() {
         let admin = await User.findByEmail(ADMIN.email)
         let adminToken = sign({ id: admin._id() }, secret, { expiresIn: 86400 })
         let user = await User.findByEmail(USER[0].email)
@@ -91,7 +99,7 @@ describe('test projects\' operations', function() {
     PROJECT DELETION
 **********************************************************************************************************************/
 
-    it('test project deletion', async function() {
+    it('delete', async function() {
         let admin = await User.findByEmail(ADMIN.email)
         let adminToken = sign({ id: admin._id() }, secret, { expiresIn: 86400 })
         let user = await User.findByEmail(USER[0].email)
@@ -117,6 +125,79 @@ describe('test projects\' operations', function() {
 
         // valid token and admin
         await request.delete('/projects/' + PROJECT[2].name).set({ 'Authorization': adminToken }).expect(200)
+
+        return Promise.resolve()
+    })
+
+/**********************************************************************************************************************
+    PROJECT GET
+**********************************************************************************************************************/
+
+    it('get', async function() {
+        let chief = await User.findByEmail(USER[0].email)
+        let chiefToken = sign({ id: chief._id() }, secret, { expiresIn: 86400 })
+        let user = await User.findByEmail(USER[1].email)
+        let userToken = sign({ id: user._id() }, secret, { expiresIn: 86400 })
+        let user2 = await User.findByEmail(USER[2].email)
+        let user2Token = sign({ id: user2._id() }, secret, { expiresIn: 86400 })
+        try { await new DBProject({ name: PROJECT[2].name, chief: chief._id(), modules: [] }).save() } catch (_) {}
+
+        // no token
+        await request.get('/projects').expect(500).expect('Token has not been passed!')
+
+        // invalid token
+        await request.get('/projects').set({ 'Authorization': 'john' }).expect(401)
+
+        // valid token
+        const ERR = 'Response does not contains project! DISCLAIMER: this test is intendeed to work on develop;\
+            if the DB contains more than 100 project it could eventually fail'
+        let response = await request.get('/projects').set({ 'Authorization': chiefToken }).expect(200)
+            .expect('Content-Type', /json/)
+        if (!response.body.some((it: { name: string }) => it.name === PROJECT[2].name)) throw ERR
+
+        let previousSize = response.body.length
+        try { await new DBProject({ name: PROJECT[3].name, chief: chief._id(), modules: [] }).save() } catch (_) {}
+
+        // project addition
+        response = await request.get('/projects').set({ 'Authorization': userToken }).expect(200)
+            .expect('Content-Type', /json/)
+        if (!response.body.some((it: { name: string }) => it.name === PROJECT[3].name)) throw ERR
+        if (response.body.length !== previousSize +1 && response.body.length < 100) throw 'Error in return projects size!'
+
+        // skip
+        response = await request.get('/projects').set({ 'Authorization': userToken }).send({ skipN: 1 }).expect(200)
+            .expect('Content-Type', /json/)
+        if (!response.body.some((it: { name: string }) => it.name === PROJECT[3].name)) throw ERR
+        if (response.body.length !== previousSize && response.body.length < 100) throw 'Error in return projects size!'
+
+        // invalid mail
+        await request.get('/projects').set({ 'Authorization': userToken })
+            .send({ skipN: 1, user: "-1" }).expect(404)
+
+        // valid mail but nor developer nor chief
+        response = await request.get('/projects').set({ 'Authorization': userToken })
+            .send({ skipN: 1, user: user.email() }).expect(200).expect('Content-Type', /json/)
+        if (response.body.length !== 0) throw 'Error in return projects size!'
+
+        // valid mail and chief
+        response = await request.get('/projects').set({ 'Authorization': userToken })
+            .send({ user: chief.email() }).expect(200).expect('Content-Type', /json/)
+        if (response.body.length < 2) throw 'Error in return projects size!'
+
+        let project = await Project.findByName(PROJECT[3].name)
+        await project.newModule('module', user2._id())
+        await project.refresh()
+        project.modules().find(it => it.name() === 'module').addDevelop(user._id())
+
+        // valid mail and developer
+        response = await request.get('/projects').set({ 'Authorization': userToken })
+            .send({ user: user.email() }).expect(200).expect('Content-Type', /json/)
+        if (response.body.length < 1) throw 'Error in return projects size!'
+
+        // valid mail and module chief
+        response = await request.get('/projects').set({ 'Authorization': user2Token })
+            .send({ user: user2.email() }).expect(200).expect('Content-Type', /json/)
+        if (response.body.length < 1) throw 'Error in return projects size!'
 
         return Promise.resolve()
     })
