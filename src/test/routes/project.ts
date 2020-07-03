@@ -23,12 +23,16 @@ const USER = [
     }, {
         email: 'user2@user.user',
         password: 'user2'
-    }
+    }, {
+        email: 'user3@user.user',
+        password: 'user3'
+    },
 ]
 const PROJECT = [
     { name: 'tcejorp' },
     { name: '2tcejorp' },
-    { name: '3tcejorp' }
+    { name: '3tcejorp' },
+    { name: '4tcejorp' }
 ]
 
 describe('test projects\' operations', function() {
@@ -60,13 +64,14 @@ describe('test projects\' operations', function() {
         try { await DBProject.deleteOne({ name: PROJECT[0].name }) } catch (_) { }
         try { await DBProject.deleteOne({ name: PROJECT[1].name }) } catch (_) { }
         try { await DBProject.deleteOne({ name: PROJECT[2].name }) } catch (_) { }
+        try { await DBProject.deleteOne({ name: PROJECT[3].name }) } catch (_) { }
     }
 
 /**********************************************************************************************************************
-    PROJECT CREATION 
+    PROJECT CREATION
 **********************************************************************************************************************/
 
-    it('test project creation', async function() {
+    it('create', async function() {
         let admin = await User.findByEmail(ADMIN.email)
         let adminToken = sign({ id: admin._id() }, secret, { expiresIn: 86400 })
         let user = await User.findByEmail(USER[0].email)
@@ -88,10 +93,10 @@ describe('test projects\' operations', function() {
     })
 
 /**********************************************************************************************************************
-    PROJECT DELETION 
+    PROJECT DELETION
 **********************************************************************************************************************/
 
-    it('test project deletion', async function() {
+    it('delete', async function() {
         let admin = await User.findByEmail(ADMIN.email)
         let adminToken = sign({ id: admin._id() }, secret, { expiresIn: 86400 })
         let user = await User.findByEmail(USER[0].email)
@@ -117,6 +122,48 @@ describe('test projects\' operations', function() {
 
         // valid token and admin
         await request.delete('/projects/' + PROJECT[2].name).set({ 'Authorization': adminToken }).expect(200)
+
+        return Promise.resolve()
+    })
+
+/**********************************************************************************************************************
+    PROJECT GET
+**********************************************************************************************************************/
+
+    it('get', async function() {
+        let chief = await User.findByEmail(USER[0].email)
+        let chiefToken = sign({ id: chief._id() }, secret, { expiresIn: 86400 })
+        let user = await User.findByEmail(USER[1].email)
+        let userToken = sign({ id: user._id() }, secret, { expiresIn: 86400 })
+        try { await new DBProject({ name: PROJECT[2].name, chief: chief._id(), modules: [] }).save() } catch (_) {}
+
+        // no token
+        await request.get('/projects').expect(500).expect('Token has not been passed!')
+
+        // invalid token
+        await request.get('/projects').set({ 'Authorization': 'john' }).expect(401)
+
+        // valid token
+        const ERR = 'Response does not contains project! DISCLAIMER: this test is intendeed to work on develop;\
+            if the DB contains more than 100 project it could eventually fail'
+        let response = await request.get('/projects').set({ 'Authorization': chiefToken }).expect(200)
+            .expect('Content-Type', /json/)
+        if (!response.body.some((it: { name: string }) => it.name === PROJECT[2].name)) throw ERR
+
+        let previousSize = response.body.length
+        try { await new DBProject({ name: PROJECT[3].name, chief: chief._id(), modules: [] }).save() } catch (_) {}
+
+        // valid token
+        response = await request.get('/projects').set({ 'Authorization': userToken }).expect(200)
+            .expect('Content-Type', /json/)
+        if (!response.body.some((it: { name: string }) => it.name === PROJECT[3].name)) throw ERR
+        if (response.body.length !== previousSize +1 && response.body.length < 100) throw 'Error in return projects size!'
+
+        // valid token
+        response = await request.get('/projects').set({ 'Authorization': userToken }).send({ skipN: 1 }).expect(200)
+            .expect('Content-Type', /json/)
+        if (!response.body.some((it: { name: string }) => it.name === PROJECT[3].name)) throw ERR
+        if (response.body.length !== previousSize && response.body.length < 100) throw 'Error in return projects size!'
 
         return Promise.resolve()
     })

@@ -21,3 +21,16 @@ export async function newModule(name: string, chiefID: string, projectName: stri
     project.newModule(name, user._id())
     return { code: 200, message: ''}
 }
+
+export async function getProjects(skipFirst: number = 0) {
+    let projects = await DBProject.find().skip(skipFirst).sort({ _id: 1 }).limit(100)
+
+    let reshapedProjects = projects.map(async it => {
+        return {
+            name: it.name,
+            chief: (await User.findById(it.chief)).email(),
+            modules: it.modules.map(it => it.name)
+        }
+    })
+    return await Promise.all(reshapedProjects)
+}
