@@ -3,7 +3,11 @@
  * 
  * @author Paolo Baldini
  */
-import { newProject as _newProject, getProjects as _getProjects } from '../models/projects'
+import {
+    newProject as _newProject,
+    getProjects as _getProjects,
+    getProjectInfo as _getProjectInfo
+} from '../models/projects'
 import { User } from '../models'
 
 export async function newProject(request: any, result: any) {
@@ -38,6 +42,13 @@ export async function getProjects(request: any, result: any) {
     }
 }
 
-export async function getProjectInfo(request: any, result: any) { /* TODO */ }
+export async function getProjectInfo(request: any, result: any) {
+    try {
+        result.status(200).send(await _getProjectInfo(request.params.name))
+    } catch (err) {
+        if (err.code && err.message) result.status(err.code).send(err.message)
+        else result.status(500).send('Internal error')
+    }
+}
 
 export async function blockProject(request: any, result: any) { result.status(200).send('TODO')/* TODO */ }

@@ -76,3 +76,18 @@ export async function getProjects(skipFirst: number = 0, userID?: Schema.Types.O
     })
     return await Promise.all(reshapedProjects)
 }
+
+export async function getProjectInfo(projectName: string) {
+    let project = await Project.findByName(projectName)
+    let chief = await project.chief()
+
+    let result: any = {
+        name: project.name(),
+        chief: chief.email(),
+        modules: project.modules().map(it => it.name)
+    }
+    if (project.description()) result.description = project.description()
+    if (project.deadline()) result.deadline = project.deadline()
+
+    return result
+}

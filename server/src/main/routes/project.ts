@@ -24,5 +24,5 @@ module.exports = function (app: any) {
     app.get('/projects/:name', [or(_isUser, _isAdmin)], getProjectInfo)
 
     // the project chief or an admin can block a project
-    app.delete('/projects/:name', [or(_isProjectChief, _isAdmin)], blockProject)
+    app.delete('/projects/:name', [or(_isProjectChief, _isAdmin)], blockProject) // TODO
 }

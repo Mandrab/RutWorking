@@ -149,7 +149,7 @@ describe('test projects\' operations', function() {
     PROJECT GET
 **********************************************************************************************************************/
 
-    it('get', async function() {
+    it('get block', async function() {
         let chief = await User.findByEmail(USER[0].email)
         let chiefToken = sign({ id: chief._id() }, secret, { expiresIn: 86400 })
         let user = await User.findByEmail(USER[1].email)
@@ -232,6 +232,38 @@ describe('test projects\' operations', function() {
 
         if (module.description !== 'qwerty') throw 'Description is missing or wrong in returned project!'
         if (module.deadline !== nowDate.toISOString()) throw 'Deadline is missing or wrong in returned project!'
+
+        return Promise.resolve()
+    })
+
+    it('get single', async function() {
+        let chief = await User.findByEmail(USER[0].email)
+        let chiefToken = sign({ id: chief._id() }, secret, { expiresIn: 86400 })
+        let user = await User.findByEmail(USER[1].email)
+        let userToken = sign({ id: user._id() }, secret, { expiresIn: 86400 })
+        let user2 = await User.findByEmail(USER[2].email)
+        let user2Token = sign({ id: user2._id() }, secret, { expiresIn: 86400 })
+        try { await new DBProject({ name: PROJECT[2].name, chief: chief._id(), modules: [] }).save() } catch (_) { }
+
+        // no token
+        await request.get('/projects/' + PROJECT[2].name).expect(500).expect('Token has not been passed!')
+
+        // invalid token
+        await request.get('/projects/' + PROJECT[2].name).set({ 'Authorization': 'john' }).expect(401)
+
+        // valid token
+        let response = await request.get('/projects/' + PROJECT[2].name).set({ 'Authorization': chiefToken }).expect(200)
+            .expect('Content-Type', /json/)
+        if (response.body.name !== PROJECT[2].name) throw 'Response does not contains project!'
+
+        let project = await Project.findByName(PROJECT[3].name)
+        await project.newModule('module', user2._id())
+        await project.refresh()
+
+        // valid mail and developer
+        response = await request.get('/projects/' + PROJECT[2].name).set({ 'Authorization': userToken })
+            .expect(200).expect('Content-Type', /json/)
+        if (response.body.name !== PROJECT[2].name) throw 'Response does not contains project!'
 
         return Promise.resolve()
     })
