@@ -3,7 +3,7 @@
  * 
  * @author Paolo Baldini
  */
-import { newModule as _newModule, Project } from '../models'
+import { newModule as _newModule, addDevelop as _addDevelop, Project } from '../models'
 
 export async function newModule(request: any, result: any) {
     try {
@@ -19,6 +19,20 @@ export async function newModule(request: any, result: any) {
         else await _newModule(request.params.moduleName, request.chief, project.name())
 
         result.status(201).send('Project succesfully created!')
+    } catch(err) {
+        if (err.code && err.message) result.status(err.code).send(err.message)
+        else result.status(500).send('Internal error')
+    }
+}
+
+export async function addDevelop(request: any, result: any) {
+    try {
+        let projectName = request.params.projectName
+        let moduleName = request.params.moduleName
+        let userEmail = request.pramas.userEmail
+
+        await _addDevelop(projectName, moduleName, userEmail)
+        result.status(20).send('Succesfully added!')
     } catch(err) {
         if (err.code && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')

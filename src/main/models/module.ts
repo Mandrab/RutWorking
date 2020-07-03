@@ -27,6 +27,12 @@ export class Module {
 
     constructor(private module: IDBModule, private parentID: Schema.Types.ObjectId) { }
 
+    async addDevelop(userID: Schema.Types.ObjectId) {
+        await DBProject.updateOne({_id: this.parentID, "modules._id": this._id() }, {
+            $push: { "modules.$.developers": userID }
+        })
+    }
+
     /**
      * Add a new message to the module chat
      * 
