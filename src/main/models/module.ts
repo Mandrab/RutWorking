@@ -10,6 +10,7 @@ import { KANBAN_STATES } from "./db/module"
  */
 export class Module {
     _id(): Schema.Types.ObjectId { return this.module._id }
+    parent(): Schema.Types.ObjectId { return this.parentID }
     name(): string { return this.module.name }
     chiefID(): Schema.Types.ObjectId { return this.module.chief }
     chief(): Promise<User> { return User.findById(this.module.chief) }
@@ -24,7 +25,7 @@ export class Module {
         return this.module.kanbanItems.map((item: IDBKanbanItem) => new KanbanItem(item))
     }
 
-    constructor(private module: IDBModule) { }
+    constructor(private module: IDBModule, private parentID: Schema.Types.ObjectId) { }
 
     /**
      * Add a new message to the module chat
@@ -33,8 +34,8 @@ export class Module {
      * @param chiefID id of module chief
      * @param projectID parent project of the module
      */
-    async newMessage(senderID: Schema.Types.ObjectId, body: string, projectID: Schema.Types.ObjectId) {
-        await DBProject.updateOne({_id: projectID, "modules._id": this._id() }, {
+    async newMessage(senderID: Schema.Types.ObjectId, body: string) {
+        await DBProject.updateOne({_id: this.parentID, "modules._id": this._id() }, {
             $push: { "modules.$.chatMessages": {
                 date: new Date(),
                 sender: senderID,
@@ -49,10 +50,33 @@ export class Module {
      * @param description tasks description
      * @param projectID parent project of the module
      */
-    async newTask(description: string, projectID: Schema.Types.ObjectId) {
-        await DBProject.updateOne({_id: projectID, "modules._id": this._id() }, {
+    async newTask(description: string) {
+        await DBProject.updateOne({_id: this.parentID, "modules._id": this._id() }, {
             $push: { "modules.$.kanbanItems": { taskDescription: description } }
         })
+    }
+
+    /**
+     * Update the status of a task of the module kanban
+     * 
+     * @param description tasks description
+     * @param projectID parent project of the module
+     */
+    async updateTaskStatus(taskID: Schema.Types.ObjectId, newStatus: KANBAN_STATES) {
+        await DBProject.updateOne({
+            _id: this.parentID
+        }, {
+            $set: { "modules.$[module].kanbanItems.$[kanbanItem].status": newStatus }
+        }, {
+            arrayFilters : [{ "module._id" : this._id() }, { "kanbanItem._id" : taskID }],
+        })
+    }
+
+    async refresh() {
+        this.module = (await DBProject.findById(this.parentID)).modules.find(it =>
+            it._id.toString() === this._id().toString()
+        )
+        if (!module) throw { code: 404, message: 'Module not found' }
     }
 }
 

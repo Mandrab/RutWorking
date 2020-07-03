@@ -14,7 +14,7 @@ export async function newMessage(request: any, result: any) {
 
         if (!request.body.message) return result.status(409).send('Message body not found!')
 
-        await module.newMessage(user, request.body.message, project._id()) // TODO parse to avoid code injection or strange things
+        await module.newMessage(user, request.body.message) // TODO parse to avoid code injection or strange things
 
         result.status(201).send('Project succesfully created!')
     } catch(err) {
