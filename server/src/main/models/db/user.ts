@@ -11,6 +11,8 @@ mongooseSet('useCreateIndex', true)
  * @author Paolo Baldini
  */
 export interface IDBUser extends Document {
+    name: string,
+    surname: string,
     email: string
     password: string
     role: Schema.Types.ObjectId    // only user or admin. Not both
@@ -18,6 +20,14 @@ export interface IDBUser extends Document {
 }
 
 const userSchema = new Schema({
+    name: {
+        type: String,
+        required: true
+    },
+    surname: {
+        type: String,
+        required: true
+    },
     email: {
         type: String,
         required: true,

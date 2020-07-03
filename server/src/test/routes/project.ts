@@ -13,19 +13,15 @@ import { secret } from "../../main/config/auth"
 const request = require('supertest')('http://localhost:8080')
 
 const ADMIN = {
-    email: 'admin@admin.admin',
-    password: 'admin'
+    email: 'admin@admin.admin'
 }
 const USER = [
     {
-        email: 'user@user.user',
-        password: 'user'
+        email: 'user@user.user'
     }, {
-        email: 'user2@user.user',
-        password: 'user2'
+        email: 'user2@user.user'
     }, {
-        email: 'user3@user.user',
-        password: 'user3'
+        email: 'user3@user.user'
     },
 ]
 const PROJECT = [
@@ -51,13 +47,13 @@ describe('test projects\' operations', function() {
 
         await Promise.all([
             // add an initial admin.. if yet exist ok!
-            register(ADMIN.email, ADMIN.password, Roles.ADMIN),
+            register('x', 'y', ADMIN.email, 'z', Roles.ADMIN),
             // add an initial user
-            register(USER[0].email, USER[0].password, Roles.USER),
+            register('x', 'y', USER[0].email, 'z', Roles.USER),
             // add an initial user
-            register(USER[1].email, USER[1].password, Roles.USER),
+            register('x', 'y', USER[1].email, 'z', Roles.USER),
             // add an initial user
-            register(USER[2].email, USER[1].password, Roles.USER)
+            register('x', 'y', USER[2].email, 'z', Roles.USER)
         ])
     })
 

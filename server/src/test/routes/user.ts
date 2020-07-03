@@ -40,11 +40,11 @@ describe('test users\' operations', function() {
 
         await Promise.all([
             // add an initial admin.. if yet exist ok!
-            register(ADMIN.email, ADMIN.password, Roles.ADMIN),
+            register('x', 'y', ADMIN.email, ADMIN.password, Roles.ADMIN),
             // add an initial blocked user
-            register(BLOCKED_USER.email, BLOCKED_USER.password, Roles.USER),
+            register('x', 'y', BLOCKED_USER.email, BLOCKED_USER.password, Roles.USER),
             // add a user to delete
-            register(USER2DELETE.email, '123', Roles.USER)
+            register('x', 'y', USER2DELETE.email, '123', Roles.USER)
         ])
 
         let user = await User.findByEmail(BLOCKED_USER.email)
@@ -120,8 +120,20 @@ describe('test users\' operations', function() {
         // token but no role
         await request.post('/user/' + ADMIN.email).set({ 'Authorization': token }).expect(400)
 
+        // name and surname miss
+        await request.post('/user/' + NEW_USER.email).set({ 'Authorization': token }).send({ role:'user' }).expect(400)
+
+        // name miss
+        await request.post('/user/' + NEW_USER.email).set({ 'Authorization': token })
+            .send({ role:'user', name: 'x' }).expect(400)
+        
+        // surname miss
+        await request.post('/user/' + NEW_USER.email).set({ 'Authorization': token })
+            .send({ role:'user', surname: 'y' }).expect(400)
+
         // correct one
-        await request.post('/user/' + NEW_USER.email).set({ 'Authorization': token }).send({ role:'user' }).expect(201)
+        await request.post('/user/' + NEW_USER.email).set({ 'Authorization': token })
+            .send({ role:'user', name: 'x', surname: 'y' }).expect(201)
 
         return Promise.resolve()
     })
@@ -131,7 +143,7 @@ describe('test users\' operations', function() {
 **********************************************************************************************************************/
 
     it('test change password', async function() {
-        await register(NEW_USER2.email, NEW_USER2.password, Roles.USER)
+        await register('x', 'y', NEW_USER2.email, NEW_USER2.password, Roles.USER)
         let user = await User.findByEmail(NEW_USER2.email)
         let token = sign({ id: user._id() }, secret, { expiresIn: 86400 })
 

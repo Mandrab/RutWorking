@@ -23,9 +23,17 @@ export async function login(request: any, result: any) {
 export async function register(request: any, result: any) {
     try {
         if (!request.body.role) return result.status(400).send('Role missing in body!')
+        if (!request.body.name) return result.status(400).send('Name missing in body!')
+        if (!request.body.surname) return result.status(400).send('Surname missing in body!')
 
         let password = Math.random().toString(36).substring(2)
-        await _register(request.params.userEmail, password, Roles.toRoles(request.body.role))
+        await _register(
+            request.body.name,
+            request.body.surname,
+            request.params.userEmail,
+            password,
+            Roles.toRoles(request.body.role)
+        )
 
         sendEmail(request.params.userEmail, 'Registration', password, (_1: any,_2: any) => {})
 

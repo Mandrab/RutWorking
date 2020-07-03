@@ -20,8 +20,7 @@ const PROJECT = [
             'module2'
         ],
         chief: {
-            email: 'chief@chief.chief',
-            passwd: 'chief',
+            email: 'chief@chief.chief'
         }
     }, {
         name: 'project2',
@@ -30,18 +29,15 @@ const PROJECT = [
             'module2'
         ],
         chief: {
-            email: 'chief@chief.chief',
-            passwd: 'chief',
+            email: 'chief@chief.chief'
         }
     }
 ]
 const DEVELOPER = {
-    email: 'developer@developer.developer',
-    passwd: 'user'
+    email: 'developer@developer.developer'
 }
 const RANDOM_USER = {
-    email: 'user@user.user',
-    passwd: 'user'
+    email: 'user@user.user'
 }
 
 describe('test kanban\' operations', function() {
@@ -56,11 +52,11 @@ describe('test kanban\' operations', function() {
 
         await Promise.all([
             // add an initial chief.. if yet exist ok!
-            register(PROJECT[0].chief.email, PROJECT[0].chief.passwd, Roles.USER),
+            register('x', 'y', PROJECT[0].chief.email, 'z', Roles.USER),
             // add an initial developer
-            register(DEVELOPER.email, DEVELOPER.passwd, Roles.USER),
+            register('x', 'y', DEVELOPER.email, 'z', Roles.USER),
             // add an initial user
-            register(RANDOM_USER.email, RANDOM_USER.passwd, Roles.USER)
+            register('x', 'y', RANDOM_USER.email, 'z', Roles.USER)
         ])
     })
 

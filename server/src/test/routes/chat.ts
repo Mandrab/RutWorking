@@ -14,7 +14,6 @@ const request = require('supertest')('http://localhost:8080')
 
 const CHIEF = {
     email: 'chief@chief.chief',
-    passwd: 'chief',
     project: {
         name: 'project',
         modules: [
@@ -24,12 +23,10 @@ const CHIEF = {
     }
 }
 const DEVELOPER = {
-    email: 'developer@developer.developer',
-    passwd: 'user'
+    email: 'developer@developer.developer'
 }
 const RANDOM_USER = {
-    email: 'user@user.user',
-    passwd: 'user'
+    email: 'user@user.user'
 }
 
 describe('test chats\' operations', function() {
@@ -44,11 +41,11 @@ describe('test chats\' operations', function() {
 
         await Promise.all([
             // add an initial chief.. if yet exist ok!
-            register(CHIEF.email, CHIEF.passwd, Roles.USER),
+            register('x', 'y', CHIEF.email, 'z', Roles.USER),
             // add an initial developer
-            register(DEVELOPER.email, DEVELOPER.passwd, Roles.USER),
+            register('x', 'y', DEVELOPER.email, 'z', Roles.USER),
             // add an initial user
-            register(RANDOM_USER.email, RANDOM_USER.passwd, Roles.USER)
+            register('x', 'y', RANDOM_USER.email, 'z', Roles.USER)
         ])
     })
 

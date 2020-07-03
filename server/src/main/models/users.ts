@@ -8,7 +8,6 @@ import { sign as jwtSign } from 'jsonwebtoken'
 import { secret as authSecret } from '../config/auth'
 import { set as mongooseSet } from 'mongoose'
 import { DBUser } from './db/user'
-import { Result } from './result'
 import { Role, User } from '.'
 import { Roles } from './role'
 
@@ -45,10 +44,17 @@ export async function login(userEmail: string, password: string): Promise<string
  * @param role in the system
  * @returns a result specifing operation result
  */
-export async function register(userEmail: string, password: string, role: Roles){
+export async function register(name: string, surname: string, userEmail: string, password: string, role: Roles) {
     let roleSchema = await Role.findByName(role)
     if (!roleSchema) throw { code: 400, message: 'Role missing or not valid!' }
 
-    try { await new DBUser({ email: userEmail, password: password, role: roleSchema._id() }).save()
+    try {
+        await new DBUser({
+            name: name,
+            surname: surname,
+            email: userEmail,
+            password: password,
+            role: roleSchema._id()
+        }).save()
     } catch (err) { throw { code: 406, message: 'User already existent!' } }
 }
