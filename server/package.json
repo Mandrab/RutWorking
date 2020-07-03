@@ -4,7 +4,7 @@
   "description": "",
   "main": "build/main/server.js",
   "scripts": {
-    "test": "killall node; clear; tsc; node build/main/server.js & mocha build/test/**/*.js",
+    "test": "node build/main/server.js & mocha build/test/**/*.js",
     "compileAndRun": "killall node; clear; tsc; node build/main/server.js"
   },
   "repository": {

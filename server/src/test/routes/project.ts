@@ -1,6 +1,6 @@
 /**
  * Tests project routes
- * 
+ *
  * @author Paolo Baldini
  */
 import { connect } from "mongoose"
@@ -63,7 +63,7 @@ describe('test projects\' operations', function() {
     }
 
 /**********************************************************************************************************************
-    PROJECT CREATION 
+    PROJECT CREATION
 **********************************************************************************************************************/
 
     it('test project creation', async function() {
@@ -88,7 +88,7 @@ describe('test projects\' operations', function() {
     })
 
 /**********************************************************************************************************************
-    PROJECT DELETION 
+    PROJECT DELETION
 **********************************************************************************************************************/
 
     it('test project deletion', async function() {
