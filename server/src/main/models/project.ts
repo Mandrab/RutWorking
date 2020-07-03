@@ -10,6 +10,8 @@ import { User, Module } from ".";
 export class Project {
     _id(): Schema.Types.ObjectId { return this.project._id }
     name(): string { return this.project.name }
+    description(): string { return this.project.description }
+    deadline(): Date { return this.project.deadline }
     chiefID(): Schema.Types.ObjectId { return this.project.chief }
     chief(): Promise<User> { return User.findById(this.project.chief) }
     modules(): Array<Module> { return this.project.modules.map(it => new Module(it, this._id())) }

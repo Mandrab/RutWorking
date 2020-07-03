@@ -8,8 +8,12 @@ import { User } from '../models'
 
 export async function newProject(request: any, result: any) {
     try {
-        await _newProject(request.params.name, request.userID)
-        
+        await _newProject(
+            request.params.name,
+            request.userID,
+            request.body.description,
+            request.body.deadline ? new Date(request.body.deadline) : null
+        )
         result.status(201).send('Project succesfully created!')
     } catch (err) {
         if (err.code && err.message) result.status(err.code).send(err.message)
@@ -21,6 +25,7 @@ export async function getProjects(request: any, result: any) {
     try {
         let skipProject = request.body.skipN ? request.body.skipN : 0
         let projects = null
+
         if (request.body.user) {
             let user = await User.findByEmail(request.body.user)
             projects = await _getProjects(skipProject, user._id())

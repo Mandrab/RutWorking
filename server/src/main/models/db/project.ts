@@ -10,6 +10,8 @@ mongooseSet('useCreateIndex', true)
  */
 export interface IDBProject extends Document {
     name: string
+    description: string
+    deadline: Date
     chief: Schema.Types.ObjectId
     modules: Array<IDBModule>
 }
@@ -20,6 +22,8 @@ const projectSchema = new Schema({
         required: true,
         unique: true
     },
+    description: String,
+    deadline: Date,
     chief: {
         type: Schema.Types.ObjectId,
         ref: "User",

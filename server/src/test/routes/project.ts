@@ -32,7 +32,11 @@ const PROJECT = [
     { name: 'tcejorp' },
     { name: '2tcejorp' },
     { name: '3tcejorp' },
-    { name: '4tcejorp' }
+    { name: '4tcejorp' },
+    { name: '5tcejorp' },
+    { name: '6tcejorp' },
+    { name: '7tcejorp' },
+    { name: '8tcejorp' }
 ]
 
 describe('test projects\' operations', function() {
@@ -68,6 +72,10 @@ describe('test projects\' operations', function() {
         try { await DBProject.deleteOne({ name: PROJECT[1].name }) } catch (_) { }
         try { await DBProject.deleteOne({ name: PROJECT[2].name }) } catch (_) { }
         try { await DBProject.deleteOne({ name: PROJECT[3].name }) } catch (_) { }
+        try { await DBProject.deleteOne({ name: PROJECT[4].name }) } catch (_) { }
+        try { await DBProject.deleteOne({ name: PROJECT[5].name }) } catch (_) { }
+        try { await DBProject.deleteOne({ name: PROJECT[6].name }) } catch (_) { }
+        try { await DBProject.deleteOne({ name: PROJECT[7].name }) } catch (_) { }
     }
 
 /**********************************************************************************************************************
@@ -91,6 +99,18 @@ describe('test projects\' operations', function() {
 
         // valid token
         await request.post('/projects/' + PROJECT[0].name).set({ 'Authorization': userToken }).expect(201)
+
+        // post with description
+        await request.post('/projects/' + PROJECT[4].name).set({ 'Authorization': userToken })
+            .send({ description: 'qwerty' }).expect(201)
+
+        // post with deadline
+        await request.post('/projects/' + PROJECT[5].name).set({ 'Authorization': userToken })
+            .send({ deadline: new Date().toString() }).expect(201)
+
+        // post with description and deadline
+        await request.post('/projects/' + PROJECT[6].name).set({ 'Authorization': userToken })
+            .send({ description: 'qwerty', deadline: new Date().toString() }).expect(201)
 
         return Promise.resolve()
     })
@@ -140,7 +160,7 @@ describe('test projects\' operations', function() {
         let userToken = sign({ id: user._id() }, secret, { expiresIn: 86400 })
         let user2 = await User.findByEmail(USER[2].email)
         let user2Token = sign({ id: user2._id() }, secret, { expiresIn: 86400 })
-        try { await new DBProject({ name: PROJECT[2].name, chief: chief._id(), modules: [] }).save() } catch (_) {}
+        try { await new DBProject({ name: PROJECT[2].name, chief: chief._id(), modules: [] }).save() } catch (_) { }
 
         // no token
         await request.get('/projects').expect(500).expect('Token has not been passed!')
@@ -198,6 +218,24 @@ describe('test projects\' operations', function() {
         response = await request.get('/projects').set({ 'Authorization': user2Token })
             .send({ user: user2.email() }).expect(200).expect('Content-Type', /json/)
         if (response.body.length < 1) throw 'Error in return projects size!'
+
+        let nowDate = new Date()
+        try { await new DBProject({
+            name: PROJECT[7].name,
+            description: 'qwerty',
+            deadline: nowDate,
+            chief: chief._id(),
+            modules: []
+        }).save() } catch (_) { }
+
+        // valid mail and module chief
+        response = await request.get('/projects').set({ 'Authorization': userToken }).expect(200)
+            .expect('Content-Type', /json/)
+        let module = response.body.find((it: { name: string }) => it.name === PROJECT[7].name)
+        if (!module) throw 'Project has not been saved or returned correctly!'
+
+        if (module.description !== 'qwerty') throw 'Description is missing or wrong in returned project!'
+        if (module.deadline !== nowDate.toISOString()) throw 'Deadline is missing or wrong in returned project!'
 
         return Promise.resolve()
     })

@@ -7,12 +7,19 @@ import { Project, User } from "."
 import { DBProject } from "./db"
 import { Schema } from "mongoose"
 
-export async function newProject(name: string, chiefID: string) {
+export async function newProject(name: string, chiefID: string, description?: string, deadline?: Date) {
     let user = await User.findById(chiefID)
 
-    await new DBProject({ name: name, chief: user._id(), modules: [] }).save()
+    let obj: any = {
+        name: name,
+        chief: user._id(),
+        modules: []
+    }
+    if (description) obj.description = description
+    if (deadline) obj.deadline = deadline
+    await new DBProject(obj).save()
 
-    return { code: 201, message: ''}
+    return { code: 201, message: 'Created'}
 }
 
 export async function newModule(name: string, chiefID: Schema.Types.ObjectId | string, projectName: string) {
@@ -56,12 +63,16 @@ export async function getProjects(skipFirst: number = 0, userID?: Schema.Types.O
             }]
         }).skip(skipFirst).sort({ _id: 1 }).limit(100)
         : await DBProject.find().skip(skipFirst).sort({ _id: 1 }).limit(100)
+
     let reshapedProjects = projects.map(async it => {
-        return {
+        let result: any = {
             name: it.name,
             chief: (await User.findById(it.chief)).email(),
             modules: it.modules.map(it => it.name)
         }
+        if (it.description) result.description = it.description
+        if (it.deadline) result.deadline = it.deadline
+        return result
     })
     return await Promise.all(reshapedProjects)
 }
