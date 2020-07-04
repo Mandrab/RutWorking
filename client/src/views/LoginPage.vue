@@ -17,20 +17,29 @@
                 <img v-show="loggingIn" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
                 <router-link to="/register" class="btn btn-link">Register</router-link>
             </div>
+            <!--<div v-show="showModal" class="text-danger">{{loginResponse}}</div>-->
+            <simpleModal v-if="showModal" :mess="loginResponse" @closeModal="closeModal" ></simpleModal>
         </form>
     </div>
 </template>
 
 <script>
 
+import simpleModal from '../components/SimpleModal.vue'
 export default {
     data () {
         return {
             username: '',
             password: '',
             submitted: false,
-            loggingIn: false
+            loggingIn: false,
+            loginResponse: '',
+            showModal: false,
+            closed: true
         }
+    },
+    components: {
+        simpleModal
     },
     computed: {
 
@@ -40,13 +49,19 @@ export default {
         this.logout();
     },
     methods: {
+        closeModal () {
+            this.showModal = false;
+            this.closed = false;
+        },
 
         handleSubmit () {
             this.submitted = true;
+            this.showModal=false;
             const { username, password } = this;
-            if (username && password) {
+            if (username && password && this.closed) {
                 this.login( this.username, this.password )
             }
+            this.closed = true;
         },
         login (username, password) {
             var path = 'http://localhost:8080';
@@ -61,6 +76,11 @@ export default {
                 var user = JSON.parse(localStorage.getItem('user')); //
                 console.log(user); //
                 this.$router.push('/');
+            },(err) => {
+                console.log(err.body);
+                this.loginResponse = err.body;
+                this.loggingIn = false;
+                this.showModal=true;
             });
         },
         logout () {
