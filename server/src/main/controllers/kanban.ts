@@ -3,8 +3,8 @@
  * 
  * @author Paolo Baldini
  */
-import { Project } from '../models'
-import { KANBAN_STATES } from '../models/db/module'
+import { Project, User, getTasks as _getTasks } from '../models'
+import { KANBAN_STATES } from '../models/db'
 
 export async function newTask(request: any, result: any) {
     try {
@@ -52,4 +52,19 @@ export async function updateStatus(request: any, result: any) {
     }
 }
 
-export async function getTasks(request: any, result: any) { /* TODO */ }
+export async function getTasks(request: any, result: any) {
+    try {
+        let skipTask = request.body.skipN ? request.body.skipN : 0
+        let tasks = null
+
+        if (request.body.user) {
+            let user = await User.findByEmail(request.body.user)
+            tasks = await _getTasks(request.params.projectName, request.params.moduleName, skipTask, user._id())
+        } else tasks = await _getTasks(request.params.projectName, request.params.moduleName, skipTask)
+
+        result.status(200).send(tasks)
+    } catch (err) {console.log(err)
+        if (err.code && err.message) result.status(err.code).send(err.message)
+        else result.status(500).send('Internal error')
+    }
+}

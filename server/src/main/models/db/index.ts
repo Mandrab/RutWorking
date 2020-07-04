@@ -9,6 +9,6 @@ export { IDBRole, DBRole } from './role'
 
 export { IDBProject, DBProject } from './project'
 
-export { IDBModule, IDBMessage, IDBKanbanItem } from './module'
+export { IDBModule, IDBMessage, IDBKanbanItem, KANBAN_STATES } from './module'
 
 export { IDBState, DBState } from './status'

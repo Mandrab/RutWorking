@@ -68,14 +68,23 @@ export class Module {
      * @param description tasks description
      * @param projectID parent project of the module
      */
-    async updateTaskStatus(taskID: Schema.Types.ObjectId, newStatus: KANBAN_STATES) {
-        await DBProject.updateOne({
-            _id: this.parentID
-        }, {
-            $set: { "modules.$[module].kanbanItems.$[kanbanItem].status": newStatus }
-        }, {
-            arrayFilters : [{ "module._id" : this._id() }, { "kanbanItem._id" : taskID }],
-        })
+    async updateTaskStatus(taskID: Schema.Types.ObjectId, newStatus: KANBAN_STATES, assignee?: Schema.Types.ObjectId) {
+        if (newStatus === KANBAN_STATES.TODO && !assignee) throw { code: 400, message: 'No assignee specified!' }
+
+        let update: any = { "modules.$[module].kanbanItems.$[kanbanItem].status": newStatus }
+        if (assignee) {
+            await User.findById(assignee)   // check existence
+            update = {
+                "modules.$[module].kanbanItems.$[kanbanItem].status": newStatus,
+                "modules.$[module].kanbanItems.$[kanbanItem].assignee": assignee
+            }
+        }
+
+        await DBProject.updateOne(
+            { _id: this.parentID },
+            { $set: update },
+            { arrayFilters : [{ "module._id" : this._id() }, { "kanbanItem._id" : taskID }] }
+        )
     }
 
     async refresh() {

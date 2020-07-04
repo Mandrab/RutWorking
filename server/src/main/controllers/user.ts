@@ -4,11 +4,11 @@
  * @author Paolo Baldini
  */
 import {
+    User, Roles,
     login as _login,
     register as _register,
-} from '../models/users'
+} from '../models'
 import { sendEmail } from './communication'
-import { User, Roles } from '../models'
 
 export async function login(request: any, result: any) {
     try {

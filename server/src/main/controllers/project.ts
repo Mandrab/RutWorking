@@ -7,7 +7,7 @@ import {
     newProject as _newProject,
     getProjects as _getProjects,
     getProjectInfo as _getProjectInfo
-} from '../models/projects'
+} from '../models/utils/projects'
 import { User } from '../models'
 
 export async function newProject(request: any, result: any) {

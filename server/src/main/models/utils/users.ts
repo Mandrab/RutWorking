@@ -5,11 +5,11 @@
  */
 
 import { sign as jwtSign } from 'jsonwebtoken'
-import { secret as authSecret } from '../config/auth'
+import { secret as authSecret } from '../../config/auth'
 import { set as mongooseSet } from 'mongoose'
-import { DBUser } from './db/user'
-import { Role, User } from '.'
-import { Roles } from './role'
+import { DBUser } from '../db'
+import { Role, User } from '..'
+import { Roles } from '../role'
 
 mongooseSet('useFindAndModify', false)
 
