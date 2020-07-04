@@ -57,5 +57,31 @@ export async function getTasks(projectName: string, moduleName: string, skipFirs
     ])
 
     let flatTasks = await DBProject.aggregate(query)
+    let tasks = flatTasks.map(it => it.modules.kanbanItems).map(async it => {
+        let res: any = {
+            taskDescription: it.taskDescription,
+            status: it.status
+        }
+        if (it.assignee) res.assignee = (await User.findById(it.assignee)).email()
+        return res
+    })
+    return Promise.all(tasks)
+}
+
+export async function getMessages(projectName: string, moduleName: string, skipFirst: number = 0) {
+    let query: any[] = [
+        { $match: { name: projectName } },          // find the project
+        { $project: { _id: 0, modules: 1 } },       // get only modules
+        { $unwind: "$modules" },
+        { $match: { "modules.name": moduleName } },
+        { $project: { "modules.chatMessages": 1 } }, // get only kanban items
+        { $unwind: "$modules.chatMessages" },
+        { $sort: { "modules.chatMessages._id": 1 } },
+        { $skip: skipFirst },
+        { $limit: 100 },
+        { $project: { "modules.chatMessages._id": 0 } }
+    ]
+
+    let flatTasks = await DBProject.aggregate(query)
     return flatTasks.map(it => it.modules.kanbanItems)
 }
