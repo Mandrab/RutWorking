@@ -186,14 +186,29 @@ describe('test kanban\' operations', function() {
         // valid token chief but no body
         await request.put('/projects/' + PROJECT[1].name + '/modules/' + PROJECT[1].modules[0] + '/kanban/' + task1ID)
             .set({ 'Authorization': chiefToken }).expect(409)
+        
+        // no assignee specified
+        await request.put('/projects/' + PROJECT[1].name + '/modules/' + PROJECT[1].modules[0] + '/kanban/' + task1ID)
+            .set({ 'Authorization': chiefToken }).send({ newState: 'IN-PROGRESS' }).expect(400)
+        
+        // TO-DO does not need an assignee
+        await request.put('/projects/' + PROJECT[1].name + '/modules/' + PROJECT[1].modules[0] + '/kanban/' + task1ID)
+            .set({ 'Authorization': chiefToken }).send({ newState: 'TO-DO' }).expect(200)
+        
+        // invalid assignee
+        await request.put('/projects/' + PROJECT[1].name + '/modules/' + PROJECT[1].modules[0] + '/kanban/' + task1ID)
+            .set({ 'Authorization': chiefToken }).send({ newState: 'IN-PROGRESS', assignee: randomUser.email() })
+            .expect(403)
 
         // valid token chief
         await request.put('/projects/' + PROJECT[1].name + '/modules/' + PROJECT[1].modules[0] + '/kanban/' + task1ID)
-            .set({ 'Authorization': chiefToken }).send({ newState: 'IN-PROGRESS' }).expect(200)
+            .set({ 'Authorization': chiefToken }).send({ newState: 'IN-PROGRESS', assignee: developer.email() })
+            .expect(200)
 
         // valid token developer
         await request.put('/projects/' + PROJECT[1].name + '/modules/' + PROJECT[1].modules[0] + '/kanban/' + task2ID)
-            .set({ 'Authorization': developerToken }).send({ newState: 'DONE' }).expect(200)
+            .set({ 'Authorization': developerToken }).send({ newState: 'DONE', assignee: developer.email() })
+            .expect(200)
 
         return Promise.resolve()
     })

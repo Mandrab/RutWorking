@@ -69,11 +69,11 @@ export class Module {
      * @param projectID parent project of the module
      */
     async updateTaskStatus(taskID: Schema.Types.ObjectId, newStatus: KANBAN_STATES, assignee?: Schema.Types.ObjectId) {
-        if (newStatus === KANBAN_STATES.TODO && !assignee) throw { code: 400, message: 'No assignee specified!' }
+        if (newStatus !== KANBAN_STATES.TODO && !assignee) throw { code: 400, message: 'No assignee specified!' }
 
         let update: any = { "modules.$[module].kanbanItems.$[kanbanItem].status": newStatus }
-        if (assignee) {
-            await User.findById(assignee)   // check existence
+        if (newStatus !== KANBAN_STATES.TODO) {     // not set assignee in TODO state
+            await User.findById(assignee)           // check existence
             update = {
                 "modules.$[module].kanbanItems.$[kanbanItem].status": newStatus,
                 "modules.$[module].kanbanItems.$[kanbanItem].assignee": assignee
