@@ -4,7 +4,7 @@
           <div class="modal-wrapper">
             <div class="modal-container">
 
-              <div class="modal-header">
+              <div class="modal-header text-secondary">
                 <slot name="header">
                   Login Failed:
                 </slot>
@@ -15,12 +15,16 @@
                     <strong>
                         {{mess}}
                     </strong>
+                    <br/> 
+                        <div class="text-secondary">
+                            Pease try again 
+                        </div> 
                 </slot>
               </div>
 
               <div class="modal-footer">
                 <slot name="footer">
-                  <button class="modal-default-button" @click="$emit('closeModal')">
+                  <button class="modal-default-button btn btn-primary" @click="$emit('closeModal')">
                     OK
                   </button>
                 </slot>
