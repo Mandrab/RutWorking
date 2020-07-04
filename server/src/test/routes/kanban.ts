@@ -239,7 +239,6 @@ describe('test kanban\' operations', function() {
         await project.refresh()
         await module.refresh()
         let task1ID = module.kanbanItems()[0]._id()
-        let task2ID = module.kanbanItems()[1]._id()
 
         // no token
         await request.get('/projects/' + PROJECT[2].name + '/modules/' + PROJECT[2].modules[0] + '/kanban')

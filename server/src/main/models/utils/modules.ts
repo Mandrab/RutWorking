@@ -82,6 +82,13 @@ export async function getMessages(projectName: string, moduleName: string, skipF
         { $project: { "modules.chatMessages._id": 0 } }
     ]
 
-    let flatTasks = await DBProject.aggregate(query)
-    return flatTasks.map(it => it.modules.kanbanItems)
+    let flatMessages = await DBProject.aggregate(query)
+    let messages = flatMessages.map(it => it.modules.chatMessages).map(async it => {
+        return {
+            date: it.date,
+            sender: (await User.findById(it.sender)).email(),
+            message: it.message
+        }
+    })
+    return Promise.all(messages)
 }
