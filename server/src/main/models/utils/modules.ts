@@ -29,7 +29,7 @@ export async function getModuleInfo(projectName: string, moduleName: string) {
     }
 }
 
-export async function addDevelop(projectName: string, moduleName: string, userEmail: string) {
+export async function addDeveloper(projectName: string, moduleName: string, userEmail: string) {
     let user = await User.findByEmail(userEmail)
     let project = await Project.findByName(projectName)
     let module = project.modules().find(it => it.name() === moduleName)

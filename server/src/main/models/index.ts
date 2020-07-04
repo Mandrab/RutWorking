@@ -17,7 +17,7 @@ export { Module } from './module'
 export {
     newModule,
     getModuleInfo,
-    addDevelop,
+    addDeveloper,
     getTasks,
     getMessages
 } from './utils/modules'

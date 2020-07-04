@@ -5,14 +5,13 @@
  */
 import {
     newModule as _newModule,
-    addDevelop as _addDevelop,
+    addDeveloper as _addDeveloper,
     getModuleInfo as _getModuleInfo,
     Project
 } from '../models'
 
 export async function newModule(request: any, result: any) {
     try {
-
         let user = request.userID
 
         let project = await Project.findByName(request.params.projectName)
@@ -30,15 +29,15 @@ export async function newModule(request: any, result: any) {
     }
 }
 
-export async function addDevelop(request: any, result: any) {
+export async function addDeveloper(request: any, result: any) {
     try {
         let projectName = request.params.projectName
         let moduleName = request.params.moduleName
-        let userEmail = request.pramas.userEmail
+        let userEmail = request.params.userEmail
 
-        await _addDevelop(projectName, moduleName, userEmail)
+        await _addDeveloper(projectName, moduleName, userEmail)
         result.status(200).send('Succesfully added!')
-    } catch(err) {
+    } catch(err) {console.log(err)
         if (err.code && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
