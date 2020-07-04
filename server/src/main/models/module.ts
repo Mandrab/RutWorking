@@ -29,7 +29,7 @@ export class Module {
 
     async addDevelop(userID: Schema.Types.ObjectId) {
         await DBProject.updateOne({_id: this.parentID, "modules._id": this._id() }, {
-            $push: { "modules.$.developers": userID }
+            $addToSet: { "modules.$.developers": userID }
         })
     }
 

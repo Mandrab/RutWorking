@@ -236,6 +236,15 @@ describe('test modules\' operations', function() {
         await request.post('/projects/' + PROJECTS[2].name + '/modules/' + PROJECTS[2].modules[0].name +
             '/developers/' + user.email()).set({ 'Authorization': chiefToken }).expect(200)
 
+        await request.post('/projects/' + PROJECTS[2].name + '/modules/' + PROJECTS[2].modules[0].name +
+            '/developers/' + user.email()).set({ 'Authorization': chiefToken }).expect(200)
+        
+        let project = await Project.findByName(PROJECTS[2].name)
+        let module = project.modules().find(it => it.name() === PROJECTS[2].modules[0].name)
+
+        if (module.developersIDs().length !== 1) throw 'Wrong number of developers!'
+        if (!module.developersIDs().some(it => it.toString() === user._id().toString())) throw 'Unexpected developer!'
+
         return Promise.resolve()
     })
 
