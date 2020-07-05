@@ -1,5 +1,5 @@
-import * as firebase from 'firebase/app'
-import '@firebase/messaging'
+import firebase from 'firebase'
+//import '@firebase/messaging'
 
 // Your web app's Firebase configuration
 var firebaseConfig = {
@@ -12,4 +12,4 @@ var firebaseConfig = {
     appId: "1:936912710994:web:6a3c55ae351665f2da5e8b"
 }
 // Initialize Firebase
-firebase.initializeApp(firebaseConfig)
+export let firebaseApp = firebase.initializeApp(firebaseConfig)

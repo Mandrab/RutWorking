@@ -4,8 +4,8 @@ import { config as dbConfig } from "../../main/config/db"
 import { connect } from "mongoose"
 import { DBUser } from "../../main/models/db"
 import { sign } from "jsonwebtoken"
-import firebase from "firebase"
 import { _admin } from "../../main/config/firebase"
+import { firebaseApp } from "../../test-config/firebase"
 
 require('../../test-config/firebase')
 
@@ -42,34 +42,45 @@ describe('test notifications\' operations', function () {
     }
 
     it('basic', async function () {
-        try {
-            let customToken = await _admin.auth().createCustomToken(USER.email) // TODO token gen must be moved server side (atm everyone that know user email can access as the user)
+        await request.get('/firebase/notification').expect(500)
 
-            let credential = await firebase.auth().signInWithCustomToken(customToken)
+        await request.get('/firebase/notification').set({ 'Authorization': 'John' }).expect(401)
 
-            var payload = {
-                notification: {
-                    title: "This is a Notification",
-                    body: "This is the body of the notification message."
-                }
+        let result = await request.get('/firebase/notification').set({ 'Authorization': USER.token })
+            .expect(200).expect('Content-Type', /json/)
+        let token = result.body.firebaseCustomToken
+        if (!token) throw 'No token returned!'
+
+        let credential = await firebaseApp.auth().signInWithCustomToken(token)
+
+        /*var payload = {
+            notification: {
+                title: "This is a Notification",
+                body: "This is the body of the notification message."
             }
+        }
 
-            var options = {
-                priority: "high",
-                timeToLive: 60 * 60 * 24
-            }
+        var options = {
+            priority: "high",
+            timeToLive: 60 * 60 * 24
+        }
 
-            await request.get('/firebase/notification').send({
-                token: customToken,
-                payload: payload,
-                options: options
-            }).expect(200)
-            /*firebase.auth().signOut().then(function () {
-                // Sign-out successful.
-            }).catch(function (error) {
-                // An error happened.
-            })*/
-        } catch (err) { console.log(err) }
+        console.log(firebaseApp.messaging)
+
+        _admin.messaging()/*.onMessage((payload) => {
+            console.log(payload)
+        })*
+
+        await request.get('/firebase/notification').send({
+            token: customToken,
+            payload: payload,
+            options: options
+        }).expect(200)
+        /*firebase.auth().signOut().then(function () {
+            // Sign-out successful.
+        }).catch(function (error) {
+            // An error happened.
+        })*/
 
         return Promise.resolve()
     })
