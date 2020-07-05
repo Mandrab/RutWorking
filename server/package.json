@@ -1,7 +1,7 @@
 {
   "name": "rutworking",
   "version": "1.0.0",
-  "description": "",
+  "description": "Exam project for 'Applications and Web Services' course at Unibo.",
   "main": "build/main/server.js",
   "scripts": {
     "test": "killall node; clear; tsc; node build/main/server.js & mocha build/test/**/*.js",
@@ -22,22 +22,27 @@
     "@types/body-parser": "^1.19.0",
     "@types/cors": "^2.8.6",
     "@types/express": "^4.17.6",
+    "@types/firebase": "^3.2.1",
+    "@types/jest": "^26.0.3",
     "@types/jsonwebtoken": "^8.5.0",
     "@types/mocha": "^7.0.2",
-    "@types/mongodb": "^3.5.23",
-    "@types/mongoose": "^5.7.27",
+    "@types/mongodb": "^3.5.25",
+    "@types/mongoose": "^5.7.29",
     "@types/nodemailer": "^6.4.0",
-    "@types/supertest": "^2.0.9",
+    "@types/supertest": "^2.0.10",
     "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "firebase": "^7.15.5",
+    "firebase-admin": "^8.13.0",
+    "firebase-tools": "^8.4.3",
     "jsonwebtoken": "^8.5.1",
     "mocha": "^8.0.1",
     "mongodb": "^3.5.9",
-    "mongoose": "^5.9.19",
+    "mongoose": "^5.9.21",
     "nodemailer": "^6.4.10",
     "supertest": "^4.0.2",
-    "typescript": "^3.9.5"
+    "typescript": "^3.9.6"
   }
 }

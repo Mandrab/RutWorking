@@ -7,7 +7,9 @@
         "preserveConstEnums": true,
         "sourceMap": true,
         "skipLibCheck": true,
-        "outDir": "build"
+        "outDir": "build",
+        "resolveJsonModule": true,
+        "esModuleInterop": true
     },
     "include": [
         "src/**/*"

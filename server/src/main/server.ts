@@ -23,6 +23,7 @@ const setup = async () => {
     console.log('Successfully connected to MongoDB')
 
     // routes
+    require('./routes/notifications')(app)
     require('./routes/chat')(app)
     require('./routes/kanban')(app)
     require('./routes/module')(app)
