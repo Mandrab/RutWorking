@@ -1,18 +1,3 @@
-/**
- * Copyright 2015 Google Inc. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 'use strict'
 
 const USER = { email: 'x@y.z' }
@@ -21,142 +6,82 @@ let firebaseToken = null
 
 // Signs-in Friendly Chat.
 async function signIn() {
-    let result = await (await fetch("http://localhost:8080/login", {
+    let result = await fetch("http://localhost:8080/login", {
         headers: { 'Content-Type': 'application/json' },
-        method: "POST",
+        method: 'POST',
         body: JSON.stringify({
             userEmail: 'ADMIN_EMAIL',
             password: 'ADMIN_PASSWORD'
         })
-    })).json()
-    token = result.accessToken
+    })
+    let body = await result.json()
+    token = body.accessToken
 
-    result = await (await fetch("http://localhost:8080/firebase/notification", {
+    result = await fetch('http://localhost:8080/firebase/notification', {
         headers: { 'Authorization': token },
-        method: "GET"
-    })).json()
-    firebaseToken = result.firebaseCustomToken
-    console.log(firebaseToken)
+        method: 'GET'
+    })
+    body = await result.json()
+    firebaseToken = body.firebaseCustomToken
 
     firebase.auth().signInWithCustomToken(firebaseToken)
+
+    signInButtonElement.hidden = true
+
+    getMessages()
 }
 
-// Returns the signed-in user's display name.
-function getUserName() { return USER.obj.name() }
+async function sendMessage() {
+    if (!token || !firebaseToken) return console.log('Not signed!')
 
-// Returns true if a user is signed-in.
-function isUserSignedIn() { return USER.obj ? true : false }
+    let message = messageInputElement.value
+    appendMessage('self', message)
 
-// Loads chat messages history and listens for upcoming ones.
-/*function loadMessages() {
-  // Loads the last 12 messages and listen for new ones.
-  var callback = function(snap) {
-    var data = snap.val();
-    displayMessage(snap.key, data.name, data.text, data.profilePicUrl, data.imageUrl);
-  };
-
-  firebase.database().ref('/messages/').limitToLast(12).on('child_added', callback);
-  firebase.database().ref('/messages/').limitToLast(12).on('child_changed', callback);
+    await fetch('http://localhost:8080/projects/project/modules/module/messages', {
+        headers: {
+            'Authorization': token,
+            'Content-Type': 'application/json'
+        },
+        method: 'POST',
+        body: JSON.stringify({
+            message: message
+        })
+    })
 }
 
-// Saves a new message on the Firebase DB.
-function saveMessage(messageText) {
-  // Add a new message entry to the Firebase database.
-  return firebase.database().ref('/messages/').push({
-    name: getUserName(),
-    text: messageText,
-    profilePicUrl: getProfilePicUrl()
-  }).catch(function(error) {
-    console.error('Error writing new message to Firebase Database', error);
-  });
-}*/
-
-// Saves the messaging device token to the datastore.
-function saveMessagingDeviceToken() {
-    if (token) {
-        console.log('Got FCM device token:', token)
-        // Saving the Device Token to the datastore.
-        firebase.database().ref('/fcmTokens').child(token)
-            .set(firebase.auth().currentUser.uid)
-    }
-}
-
-// Triggered when the send new message form is submitted.
-function onMessageFormSubmit(e) {
-    e.preventDefault();
-    // Check that the user entered a message and is signed in.
-    if (messageInputElement.value && checkSignedInWithMessage()) {
-        saveMessage(messageInputElement.value).then(function () {
-            // Clear message text field and re-enable the SEND button.
-            resetMaterialTextfield(messageInputElement);
-            toggleButton();
-        });
-    }
-}
-
-// Returns true if user is signed-in. Otherwise false and displays a message.
-function checkSignedInWithMessage() {
-    // Return true if the user is signed in Firebase
-    if (isUserSignedIn()) {
-        return true;
-    }
-
-    // Display a message to the user using a Toast.
-    var data = {
-        message: 'You must sign-in first',
-        timeout: 2000
-    };
-    signInSnackbarElement.MaterialSnackbar.showSnackbar(data);
-    return false;
-}
-
-// Resets the given MaterialTextField.
-function resetMaterialTextfield(element) {
-    element.value = '';
-    element.parentNode.MaterialTextfield.boundUpdateClassesHandler();
+async function getMessages() {
+    let result = await fetch('http://localhost:8080/projects/project/modules/module/messages', {
+        headers: { 'Authorization': token },
+        method: 'GET'
+    })
+    let body = await result.json()
+    body.forEach(element => { appendMessage(element.sender, element.message) })
 }
 
 // Template for messages.
 var MESSAGE_TEMPLATE =
     '<div class="message-container">' +
-    '<div class="spacing"><div class="pic"></div></div>' +
     '<div class="message"></div>' +
     '<div class="name"></div>' +
     '</div>'
 
 // Displays a Message in the UI.
-function displayMessage(key, name, text, picUrl, imageUrl) {
-    var div = document.getElementById(key);
+function appendMessage(email, body) {
     // If an element for that message does not exists yet we create it.
-    if (!div) {
-        var container = document.createElement('div');
-        container.innerHTML = MESSAGE_TEMPLATE;
-        div = container.firstChild;
-        div.setAttribute('id', key);
-        messageListElement.appendChild(div);
-    }
-    if (picUrl) {
-        div.querySelector('.pic').style.backgroundImage = 'url(' + picUrl + ')';
-    }
-    div.querySelector('.name').textContent = name;
-    var messageElement = div.querySelector('.message');
-    if (text) { // If the message is text.
-        messageElement.textContent = text;
-        // Replace all line breaks by <br>.
-        messageElement.innerHTML = messageElement.innerHTML.replace(/\n/g, '<br>');
-    } else if (imageUrl) { // If the message is an image.
-        var image = document.createElement('img');
-        image.addEventListener('load', function () {
-            messageListElement.scrollTop = messageListElement.scrollHeight;
-        });
-        image.src = imageUrl + '&' + new Date().getTime();
-        messageElement.innerHTML = '';
-        messageElement.appendChild(image);
-    }
+    var container = document.createElement('div')
+    container.innerHTML = MESSAGE_TEMPLATE
+    let div = container.firstChild
+    messageListElement.appendChild(div)
+
+    div.querySelector('.name').textContent = email
+    var messageElement = div.querySelector('.message')
+    messageElement.textContent = body
+    messageElement.innerHTML = messageElement.innerHTML.replace(/\n/g, '<br>')
+
     // Show the card fading-in and scroll to view the new message.
-    setTimeout(function () { div.classList.add('visible') }, 1);
-    messageListElement.scrollTop = messageListElement.scrollHeight;
-    messageInputElement.focus();
+    setTimeout(function () { div.classList.add('visible') }, 1)
+    messageListElement.scrollTop = messageListElement.scrollHeight
+    messageInputElement.focus()
 }
 
 // Enables or disables the submit button depending on the values of the input
@@ -179,7 +104,7 @@ function checkSetup() {
 }
 
 // Checks that Firebase has been imported.
-checkSetup();
+checkSetup()
 
 // Shortcuts to DOM Elements.
 var messageListElement = document.getElementById('messages')
@@ -190,7 +115,7 @@ var signInButtonElement = document.getElementById('sign-in')
 var signInSnackbarElement = document.getElementById('must-signin-snackbar')
 
 // Saves message on form submit.
-messageFormElement.addEventListener('submit', onMessageFormSubmit)
+submitButtonElement.addEventListener('click', sendMessage)
 signInButtonElement.addEventListener('click', signIn)
 
 // Toggle for the button.
