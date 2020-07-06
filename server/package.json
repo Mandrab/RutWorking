@@ -4,8 +4,10 @@
   "description": "Exam project for 'Applications and Web Services' course at Unibo.",
   "main": "build/main/server.js",
   "scripts": {
-    "test": "killall node; clear; tsc; node build/main/server.js & mocha --timeout 5000 build/test/**/*.js",
-    "compileAndRun": "killall node; clear; tsc; node build/main/server.js"
+    "compile": "killall node; clear; rm -rf build/; cp -r src build; tsc",
+    "test": "npm run-script compile; node build/main/server.js & mocha --timeout 10000 build/test/**/*.js",
+    "testNotifications": "npm run-script compile; node build/main/server.js & `echo $PWD; cd $PWD/src/test-pages/notifications/; firebase serve --only hosting`",
+    "compileAndRun": "npm run-script compile; node build/main/server.js"
   },
   "repository": {
     "type": "git",

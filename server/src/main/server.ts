@@ -7,7 +7,7 @@ import { config as dbConfig } from './config/db'
 const setup = async () => { 
     const app = express()
 
-    app.use(cors({ origin: "http://localhost:8081" })) // ??
+    app.use(cors({ origin: "http://localhost:5005" })) // ??
 
     // parse requests of content-type application/json
     app.use(json())
@@ -17,7 +17,7 @@ const setup = async () => {
         useNewUrlParser: true,
         useUnifiedTopology: true
     })
-    /*await register('ADMIN_EMAIL', 'ADMIN_PASSWORD', Roles.ADMIN).catch((err: any) => {
+    /*await register('x', 'y', 'ADMIN_EMAIL', 'ADMIN_PASSWORD', Roles.USER).catch((err: any) => {
         if (err.code !== 406) throw err
     })*/
     console.log('Successfully connected to MongoDB')
