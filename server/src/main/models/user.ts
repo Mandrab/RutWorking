@@ -20,6 +20,7 @@ export class User {
     roleID(): Schema.Types.ObjectId { return this.user.role }
     role(): Promise<Role> { return Role.findById(this.user.role) }
     isActive(): boolean { return this.user.active }
+    firebaseToken(): string { return this.user.firebaseToken }
 
     private constructor(private user: IDBUser) { }
 

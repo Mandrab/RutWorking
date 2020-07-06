@@ -12,5 +12,5 @@ const isUser = isRole(Roles.USER)
 
 module.exports = function (app: any) {
     // get custom token to signin into firebase
-    app.get('/firebase/notification', [isActive, isUser], getFirebaseCustomToken)
+    app.post('/firebase/notification', [isActive, isUser], getFirebaseCustomToken)
 }

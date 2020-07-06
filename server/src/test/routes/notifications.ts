@@ -42,45 +42,14 @@ describe('test notifications\' operations', function () {
     }
 
     it('basic', async function () {
-        await request.get('/firebase/notification').expect(500)
+        await request.post('/firebase/notification').expect(500)
 
-        await request.get('/firebase/notification').set({ 'Authorization': 'John' }).expect(401)
+        await request.post('/firebase/notification').set({ 'Authorization': 'John' }).expect(401)
 
-        let result = await request.get('/firebase/notification').set({ 'Authorization': USER.token })
-            .expect(200).expect('Content-Type', /json/)
-        let token = result.body.firebaseCustomToken
-        if (!token) throw 'No token returned!'
+        await request.post('/firebase/notification').set({ 'Authorization': USER.token }).expect(500)
 
-        let credential = await firebaseApp.auth().signInWithCustomToken(token)
-
-        /*var payload = {
-            notification: {
-                title: "This is a Notification",
-                body: "This is the body of the notification message."
-            }
-        }
-
-        var options = {
-            priority: "high",
-            timeToLive: 60 * 60 * 24
-        }
-
-        console.log(firebaseApp.messaging)
-
-        _admin.messaging()/*.onMessage((payload) => {
-            console.log(payload)
-        })*
-
-        await request.get('/firebase/notification').send({
-            token: customToken,
-            payload: payload,
-            options: options
-        }).expect(200)
-        /*firebase.auth().signOut().then(function () {
-            // Sign-out successful.
-        }).catch(function (error) {
-            // An error happened.
-        })*/
+        await request.post('/firebase/notification').set({ 'Authorization': USER.token })
+            .send({ firebaseToken: '1234567890' }).expect(200)
 
         return Promise.resolve()
     })

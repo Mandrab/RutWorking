@@ -3,7 +3,8 @@
  * 
  * @author Paolo Baldini
  */
-import { Project, getMessages as _getMessages } from '../models'
+import { Project, getMessages as _getMessages, User } from '../models'
+import { _admin } from '../config/firebase'
 
 export async function newMessage(request: any, result: any) {
     try {
@@ -17,6 +18,23 @@ export async function newMessage(request: any, result: any) {
         await module.newMessage(user, request.body.message) // TODO parse to avoid code injection or strange things
 
         result.status(201).send('Message succesfully created!')
+
+        module.refresh()
+        let userObj = await User.findById(request.userID)
+        let developers = await Promise.all(module.developers())
+        if (module.chiefID().toString() !in module.developers().map(it => it.toString()))
+            developers = developers.concat(await module.chief())
+        let tokens = developers.filter(dev => dev.firebaseToken()).map(dev => dev.firebaseToken())
+        try {
+            let message = {
+                data: {
+                    sender: userObj.email(),
+                    message: request.body.message
+                },
+                tokens: tokens
+            }
+            await _admin.messaging().sendMulticast(message)
+        } catch (err) { console.log(err) }
     } catch(err) {
         if (err.code && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')

@@ -1,8 +1,31 @@
-'use strict'
-
+//'use strict'
+/**
+ * Firebase notifications setup
+ * 
+ * @author Paolo Baldini
+ */
 const USER = { email: 'x@y.z' }
-let token = null
-let firebaseToken = null
+
+firebase.initializeApp(/* PUT YOUR CONFIG HERE */)
+const messaging = firebase.messaging()
+
+async function notifications() {
+    try {
+        await messaging.requestPermission()
+    } catch (err) {
+        window.alert('Popup notifications will not be visible!')
+        return
+    }
+}
+
+messaging.onTokenRefresh(async () => {
+    let refreshedToken = await messaging.getToken()
+
+    USER.firebaseToken = refreshedToken
+    console.log('Token refreshed: ' + refreshedToken)
+})
+
+messaging.onMessage(payload => { appendMessage(payload.data.sender, payload.data.message) })
 
 // Signs-in Friendly Chat.
 async function signIn() {
@@ -15,16 +38,20 @@ async function signIn() {
         })
     })
     let body = await result.json()
-    token = body.accessToken
+    USER.token = body.accessToken
 
-    result = await fetch('http://localhost:8080/firebase/notification', {
-        headers: { 'Authorization': token },
-        method: 'GET'
+    USER.firebaseToken = await messaging.getToken()
+    await fetch('http://localhost:8080/firebase/notification', {
+        headers: {
+            'Authorization': USER.token,
+            'Content-Type': 'application/json'
+        },
+        method: 'POST',
+        body: JSON.stringify({
+            firebaseToken: USER.firebaseToken
+        })
     })
-    body = await result.json()
-    firebaseToken = body.firebaseCustomToken
-
-    firebase.auth().signInWithCustomToken(firebaseToken)
+    //firebase.auth().signInWithCustomToken(USER.firebaseToken)
 
     signInButtonElement.hidden = true
 
@@ -32,14 +59,12 @@ async function signIn() {
 }
 
 async function sendMessage() {
-    if (!token || !firebaseToken) return console.log('Not signed!')
+    if (!USER.token || !USER.firebaseToken) return console.log('Not signed!')
 
     let message = messageInputElement.value
-    appendMessage('self', message)
-
     await fetch('http://localhost:8080/projects/project/modules/module/messages', {
         headers: {
-            'Authorization': token,
+            'Authorization': USER.token,
             'Content-Type': 'application/json'
         },
         method: 'POST',
@@ -51,7 +76,7 @@ async function sendMessage() {
 
 async function getMessages() {
     let result = await fetch('http://localhost:8080/projects/project/modules/module/messages', {
-        headers: { 'Authorization': token },
+        headers: { 'Authorization': USER.token },
         method: 'GET'
     })
     let body = await result.json()
@@ -84,27 +109,20 @@ function appendMessage(email, body) {
     messageInputElement.focus()
 }
 
-// Enables or disables the submit button depending on the values of the input
-// fields.
+// Enables or disables the submit button depending on the values of the input fields.
 function toggleButton() {
-    if (messageInputElement.value) {
-        submitButtonElement.removeAttribute('disabled');
-    } else {
-        submitButtonElement.setAttribute('disabled', 'true');
-    }
+    if (messageInputElement.value)
+        submitButtonElement.removeAttribute('disabled')
+    else
+        submitButtonElement.setAttribute('disabled', 'true')
 }
 
 // Checks that the Firebase SDK has been correctly setup and configured.
-function checkSetup() {
-    if (!window.firebase || !(firebase.app instanceof Function) || !firebase.app().options) {
-        window.alert('You have not configured and imported the Firebase SDK. ' +
-            'Make sure you go through the codelab setup instructions and make ' +
-            'sure you are running the codelab using `firebase serve`');
-    }
+if (!window.firebase || !(firebase.app instanceof Function) || !firebase.app().options) {
+    window.alert('You have not configured and imported the Firebase SDK. ' +
+        'Make sure you go through the codelab setup instructions and make ' +
+        'sure you are running the codelab using `firebase serve`')
 }
-
-// Checks that Firebase has been imported.
-checkSetup()
 
 // Shortcuts to DOM Elements.
 var messageListElement = document.getElementById('messages')
@@ -113,11 +131,10 @@ var messageInputElement = document.getElementById('message')
 var submitButtonElement = document.getElementById('submit')
 var signInButtonElement = document.getElementById('sign-in')
 var signInSnackbarElement = document.getElementById('must-signin-snackbar')
+var notificationsButton = document.getElementById('enable-notifications-button')
 
-// Saves message on form submit.
+notificationsButton.addEventListener('click', notifications)
 submitButtonElement.addEventListener('click', sendMessage)
 signInButtonElement.addEventListener('click', signIn)
-
-// Toggle for the button.
 messageInputElement.addEventListener('keyup', toggleButton)
 messageInputElement.addEventListener('change', toggleButton)

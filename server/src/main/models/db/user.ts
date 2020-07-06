@@ -13,10 +13,11 @@ mongooseSet('useCreateIndex', true)
 export interface IDBUser extends Document {
     name: string,
     surname: string,
-    email: string
-    password: string
-    role: Schema.Types.ObjectId    // only user or admin. Not both
-    active: boolean
+    email: string,
+    password: string,
+    role: Schema.Types.ObjectId,    // only user or admin. Not both
+    active: boolean,
+    firebaseToken: string
 }
 
 const userSchema = new Schema({
@@ -46,7 +47,8 @@ const userSchema = new Schema({
     active: {
         type: Boolean,
         default: true
-    }
+    },
+    firebaseToken: String
 })
 
 userSchema.pre('save', async function (next) {
