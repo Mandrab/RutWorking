@@ -4,10 +4,21 @@
   "description": "Exam project for 'Applications and Web Services' course at Unibo.",
   "main": "build/main/server.js",
   "scripts": {
-    "compile": "killall node; clear; rm -rf build/; cp -r src build; tsc",
-    "test": "npm run-script compile; node build/main/server.js & mocha --timeout 10000 build/test/**/*.js",
-    "testNotifications": "npm run-script compile; node build/main/server.js & `echo $PWD; cd $PWD/src/test-pages/notifications/; node ./before.js; firebase serve --only hosting`",
-    "compileAndRun": "npm run-script compile; node build/main/server.js"
+    "compile": "run-script-os",
+    "compile:win32": "echo todo",
+    "compile:linux": "clear && rm -rf build/ && cp -r src build && tsc",
+
+    "run": "run-script-os",
+    "run:win32": "echo todo",
+    "run:linux": "npm run-script compile && node build/main/server.js",
+
+    "test": "run-script-os",
+    "test:win32": "echo todo",
+    "test:linux": "npm run-script run & sleep 5 && mocha --timeout 10000 build/test/**/*.js",
+
+    "test-notifications": "run-script-os",
+    "test-notifications:win32": "echo todo",
+    "test-notifications:linux": "npm run-script run & echo $PWD; cd $PWD/src/test-pages/notifications/ && node ./before.js && firebase serve --only hosting"
   },
   "repository": {
     "type": "git",
@@ -47,5 +58,8 @@
     "nodemailer": "^6.4.10",
     "supertest": "^4.0.2",
     "typescript": "^3.9.6"
+  },
+  "devDependencies": {
+    "run-script-os": "^1.1.1"
   }
 }
