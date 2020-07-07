@@ -3,6 +3,7 @@ import cors = require('cors')
 import { connect } from 'mongoose'
 import { json } from 'body-parser'
 import { config as dbConfig } from './config/db'
+import { register, Roles } from './models'
 
 const setup = async () => { 
     const app = express()
@@ -17,9 +18,14 @@ const setup = async () => {
         useNewUrlParser: true,
         useUnifiedTopology: true
     })
-    /*await register('ADMIN_EMAIL', 'ADMIN_PASSWORD', Roles.ADMIN).catch((err: any) => {
-        if (err.code !== 406) throw err
-    })*/
+    /*try{
+        await register('ADMIN_EMAIL', 'ADMIN_PASSWORD', Roles.ADMIN).catch((err: any) => {
+            if (err.code !== 406) throw err
+        })
+    }catch(e){
+        console.log(e);
+    }*/
+    
     console.log('Successfully connected to MongoDB')
 
     // routes
