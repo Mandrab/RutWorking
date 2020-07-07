@@ -8,7 +8,7 @@ import { register, Roles } from './models'
 const setup = async () => { 
     const app = express()
 
-    app.use(cors({ origin: "http://localhost:8081" })) // ??
+    app.use(cors({ origin: "http://localhost:5000" })) // ??
 
     // parse requests of content-type application/json
     app.use(json())
@@ -18,17 +18,13 @@ const setup = async () => {
         useNewUrlParser: true,
         useUnifiedTopology: true
     })
-    /*try{
-        await register('ADMIN_EMAIL', 'ADMIN_PASSWORD', Roles.ADMIN).catch((err: any) => {
-            if (err.code !== 406) throw err
-        })
-    }catch(e){
-        console.log(e);
-    }*/
-    
+    /*await register('x', 'y', 'ADMIN_EMAIL', 'ADMIN_PASSWORD', Roles.USER).catch((err: any) => {
+        if (err.code !== 406) throw err
+    })*/
     console.log('Successfully connected to MongoDB')
 
     // routes
+    require('./routes/notifications')(app)
     require('./routes/chat')(app)
     require('./routes/kanban')(app)
     require('./routes/module')(app)

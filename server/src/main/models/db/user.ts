@@ -11,13 +11,24 @@ mongooseSet('useCreateIndex', true)
  * @author Paolo Baldini
  */
 export interface IDBUser extends Document {
-    email: string
-    password: string
-    role: Schema.Types.ObjectId    // only user or admin. Not both
-    active: boolean
+    name: string,
+    surname: string,
+    email: string,
+    password: string,
+    role: Schema.Types.ObjectId,    // only user or admin. Not both
+    active: boolean,
+    firebaseToken: string
 }
 
 const userSchema = new Schema({
+    name: {
+        type: String,
+        required: true
+    },
+    surname: {
+        type: String,
+        required: true
+    },
     email: {
         type: String,
         required: true,
@@ -36,7 +47,8 @@ const userSchema = new Schema({
     active: {
         type: Boolean,
         default: true
-    }
+    },
+    firebaseToken: String
 })
 
 userSchema.pre('save', async function (next) {

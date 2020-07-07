@@ -4,6 +4,7 @@
  * @author Paolo Baldini
  */
 import { User, Roles, Project } from "../models"
+import { Schema } from "mongoose"
 
 // respont to the request
 export async function token2id(request: any, result: any, next?: Function) {
@@ -67,30 +68,43 @@ export function _isRole(role: Roles | string) {
     }
 }
 
-export async function isChief(request: any, result: any, next?: Function) {
-    try {
-        _isChief(request, result, next)
-    } catch (err) {
-        if (err.code && err.message) result.status(err.code).send(err.message)
-        else result.status(500).send('Internal error')
+export function isChief(entity: string) {
+    return async function (request: any, result: any, next?: Function) {
+        try {
+            await _isChief(entity)(request, result, next)
+        } catch (err) {
+            if (err.code && err.message) result.status(err.code).send(err.message)
+            else result.status(500).send('Internal error')
+        }
     }
 }
 
-export async function _isChief(request: any, result: any, next?: Function) {
-    let userID = await _token2id(request, result)
+export function _isChief(entity: string) {
+    return async function (request: any, result: any, next?: Function) {
+        let userID = await _token2id(request, result)
 
-    let projectName = request.params.projectName ? request.params.projectName : request.params.name
-    if (!projectName) throw { code: 404, message: 'Project non specified' }
+        let projectName = request.params.projectName ? request.params.projectName : request.params.name
+        if (!projectName) throw { code: 404, message: 'Project non specified' }
 
-    let user = await User.findById(userID)
-    let project = await Project.findByName(projectName)
+        let user = await User.findById(userID)
+        let project = await Project.findByName(projectName)
 
-    let isChief = project.chiefID().toString() === user._id().toString()
+        let _entity: { chiefID(): Schema.Types.ObjectId } = null
 
-    if (!isChief) throw { code: 403, message: 'Unauthorized' }
+        if (entity === 'project')
+            _entity = project
+        else if (entity === 'module') {
+            _entity = project.modules().find(it => it.name() === request.params.moduleName)
+            if (!_entity) throw { code: 404, message: 'Module not found!' }
+        } else throw { code: 500, message: 'Internal error' }
 
-    if (next) next()
-    return true
+        let isChief = _entity.chiefID().toString() === user._id().toString()
+
+        if (!isChief) throw { code: 403, message: 'Unauthorized' }
+    
+        if (next) next()
+        return true
+    }
 }
 
 export async function isDeveloper(request: any, result: any, next?: Function) {
@@ -114,7 +128,9 @@ export async function _isDeveloper(request: any, result: any, next?: Function) {
     let user = await User.findById(userID)
     let project = await Project.findByName(projectName)
 
-    let developersPromises = project.modules().find(it => it.name() === moduleName).developers()
+    let module = project.modules().find(it => it.name() === moduleName)
+    if (!module) throw { code: 404, message: 'Module not found!' }
+    let developersPromises = module.developers()
     let developers = await Promise.all(developersPromises)
 
     let isDeveloper = developers.some(it => it._id().toString() === user._id().toString())

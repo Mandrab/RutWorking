@@ -4,11 +4,11 @@
  * @author Paolo Baldini
  */
 import {
+    User, Roles,
     login as _login,
     register as _register,
-} from '../models/users'
+} from '../models'
 import { sendEmail } from './communication'
-import { User, Role, Roles } from '../models'
 
 export async function login(request: any, result: any) {
     try {
@@ -23,9 +23,17 @@ export async function login(request: any, result: any) {
 export async function register(request: any, result: any) {
     try {
         if (!request.body.role) return result.status(400).send('Role missing in body!')
+        if (!request.body.name) return result.status(400).send('Name missing in body!')
+        if (!request.body.surname) return result.status(400).send('Surname missing in body!')
 
         let password = Math.random().toString(36).substring(2)
-        await _register(request.params.userEmail, password, Roles.toRoles(request.body.role))
+        await _register(
+            request.body.name,
+            request.body.surname,
+            request.params.userEmail,
+            password,
+            Roles.toRoles(request.body.role)
+        )
 
         sendEmail(request.params.userEmail, 'Registration', password, (_1: any,_2: any) => {})
 
@@ -53,8 +61,21 @@ export async function changePassword(request: any, result: any) {
     }
 }
 
-export async function getUserInfo(_: any, result: any) {
-    result.status(200).send('TODO')
+export async function getUserInfo(request: any, result: any) {
+    try {
+        let user = await User.findByEmail(request.params.userEmail)
+
+        result.status(200).send({
+            name: user.name(),
+            surname: user.surname(),
+            email: user.email(),
+            role: (await user.role()).name(),
+            blocked: !user.isActive()
+        })
+    } catch(err) {
+        if (err.code && err.message) result.status(err.code).send(err.message)
+        else result.status(500).send('Internal error')
+    }
 }
 
 export async function blockUser(request: any, result: any) {

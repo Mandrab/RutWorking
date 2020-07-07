@@ -17,6 +17,13 @@ const ADMIN = {
     email: 'admin@admin.admin',
     password: 'admin'
 }
+const USER = {
+    name: 'solimano',
+    surname: 'il magnifico',
+    email: 'user@user.user',
+    active: true,
+    role: Roles.USER
+}
 const BLOCKED_USER = {
     email: 'blocked@blocked.blocked',
     password: 'blocked'
@@ -40,11 +47,13 @@ describe('test users\' operations', function() {
 
         await Promise.all([
             // add an initial admin.. if yet exist ok!
-            register(ADMIN.email, ADMIN.password, Roles.ADMIN),
+            register('x', 'y', ADMIN.email, ADMIN.password, Roles.ADMIN),
+            // add an initial user
+            register(USER.name, USER.surname, USER.email, 'z', USER.role),
             // add an initial blocked user
-            register(BLOCKED_USER.email, BLOCKED_USER.password, Roles.USER),
+            register('x', 'y', BLOCKED_USER.email, BLOCKED_USER.password, Roles.USER),
             // add a user to delete
-            register(USER2DELETE.email, '123', Roles.USER)
+            register('x', 'y', USER2DELETE.email, '123', Roles.USER)
         ])
 
         let user = await User.findByEmail(BLOCKED_USER.email)
@@ -66,7 +75,7 @@ describe('test users\' operations', function() {
     LOGIN
 **********************************************************************************************************************/
 
-    it('test login', async function() {
+    it('login', async function() {
 
         // no email specified
         await request.post('/login').expect(404)
@@ -104,7 +113,7 @@ describe('test users\' operations', function() {
     REGISTER
 **********************************************************************************************************************/
 
-    it('test register', async function() {
+    it('register', async function() {
         let user = await User.findByEmail(ADMIN.email)
         let token = sign({ id: user._id() }, secret, { expiresIn: 86400 })
 
@@ -120,8 +129,20 @@ describe('test users\' operations', function() {
         // token but no role
         await request.post('/user/' + ADMIN.email).set({ 'Authorization': token }).expect(400)
 
+        // name and surname miss
+        await request.post('/user/' + NEW_USER.email).set({ 'Authorization': token }).send({ role:'user' }).expect(400)
+
+        // name miss
+        await request.post('/user/' + NEW_USER.email).set({ 'Authorization': token })
+            .send({ role:'user', name: 'x' }).expect(400)
+        
+        // surname miss
+        await request.post('/user/' + NEW_USER.email).set({ 'Authorization': token })
+            .send({ role:'user', surname: 'y' }).expect(400)
+
         // correct one
-        await request.post('/user/' + NEW_USER.email).set({ 'Authorization': token }).send({ role:'user' }).expect(201)
+        await request.post('/user/' + NEW_USER.email).set({ 'Authorization': token })
+            .send({ role:'user', name: 'x', surname: 'y' }).expect(201)
 
         return Promise.resolve()
     })
@@ -130,8 +151,8 @@ describe('test users\' operations', function() {
     CHANGE PASSWORD
 **********************************************************************************************************************/
 
-    it('test change password', async function() {
-        await register(NEW_USER2.email, NEW_USER2.password, Roles.USER)
+    it('change password', async function() {
+        await register('x', 'y', NEW_USER2.email, NEW_USER2.password, Roles.USER)
         let user = await User.findByEmail(NEW_USER2.email)
         let token = sign({ id: user._id() }, secret, { expiresIn: 86400 })
 
@@ -158,7 +179,7 @@ describe('test users\' operations', function() {
     DELETE
 **********************************************************************************************************************/
 
-    it('test register', async function() {
+    it('delete', async function() {
         let user = await User.findByEmail(ADMIN.email)
         let token = sign({ id: user._id() }, secret, { expiresIn: 86400 })
 
@@ -172,8 +193,33 @@ describe('test users\' operations', function() {
         await request.delete('/user/' + USER2DELETE.email).set({ 'Authorization': 'john' }).expect(401)
 
         // correct one
-        await request.delete('/user/' + USER2DELETE.email).set({ 'Authorization': token })
-        .expect(200)
+        await request.delete('/user/' + USER2DELETE.email).set({ 'Authorization': token }).expect(200)
+
+        return Promise.resolve()
+    })
+
+/**********************************************************************************************************************
+    GET INFO
+**********************************************************************************************************************/
+
+    it('get info', async function() {
+        let user = await User.findByEmail(USER.email)
+        let token = sign({ id: user._id() }, secret, { expiresIn: 86400 })
+
+        // no token passed
+        await request.get('/user/' + USER.email).expect(500)
+
+        // no binded token
+        await request.get('/user/' + USER.email).set({ 'Authorization': 'john' }).expect(401)
+
+        // correct one
+        let result = await request.get('/user/' + USER.email).set({ 'Authorization': token }).expect(200)
+
+        if (result.body.name !== USER.name) throw 'Informations returned are wrong!'
+        if (result.body.surname !== USER.surname) throw 'Informations returned are wrong!'
+        if (result.body.email !== USER.email) throw 'Informations returned are wrong!'
+        if (result.body.role !== USER.role) throw 'Informations returned are wrong!'
+        if (result.body.blocked === USER.active) throw 'Informations returned are wrong!'
 
         return Promise.resolve()
     })
