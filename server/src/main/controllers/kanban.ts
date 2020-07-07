@@ -46,12 +46,12 @@ export async function updateStatus(request: any, result: any) {
         if (request.body.assignee) {
             let user = await User.findByEmail(request.body.assignee)
             if (!module.developersIDs().concat(module.chiefID()).some(it => it.toString() === user._id().toString()))
-                throw { code: 403, message: 'Invalid assignee!' }
+                throw { code: 409, message: 'Invalid assignee!' }
 
             await module.updateTaskStatus(request.params.taskID, state, user._id())
         } else await module.updateTaskStatus(request.params.taskID, state)
 
-        result.status(200).send('Task succesfully created!')
+        result.status(200).send('Task succesfully updated!')
 
         try {
             if (request.body.newState === KANBAN_STATES.DONE) {

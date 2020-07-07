@@ -1,17 +1,23 @@
 /**
- * Routes of RESTful API regarding chats
+ * Routes of RESTful API regarding modules' chats
  * 
  * @author Paolo Baldini
  */
-import { _isDeveloper, _isChief, or } from '../auths/jwt'
+import { _isDeveloper, _isChief, or, isActive } from '../auths/jwt'
 import { newMessage, getMessages } from '../controllers/chat'
 
 const _isModuleChief = _isChief('module')
 
 module.exports = function (app: any) {
-    // a user can setup a new project
-    app.post('/projects/:projectName/modules/:moduleName/messages', [or(_isDeveloper, _isModuleChief)], newMessage)
+    // send a message in the chat
+    app.post('/projects/:projectName/modules/:moduleName/messages', [
+        isActive,
+        or(_isDeveloper, _isModuleChief)
+    ], newMessage)
 
-    // get info of a project
-    app.get('/projects/:projectName/modules/:moduleName/messages', [or(_isDeveloper, _isModuleChief)], getMessages)
+    // get first 100 chat messages TODO last?
+    app.get('/projects/:projectName/modules/:moduleName/messages', [
+        isActive,
+        or(_isDeveloper, _isModuleChief)
+    ], getMessages)
 }

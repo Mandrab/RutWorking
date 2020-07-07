@@ -59,6 +59,7 @@ export async function getTasks(projectName: string, moduleName: string, skipFirs
     let flatTasks = await DBProject.aggregate(query)
     let tasks = flatTasks.map(it => it.modules.kanbanItems).map(async it => {
         let res: any = {
+            id: it._id,
             taskDescription: it.taskDescription,
             status: it.status
         }

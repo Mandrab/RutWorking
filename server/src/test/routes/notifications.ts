@@ -42,13 +42,13 @@ describe('test notifications\' operations', function () {
     }
 
     it('basic', async function () {
-        await request.post('/firebase/notification').expect(500)
+        await request.put('/firebase/notification').expect(500)
 
-        await request.post('/firebase/notification').set({ 'Authorization': 'John' }).expect(401)
+        await request.put('/firebase/notification').set({ 'Authorization': 'John' }).expect(401)
 
-        await request.post('/firebase/notification').set({ 'Authorization': USER.token }).expect(500)
+        await request.put('/firebase/notification').set({ 'Authorization': USER.token }).expect(409)
 
-        await request.post('/firebase/notification').set({ 'Authorization': USER.token })
+        await request.put('/firebase/notification').set({ 'Authorization': USER.token })
             .send({ firebaseToken: '1234567890' }).expect(200)
 
         return Promise.resolve()

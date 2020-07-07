@@ -46,7 +46,7 @@ async function signIn() {
             'Authorization': USER.token,
             'Content-Type': 'application/json'
         },
-        method: 'POST',
+        method: 'PUT',
         body: JSON.stringify({
             firebaseToken: USER.firebaseToken
         })
