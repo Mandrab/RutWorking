@@ -5,6 +5,7 @@
  */
 import { Project, getMessages as _getMessages, User } from '../models'
 import { _admin } from '../config/firebase'
+import { sendNotification, Topics } from './notifications'
 
 export async function newMessage(request: any, result: any) {
     try {
@@ -19,23 +20,16 @@ export async function newMessage(request: any, result: any) {
 
         result.status(201).send('Message succesfully created!')
 
-        module.refresh()
-        let userObj = await User.findById(request.userID)
-        let developers = await Promise.all(module.developers())
-        if (module.chiefID().toString() !in module.developers().map(it => it.toString()))
-            developers = developers.concat(await module.chief())
-        let tokens = developers.filter(dev => dev.firebaseToken()).map(dev => dev.firebaseToken())
         try {
-            let message = {
-                data: {
-                    sender: userObj.email(),
-                    message: request.body.message
-                },
-                tokens: tokens
-            }
-            await _admin.messaging().sendMulticast(message)
+            await sendNotification(
+                Topics.CHAT_MESSAGE,
+                project.name(),
+                module.name(),
+                request.body.message,
+                request.userID
+            )
         } catch (err) { console.log(err) }
-    } catch(err) {
+    } catch (err) {
         if (err.code && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
