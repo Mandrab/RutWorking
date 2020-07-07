@@ -1,0 +1,686 @@
+openapi: 3.0.0
+
+info:
+  version: "1.0.0"
+  title: RutWorking
+  description: >-
+    RESTful API for the RutWorking service.
+
+# TODO ?
+security:
+  - bearerAuth: []
+
+tags:
+  - name: users
+    description: All about users. Login, registration, data obtainment, etc..
+  - name: projects
+    description: Project operations. Creation, management, etc..
+  - name: modules
+    description: Module management. Creation, management, etc..
+  - name: chats
+    description: Operations on chat messages. Push, get, etc..
+  - name: kanbans
+    description: Operations on kanban tasks. Push, obtainment, get, etc..
+  - name: notifications
+    description: Operation to set the new firebase token to which send notifications
+
+paths:
+
+  '/login':
+    post:
+      tags: [users]
+      summary: Login with an user and get an access token (JWT)
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userEmail:
+                  type: string
+                  description: Email of the user to login with
+                password:
+                  type: string
+                  description: Password of the user to login with
+        required: true
+      responses:
+        200:
+          description: Succesfully logged in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+        401:
+          description: Email or password is wrong
+        403:
+          description: Account is blocked
+        404:
+          description: User not found
+
+  '/user/{userEmail}':
+    post:
+      tags: [users]
+      summary: Register a new user
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: userEmail
+          description: Email of the user to register
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                role:
+                  type: string
+                  enum: [admin, user]
+                  description: Role in the system
+                name:
+                  type: string
+                  description: Name of the user
+                surname:
+                  type: string
+                  description: Surname of the user
+        required: true
+      responses:
+        201:
+          description: User registered
+        400:
+          description: Some fields haven't been passed
+        403:
+          description: Only an admin can register a new user
+        404:
+          description: User-token not found
+        406:
+          description: User already exists
+    put:
+      tags: [users]
+      summary: Change password of an user
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: userEmail
+          description: Email of the user
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                oldPassword:
+                  type: string
+                  description: Old password of the user
+                newPassword:
+                  type: string
+                  description: New password of the user
+        required: true
+      responses:
+        200:
+          description: Password changed
+        400:
+          description: Some fields haven't been passed
+        401:
+          description: Old password is wrong
+        403:
+          description: Unauthorized
+        404:
+          description: User not found
+    get:
+      tags: [users]
+      security: 
+        - bearerAuth: []
+      summary: Get info about the user
+      parameters:
+        - in: path
+          name: userEmail
+          description: Email of the user to which get informations
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: Information about the user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: Name of the user
+                  surname:
+                    type: string
+                    description: Surname of the user
+                  email:
+                    type: string
+                    description: Email of the user
+                  role:
+                    type: string
+                    enum: [admin, user]
+                    description: Role of the user in the system
+                  blocked:
+                    type: boolean
+                    description: Specify if the user has been blocked
+        403:
+          description: Only an user or an admin can retrieve informations
+        404:
+          description: User not found
+    delete:
+      tags: [users]
+      summary: Block access to an user
+      parameters:
+        - in: path
+          name: userEmail
+          description: Email of the user to block
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: User blocked
+        403:
+          description: Only an admin can block an user
+        404:
+          description: User not found
+
+  '/projects':
+    get:
+      tags: [projects]
+      summary: Get projects info
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                skipN:
+                  type: number
+                  description: Skip first N projects.
+                user:
+                  type: string
+                  description: Email of a user. Used to get project on which a user works.
+        required: true
+      responses:
+        200:
+          description: Up to 100 project
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      description: Name of the project
+                    chief:
+                      type: string
+                      description: Email of the project's chief
+                    modules:
+                      type: array
+                      items:
+                        type: string
+                        description: Name of the module
+                    description:
+                      type: string
+                      description: Description of the project. May not exist
+                    deadline:
+                      type: string
+                      description: Deadline of the project
+        403:
+          description: Account is blocked
+        404:
+          description: User-token not found
+
+  '/projects/{projectName}':
+    post:
+      tags: [projects]
+      summary: Create a new project and become its chief
+      parameters:
+        - in: path
+          name: projectName
+          description: Identifier of the project
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                description:
+                  type: string
+                  description: Description of the project
+                deadline:
+                  type: string
+                  description: Deadline of the project
+        required: true
+      responses:
+        201:
+          description: Project created
+        403:
+          description: Account is blocked
+        404:
+          description: User-token not found
+    get:
+      tags: [projects]
+      summary: Get project info (submodules). Needs to be a member of the project
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: projectName
+          description: Name of the project
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: Info of the project
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: Name of the project
+                  chief:
+                    type: string
+                    description: Email of the project's chief
+                  modules:
+                    type: array
+                    items:
+                      type: string
+                      description: Name of the module
+        403:
+          description: Account is blocked
+        404:
+          description: Project or user-token not found
+
+  '/projects/{projectName}/modules/{moduleName}':
+    post:
+      tags: [modules]
+      summary: Create a new module
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: projectName
+          description: Name of the project
+          schema:
+            type: string
+          required: true
+        - in: path
+          name: moduleName
+          description: Name of the module
+          schema:
+            type: string
+          required: true
+      responses:
+        201:
+          description: Module created
+        403:
+          description: Not project-chief. Otherwise the account is blocked.
+        404:
+          description: Project or user-token not found
+    get:
+      tags: [modules]
+      summary: Get info about a module
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: projectName
+          description: Name of the project
+          schema:
+            type: string
+          required: true
+        - in: path
+          name: moduleName
+          description: Name of the module
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: Module info
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: Name of the module
+                  chief:
+                    type: string
+                    description: Email of the module chief
+                  developers:
+                    type: array
+                    items:
+                      type: string
+                      description: Emails of the developers of the module
+        403:
+          description: Not project/module-chief nor developer or admin. Otherwise the account is blocked.
+        404:
+          description: Project or user-token not found
+
+  '/projects/{projectName}/modules/{moduleName}/developers/{userEmail}':
+    post:
+      tags: [modules]
+      summary: Add an user as a module developer
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: projectName
+          description: Name of the project
+          schema:
+            type: string
+          required: true
+        - in: path
+          name: moduleName
+          description: Name of the module
+          schema:
+            type: string
+          required: true
+        - in: path
+          name: userEmail
+          description: Email of the user to add
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: Developer added
+        403:
+          description: Not module-chief. Otherwise the account is blocked.
+        404:
+          description: Project, module or user-token not found
+
+  '/projects/{projectName}/modules/{moduleName}/messages':
+    post:
+      tags: [chats]
+      summary: Push a message on the module chat
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: projectName
+          description: Name of the project
+          schema:
+            type: string
+          required: true
+        - in: path
+          name: moduleName
+          description: Name of the module
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: Message text
+        required: true
+      responses:
+        201:
+          description: Message pushed
+        403:
+          description: Not developer or chief of the module. Otherwise the account is blocked.
+        404:
+          description: Project, module or user-token not found
+        409:
+          description: No message
+    get:
+      tags: [chats]
+      summary: Get 100 messages from the module chat
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: projectName
+          description: Name of the project
+          schema:
+            type: string
+          required: true
+        - in: path
+          name: moduleName
+          description: Name of the module
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                skipN:
+                  type: number
+                  description: Skip first N messages
+      responses:
+        200:
+          description: Up to 100 messages
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    date:
+                      type: string
+                    sender:
+                      type: string
+                      description: Email of the message sender
+                    message:
+                      type: string
+        403:
+          description: Not developer or chief of the module. Otherwise the account is blocked.
+        404:
+          description: Project, module or user-token not found
+
+  '/projects/{projectName}/modules/{moduleName}/kanban':
+    post:
+      tags: [kanbans]
+      summary: Publish a task in the module kanban
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: projectName
+          description: Name of the project
+          schema:
+            type: string
+          required: true
+        - in: path
+          name: moduleName
+          description: Name of the module
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: Task description
+        required: true
+      responses:
+        201:
+          description: Task pushed
+        403:
+          description: Not chief of the module. Otherwise the account is blocked.
+        404:
+          description: Project, module or user-token not found
+        409:
+          description: No task specified
+    get:
+      tags: [kanbans]
+      summary: Get 100 tasks from the module kanban
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: projectName
+          description: Name of the project
+          schema:
+            type: string
+          required: true
+        - in: path
+          name: moduleName
+          description: Name of the module
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                skipN:
+                  type: number
+                  description: Skip first N tasks
+                user:
+                  type: string
+                  description: Email of the user. Used to get only the task assigned to the user
+      responses:
+        200:
+          description: Up to 100 tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      description: ID of the task
+                    taskDescription:
+                      type: string
+                      description: Description of the task
+                    status:
+                      type: string
+                      enum: [TO-DO, IN-PROGRESS, DONE]
+                      description: Progress status of the task
+                    assignee:
+                      type: string
+                      description: Email of the developer assigned. If no user is assigned, this var will not be available
+        403:
+          description: Not developer or chief of the module. Otherwise the account is blocked.
+        404:
+          description: Project, module or user-token not found
+
+  '/projects/{projectName}/modules/{moduleName}/kanban/{taskID}':
+    put:
+      tags: [kanbans]
+      summary: Update a task in the module kanban
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: projectName
+          description: Name of the project
+          schema:
+            type: string
+          required: true
+        - in: path
+          name: moduleName
+          description: Name of the module
+          schema:
+            type: string
+          required: true
+        - in: path
+          name: taskID
+          description: ID of the task to update
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                newState:
+                  type: string
+                  enum: [TO-DO, IN-PROGRESS, DONE]
+                  description: New state of the task
+                assignee:
+                  type: string
+                  description: Email of the user to be assigned. It could be omitted if the new state is `TO-DO`
+        required: true
+      responses:
+        200:
+          description: Task pushed
+        403:
+          description: Not developer or chief of the module. Otherwise the account is blocked.
+        404:
+          description: Project, module, task or user-token not found
+        409:
+          description: No task specified or invalid state / assignee
+
+  '/firebase/notification':
+    put:
+      tags: [notifications]
+      summary: Set firebase token to which send notifications
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firebaseToken:
+                  type: string
+                  description: Token to which send notifications through firebase
+        required: true
+      responses:
+        200:
+          description: Token registered
+        403:
+          description: Account is blocked
+        404:
+          description: User-token not found
+        409:
+          description: Token not passed
+
+components:
+  schemas: {}
+  securitySchemes:
+    bearerAuth:            # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT    # optional, arbitrary value for documentation purposes Json Web Token
+
+# Added by API Auto Mocking Plugin
+servers:
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/pb.mandrab/RutWorking/1.0.0
