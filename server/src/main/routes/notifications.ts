@@ -7,9 +7,10 @@ import { isRole, isActive } from '../auths/jwt'
 import { Roles } from '../models'
 import { setFirebaseCustomToken } from '../controllers/notifications'
 
-const isUser = isRole(Roles.USER)
-
 module.exports = function (app: any) {
-    // get custom token to signin into firebase
-    app.post('/firebase/notification', [isActive, isUser], setFirebaseCustomToken)
+    // set firebase token to which send notifications
+    app.put('/firebase/notification', [
+        isActive,
+        isRole(Roles.USER)
+    ], setFirebaseCustomToken)
 }

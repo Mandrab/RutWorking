@@ -1,20 +1,29 @@
 /**
- * Routes of RESTful API regarding chats
+ * Routes of RESTful API regarding modules' kanbans
  * 
  * @author Paolo Baldini
  */
-import { _isDeveloper, _isChief, or } from '../auths/jwt'
+import { _isDeveloper, _isChief, or, isActive, isChief } from '../auths/jwt'
 import { newTask, getTasks, updateStatus } from '../controllers/kanban'
 
+const isModuleChief = isChief('module')
 const _isModuleChief = _isChief('module')
 
 module.exports = function (app: any) {
-    // a user can setup a new project
-    app.post('/projects/:projectName/modules/:moduleName/kanban', [or(_isModuleChief)], newTask)
+    // chief can publish new task to be accomplished
+    app.post('/projects/:projectName/modules/:moduleName/kanban', [
+        isActive, isModuleChief
+    ], newTask)
 
-    // get info of a project
-    app.put('/projects/:projectName/modules/:moduleName/kanban/:taskID', [or(_isDeveloper, _isModuleChief)], updateStatus)
+    // add assignee or update task state in kanban
+    app.put('/projects/:projectName/modules/:moduleName/kanban/:taskID', [
+        isActive,
+        or(_isDeveloper, _isModuleChief)
+    ], updateStatus)
 
-    // get info of a project
-    app.get('/projects/:projectName/modules/:moduleName/kanban', [or(_isDeveloper, _isModuleChief)], getTasks)
+    // get first 100 kanban's tasks
+    app.get('/projects/:projectName/modules/:moduleName/kanban', [
+        isActive,
+        or(_isDeveloper, _isModuleChief)
+    ], getTasks)
 }

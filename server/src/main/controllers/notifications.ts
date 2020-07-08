@@ -15,7 +15,7 @@ export enum Topics {
 
 export async function setFirebaseCustomToken(request: any, result: any) {
     try {
-        if (!request.body.firebaseToken) throw { code: 500, message: 'Firebase token not passed!' }
+        if (!request.body.firebaseToken) throw { code: 409, message: 'Firebase token not passed!' }
         await DBUser.updateOne({ _id: request.userID }, { firebaseToken: request.body.firebaseToken })
         result.status(200).send('Token succesfully registered!')
     } catch (err) {
