@@ -8,7 +8,7 @@ import { register, Roles } from './models'
 const setup = async () => { 
     const app = express()
 
-    app.use(cors({ origin: "http://localhost:5000" })) // ??
+    app.use(cors({ origin: "http://localhost:8081" })) // ??
 
     // parse requests of content-type application/json
     app.use(json())

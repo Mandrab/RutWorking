@@ -4,7 +4,6 @@
  * @author Paolo Baldini
  */
 import { Project, getMessages as _getMessages, User } from '../models'
-import { _admin } from '../config/firebase'
 import { sendNotification, Topics } from './notifications'
 
 export async function newMessage(request: any, result: any) {

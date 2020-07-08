@@ -3,7 +3,7 @@
  * 
  * @author Paolo Baldini
  */
-import { _admin } from "../config/firebase"
+
 import { DBUser } from "../models/db"
 import { Schema } from "mongoose"
 import { User, Project } from "../models"
@@ -43,16 +43,5 @@ export async function sendNotification(
         receivers = receivers.concat(await module.chief())
     let tokens = receivers.filter(dev => dev.firebaseToken()).map(dev => dev.firebaseToken())
 
-    if (tokens.length !== 0) {
-        await _admin.messaging().sendMulticast({
-            data: {
-                topic: topic.valueOf(),
-                project: projectName,
-                module: moduleName,
-                sender: user.email(),
-                message: message
-            },
-            tokens: tokens
-        })
-    }
+    
 }

@@ -67,8 +67,12 @@ export default {
         addProject (project) {
             this.creating = true;
             var vm = this;
-            var json = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
-            vm.$http.post(localStorage.getItem('path') + '/projects/' + project.projectName, {}, json).then(function(response) {
+            var tokenjson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
+            var json = {
+                "description": this.project.description,
+                "deadline": this.deadline.toString(),
+            }
+            vm.$http.post(localStorage.getItem('path') + '/projects/' + project.projectName, json, tokenjson).then(function(response) {
                 console.log(response.body);
                 console.log(this.creating);
                 this.closeForm();
