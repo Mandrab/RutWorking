@@ -27,21 +27,12 @@
 
     <div class="row">
 			<div class="col-12 col-md-4 col-xl-3">
-				<aside v-if="projectsReady">
-					<ul class="list-group">
-					  <li class="list-group-item">My Projects
-                        <button @click="showProjectCreation" class="btn btn-primary" :disabled="creating">+</button>
-					  </li>
-                      <li class="list-group-item">Proj1</li>
-					  <li class="list-group-item">Proj2</li>
-					  <li class="list-group-item">Proj3</li>
-					</ul>
-				</aside>
+                <projectsList v-if="projectsReady" @show="showProjectCreationForm" :projects="projectsArr"></projectsList>
                 <img v-show="!projectsReady" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
 			</div>
 			<div class="col-12 col-md-8 col-xl-9">
 				<div>
-                    <createProjectForm v-if="creating" @done="hideProjectCreationForm"></createProjectForm>
+                    <createProjectForm v-if="creating" @hide="hideProjectCreationForm"></createProjectForm>
 				</div>
 			</div>
 	</div>
@@ -50,6 +41,7 @@
 
 
 <script>
+import projectsList from '../components/ProjectsList.vue'
 import createProjectForm from '../components/CreateProjectForm.vue';
 
 export default {
@@ -60,10 +52,11 @@ export default {
             submitted: false,
             creating: false,
             projectsReady: false,
-            progectsArr: []
+            projectsArr: []
         }
     },
     components: {
+        projectsList,
         createProjectForm
     },
     created () {
@@ -76,16 +69,16 @@ export default {
         getProjectList() {
             this.projectsReady = false;
             var vm = this;
-            var tokenjson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
+            var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
             //var json = { "user": this.username }//in realta la mail??? attenzione ai nomi
-            vm.$http.get(localStorage.getItem('path') + '/projects/'/*, json*/, tokenjson).then(function(response) {
+            vm.$http.get(localStorage.getItem('path') + '/projects/'/*, json*/, tokenJson).then(function(response) {
                 console.log(response.body);
                 var res = response.body;
                 try {//è un livello di sicurezza in più, potrebbe non servire tray atch in futuro
-                    res = JSON.parse(res)
+                    res = JSON.parse(res);
                 } catch (error) {console.log(error)}
-                this.progectsArr = res;//lo memorizzo nei data di questa view per poi poterlo passare al componente container (tramite props) che lo userà per creare i componenti tiles
-                alert("prova");//l'ho messo per farti vedere che viene mostrata l'iconcina di cariacmento(in futuro metteremo una iconcina più bella, ovviamente sarà un componente )
+                this.projectsArr = res;//lo memorizzo nei data di questa view per poi poterlo passare al componente container (tramite props) che lo userà per creare i componenti tiles
+                //alert("prova");//l'ho messo per farti vedere che viene mostrata l'iconcina di cariacmento(in futuro metteremo una iconcina più bella, ovviamente sarà un componente )
                 this.projectsReady = true;
             }, (err) => {
                 alert(err);
@@ -94,7 +87,7 @@ export default {
                 this.projectsReady = true;//?????? gestiamo bene la logica
             });
         },
-        showProjectCreation () {
+        showProjectCreationForm () {
             this.creating = true;
         },
         hideProjectCreationForm () {

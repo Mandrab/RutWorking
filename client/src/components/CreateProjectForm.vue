@@ -85,7 +85,7 @@ export default {
         },
         closeForm () {
             this.creating = false;
-            this.$emit('done'); // notifico il padre
+            this.$emit('hide'); // notifico il padre
         }
     }
 };
