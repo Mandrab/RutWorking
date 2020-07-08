@@ -27,11 +27,11 @@ export async function newProject(request: any, result: any) {
 
 export async function getProjects(request: any, result: any) {
     try {
-        let skipProject = request.body.skipN ? request.body.skipN : 0
+        let skipProject = request.params.skipN ? parseInt(request.params.skipN, 10) : 0
         let projects = null
 
-        if (request.body.user) {
-            let user = await User.findByEmail(request.body.user)
+        if (request.params.user) {
+            let user = await User.findByEmail(request.params.user)
             projects = await _getProjects(skipProject, user._id())
         } else projects = await _getProjects(skipProject)
 

@@ -21,8 +21,8 @@ module.exports = function (app: any) {
         or(_isDeveloper, _isModuleChief)
     ], updateStatus)
 
-    // get first 100 kanban's tasks
-    app.get('/projects/:projectName/modules/:moduleName/kanban', [
+    // get first 100 kanban's tasks. user and skipN can be used 
+    app.get('/projects/:projectName/modules/:moduleName/kanban/:skipN?/:user?', [
         isActive,
         or(_isDeveloper, _isModuleChief)
     ], getTasks)

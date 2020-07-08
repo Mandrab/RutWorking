@@ -72,11 +72,12 @@ export async function updateStatus(request: any, result: any) {
 
 export async function getTasks(request: any, result: any) {
     try {
-        let skipTask = request.body.skipN ? request.body.skipN : 0
-        let tasks = null
+        let skipTask = request.params.skipN ? parseInt(request.params.skipN, 10) : 0
+        let userEmail = request.params.user
 
-        if (request.body.user) {
-            let user = await User.findByEmail(request.body.user)
+        let tasks = null
+        if (userEmail) {
+            let user = await User.findByEmail(userEmail)
             tasks = await _getTasks(request.params.projectName, request.params.moduleName, skipTask, user._id())
         } else tasks = await _getTasks(request.params.projectName, request.params.moduleName, skipTask)
 

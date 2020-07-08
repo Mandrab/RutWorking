@@ -16,11 +16,11 @@ module.exports = function (app: any) {
     // user can setup a new project
     app.post('/projects/:name', [isActive, isUser], newProject)
 
-    // get about projects (max 100)
-    app.get('/projects', [isActive, isUser], getProjects)
-
     // get info of a project
-    app.get('/projects/:name', [isActive, or(_isUser, _isAdmin)], getProjectInfo)
+    app.get('/projects/project/:name', [isActive, or(_isUser, _isAdmin)], getProjectInfo)
+
+    // get about projects (max 100)
+    app.get('/projects/:skipN?/:user?', [isActive, isUser], getProjects)
 
     // project chief or admin can block a project
     app.delete('/projects/:name', [isActive, or(_isProjectChief, _isAdmin)], blockProject) // TODO

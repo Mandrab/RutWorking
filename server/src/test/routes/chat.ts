@@ -176,8 +176,8 @@ describe('test chats\' operations', function() {
             .set({ 'Authorization': chiefToken }).expect(200)
 
         // skip first
-        res = await request.get('/projects/' + PROJECTS[1].name + '/modules/' + PROJECTS[1].modules[0] + '/messages')
-            .set({ 'Authorization': developerToken }).send({ skipN: 1 }).expect(200)
+        res = await request.get('/projects/' + PROJECTS[1].name + '/modules/' + PROJECTS[1].modules[0] + '/messages/1')
+            .set({ 'Authorization': developerToken }).expect(200)
         if (res.body.length !== initialMessagesN -1) throw 'Wrong number of messages returned'
 
         return Promise.resolve()

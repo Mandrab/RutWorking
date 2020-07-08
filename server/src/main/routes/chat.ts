@@ -16,7 +16,7 @@ module.exports = function (app: any) {
     ], newMessage)
 
     // get first 100 chat messages TODO last?
-    app.get('/projects/:projectName/modules/:moduleName/messages', [
+    app.get('/projects/:projectName/modules/:moduleName/messages/:skipN?', [
         isActive,
         or(_isDeveloper, _isModuleChief)
     ], getMessages)

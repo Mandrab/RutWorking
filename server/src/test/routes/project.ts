@@ -181,23 +181,22 @@ describe('test projects\' operations', function() {
         if (response.body.length !== previousSize +1 && response.body.length < 100) throw 'Error in return projects size!'
 
         // skip
-        response = await request.get('/projects').set({ 'Authorization': userToken }).send({ skipN: 1 }).expect(200)
+        response = await request.get('/projects/1').set({ 'Authorization': userToken }).expect(200)
             .expect('Content-Type', /json/)
         if (!response.body.some((it: { name: string }) => it.name === PROJECT[3].name)) throw ERR
         if (response.body.length !== previousSize && response.body.length < 100) throw 'Error in return projects size!'
 
         // invalid mail
-        await request.get('/projects').set({ 'Authorization': userToken })
-            .send({ skipN: 1, user: "-1" }).expect(404)
+        await request.get('/projects/1/-1').set({ 'Authorization': userToken }).expect(404)
 
         // valid mail but nor developer nor chief
-        response = await request.get('/projects').set({ 'Authorization': userToken })
-            .send({ skipN: 1, user: user.email() }).expect(200).expect('Content-Type', /json/)
+        response = await request.get('/projects/1/' + user.email()).set({ 'Authorization': userToken })
+            .expect(200).expect('Content-Type', /json/)
         if (response.body.length !== 0) throw 'Error in return projects size!'
 
         // valid mail and chief
-        response = await request.get('/projects').set({ 'Authorization': userToken })
-            .send({ user: chief.email() }).expect(200).expect('Content-Type', /json/)
+        response = await request.get('/projects/0/' + chief.email()).set({ 'Authorization': userToken })
+            .expect(200).expect('Content-Type', /json/)
         if (response.body.length < 2) throw 'Error in return projects size!'
 
         let project = await Project.findByName(PROJECT[3].name)
@@ -206,13 +205,13 @@ describe('test projects\' operations', function() {
         project.modules().find(it => it.name() === 'module').addDevelop(user._id())
 
         // valid mail and developer
-        response = await request.get('/projects').set({ 'Authorization': userToken })
-            .send({ user: user.email() }).expect(200).expect('Content-Type', /json/)
+        response = await request.get('/projects/0/' + user.email()).set({ 'Authorization': userToken })
+            .expect(200).expect('Content-Type', /json/)
         if (response.body.length < 1) throw 'Error in return projects size!'
 
         // valid mail and module chief
-        response = await request.get('/projects').set({ 'Authorization': user2Token })
-            .send({ user: user2.email() }).expect(200).expect('Content-Type', /json/)
+        response = await request.get('/projects/0/' + user2.email()).set({ 'Authorization': user2Token })
+            .expect(200).expect('Content-Type', /json/)
         if (response.body.length < 1) throw 'Error in return projects size!'
 
         let nowDate = new Date()
@@ -246,14 +245,14 @@ describe('test projects\' operations', function() {
         try { await new DBProject({ name: PROJECT[2].name, chief: chief._id(), modules: [] }).save() } catch (_) { }
 
         // no token
-        await request.get('/projects/' + PROJECT[2].name).expect(500).expect('Token has not been passed!')
+        await request.get('/projects/project/' + PROJECT[2].name).expect(500).expect('Token has not been passed!')
 
         // invalid token
-        await request.get('/projects/' + PROJECT[2].name).set({ 'Authorization': 'john' }).expect(401)
+        await request.get('/projects/project/' + PROJECT[2].name).set({ 'Authorization': 'john' }).expect(401)
 
         // valid token
-        let response = await request.get('/projects/' + PROJECT[2].name).set({ 'Authorization': chiefToken }).expect(200)
-            .expect('Content-Type', /json/)
+        let response = await request.get('/projects/project/' + PROJECT[2].name).set({ 'Authorization': chiefToken })
+            .expect(200).expect('Content-Type', /json/)
         if (response.body.name !== PROJECT[2].name) throw 'Response does not contains project!'
 
         let project = await Project.findByName(PROJECT[3].name)
@@ -261,7 +260,7 @@ describe('test projects\' operations', function() {
         await project.refresh()
 
         // valid mail and developer
-        response = await request.get('/projects/' + PROJECT[2].name).set({ 'Authorization': userToken })
+        response = await request.get('/projects/project/' + PROJECT[2].name).set({ 'Authorization': userToken })
             .expect(200).expect('Content-Type', /json/)
         if (response.body.name !== PROJECT[2].name) throw 'Response does not contains project!'
 
