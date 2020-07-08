@@ -200,20 +200,99 @@ paths:
   '/projects':
     get:
       tags: [projects]
-      summary: Get projects info
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                skipN:
-                  type: number
-                  description: Skip first N projects.
-                user:
-                  type: string
-                  description: Email of a user. Used to get project on which a user works.
-        required: true
+      summary: Get info of first 100 projects
+      responses:
+        200:
+          description: Up to FIRST 100 project
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      description: Name of the project
+                    chief:
+                      type: string
+                      description: Email of the project's chief
+                    modules:
+                      type: array
+                      items:
+                        type: string
+                        description: Name of the module
+                    description:
+                      type: string
+                      description: Description of the project. May not exist
+                    deadline:
+                      type: string
+                      description: Deadline of the project
+        403:
+          description: Account is blocked
+        404:
+          description: User-token not found
+
+  '/projects/{skipN}':
+    get:
+      tags: [projects]
+      summary: Get info of 100 projects from a certain value (i.e., skipping first Ns)
+      parameters:
+        - in: path
+          name: skipN
+          description: Skip first N projects
+          schema:
+            type: number
+          required: true
+      responses:
+        200:
+          description: Up to 100 project
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      description: Name of the project
+                    chief:
+                      type: string
+                      description: Email of the project's chief
+                    modules:
+                      type: array
+                      items:
+                        type: string
+                        description: Name of the module
+                    description:
+                      type: string
+                      description: Description of the project. May not exist
+                    deadline:
+                      type: string
+                      description: Deadline of the project
+        403:
+          description: Account is blocked
+        404:
+          description: User-token not found
+  
+  '/projects/{skipN}/{user}':
+    get:
+      tags: [projects]
+      summary: Get info of 100 projects from a certain value and related to specified user (i.e., in wich works or is chief)
+      parameters:
+        - in: path
+          name: skipN
+          description: Skip first N projects
+          schema:
+            type: number
+          required: true
+        - in: path
+          name: user
+          description: Email of a user. Used to get project on which a user works
+          schema:
+            type: string
+          required: true
       responses:
         200:
           description: Up to 100 project
@@ -277,11 +356,11 @@ paths:
           description: Account is blocked
         404:
           description: User-token not found
+
+  '/projects/project/{projectName}':
     get:
       tags: [projects]
       summary: Get project info (submodules). Needs to be a member of the project
-      security:
-        - bearerAuth: []
       parameters:
         - in: path
           name: projectName
@@ -289,6 +368,7 @@ paths:
           schema:
             type: string
           required: true
+      # TODO auth
       responses:
         200:
           description: Info of the project
@@ -454,7 +534,7 @@ paths:
           description: No message
     get:
       tags: [chats]
-      summary: Get 100 messages from the module chat
+      summary: Get first 100 messages from the module chat
       security:
         - bearerAuth: []
       parameters:
@@ -470,15 +550,53 @@ paths:
           schema:
             type: string
           required: true
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                skipN:
-                  type: number
-                  description: Skip first N messages
+      responses:
+        200:
+          description: Up to first 100 messages
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    date:
+                      type: string
+                    sender:
+                      type: string
+                      description: Email of the message sender
+                    message:
+                      type: string
+        403:
+          description: Not developer or chief of the module. Otherwise the account is blocked.
+        404:
+          description: Project, module or user-token not found
+
+  '/projects/{projectName}/modules/{moduleName}/messages/{skipN}':
+    get:
+      tags: [chats]
+      summary: Get 100 messages from the module chat from a certain value (i.e., skipping first Ns)
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: projectName
+          description: Name of the project
+          schema:
+            type: string
+          required: true
+        - in: path
+          name: moduleName
+          description: Name of the module
+          schema:
+            type: string
+          required: true
+        - in: path
+          name: skipN
+          description: Skip first N messages
+          schema:
+            type: number
+          required: true
       responses:
         200:
           description: Up to 100 messages
@@ -541,7 +659,7 @@ paths:
           description: No task specified
     get:
       tags: [kanbans]
-      summary: Get 100 tasks from the module kanban
+      summary: Get first 100 tasks from the module kanban
       security:
         - bearerAuth: []
       parameters:
@@ -557,18 +675,59 @@ paths:
           schema:
             type: string
           required: true
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                skipN:
-                  type: number
-                  description: Skip first N tasks
-                user:
-                  type: string
-                  description: Email of the user. Used to get only the task assigned to the user
+      responses:
+        200:
+          description: Up to 100 tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      description: ID of the task
+                    taskDescription:
+                      type: string
+                      description: Description of the task
+                    status:
+                      type: string
+                      enum: [TO-DO, IN-PROGRESS, DONE]
+                      description: Progress status of the task
+                    assignee:
+                      type: string
+                      description: Email of the developer assigned. If no user is assigned, this var will not be available
+        403:
+          description: Not developer or chief of the module. Otherwise the account is blocked.
+        404:
+          description: Project, module or user-token not found
+
+  '/projects/{projectName}/modules/{moduleName}/kanban/{skipN}':
+    get:
+      tags: [kanbans]
+      summary: Get 100 tasks from the module kanban from a certain value (i.e., skipping first Ns)
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: projectName
+          description: Name of the project
+          schema:
+            type: string
+          required: true
+        - in: path
+          name: moduleName
+          description: Name of the module
+          schema:
+            type: string
+          required: true
+        - in: path
+          name: skipN
+          description: Skip first N messages
+          schema:
+            type: number
+          required: true
       responses:
         200:
           description: Up to 100 tasks
