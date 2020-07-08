@@ -198,7 +198,7 @@ describe('test kanban\' operations', function() {
         // invalid assignee
         await request.put('/projects/' + PROJECT[1].name + '/modules/' + PROJECT[1].modules[0] + '/kanban/' + task1ID)
             .set({ 'Authorization': chiefToken }).send({ newState: 'IN-PROGRESS', assignee: randomUser.email() })
-            .expect(403)
+            .expect(409)
 
         // valid token chief
         await request.put('/projects/' + PROJECT[1].name + '/modules/' + PROJECT[1].modules[0] + '/kanban/' + task1ID)

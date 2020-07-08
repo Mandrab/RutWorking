@@ -54,7 +54,7 @@ export async function getProjectInfo(projectName: string) {
     let result: any = {
         name: project.name(),
         chief: chief.email(),
-        modules: project.modules().map(it => it.name)
+        modules: project.modules().map(it => it.name())
     }
     if (project.description()) result.description = project.description()
     if (project.deadline()) result.deadline = project.deadline()

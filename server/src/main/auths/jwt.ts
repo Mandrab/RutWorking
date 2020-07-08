@@ -153,7 +153,7 @@ export function or(...conditions: ((request: any, result: any, next?: Function) 
         }
         if (res !== true) {
             if (res && res.code && res.message) result.status(res.code).send(res.message)
-            else result.status(409).send('Internal error: no condition satisfied')
+            else result.status(500).send('No condition satisfied')
         } else if (next) next()
     }
 }
