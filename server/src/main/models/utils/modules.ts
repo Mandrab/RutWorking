@@ -7,11 +7,16 @@ import { Schema } from "mongoose"
 import { User, Project } from ".."
 import { DBProject } from "../db"
 
-export async function newModule(name: string, chiefID: Schema.Types.ObjectId | string, projectName: string) {
+export async function newModule(
+    name: string, chiefID: Schema.Types.ObjectId | string,
+    projectName: string,
+    description?: string,
+    deadline?: string
+) {
     let user = await User.findById(chiefID)
     let project = await Project.findByName(projectName)
 
-    project.newModule(name, user._id())
+    project.newModule(name, user._id(), description, deadline ? new Date(deadline) : null)
     return { code: 200, message: ''}
 }
 
@@ -22,11 +27,14 @@ export async function getModuleInfo(projectName: string, moduleName: string) {
 
     let chief = await module.chief()
     let developers = await Promise.all(module.developers())
-    return {
+    let result: any = {
         name: module.name(),
-        chief: chief.email(),
-        developers: developers.map(it => it.email())
+        chief: chief.email()
     }
+    if (module.description()) result.description = module.description()
+    if (module.deadline()) result.deadline = module.deadline()
+    result.developers = developers.map(it => it.email())
+    return result
 }
 
 export async function addDeveloper(projectName: string, moduleName: string, userEmail: string) {

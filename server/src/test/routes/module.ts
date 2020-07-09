@@ -113,7 +113,7 @@ describe('test modules\' operations', function() {
         ])
     })
 
-    //after(async function() { return clean() })
+    after(async function() { return clean() })
 
     var clean = async () => {
         try { await DBUser.deleteOne({ email: PROJECTS[0].chief.email }) } catch (_) { }

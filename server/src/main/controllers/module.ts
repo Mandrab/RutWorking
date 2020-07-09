@@ -20,8 +20,13 @@ export async function newModule(request: any, result: any) {
 
         if (user.toString() !== project.chiefID().toString()) return result.status(403).send('Unauthorized!')
 
-        if (!request.chief) await _newModule(request.params.moduleName, user, project.name())
-        else await _newModule(request.params.moduleName, request.chief, project.name())
+        await _newModule(
+            request.params.moduleName,
+            request.chief ? request.chief : user,
+            project.name(),
+            request.body.description,
+            request.body.deadline
+        )
 
         result.status(201).send('Project succesfully created!')
     } catch(err) {

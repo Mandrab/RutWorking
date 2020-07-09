@@ -14,6 +14,8 @@ export class Module {
     name(): string { return this.module.name }
     chiefID(): Schema.Types.ObjectId { return this.module.chief }
     chief(): Promise<User> { return User.findById(this.module.chief) }
+    description() { return this.module.description }
+    deadline() { return this.module.deadline }
     developersIDs(): Array<Schema.Types.ObjectId> { return this.module.developers }
     developers(): Array<Promise<User>> {
         return this.module.developers.map((developerID: Schema.Types.ObjectId) => User.findById(developerID))

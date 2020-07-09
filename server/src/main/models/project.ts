@@ -24,15 +24,19 @@ export class Project {
      * @param _name of the module
      * @param chiefID id of module chief
      */
-    async newModule(_name: string, chiefID: Schema.Types.ObjectId) {
+    async newModule(_name: string, chiefID: Schema.Types.ObjectId, description?: string, deadline?: Date) {
+        let obj: any = {
+            name: _name,
+            chief: chiefID
+        }
+        if (description) obj.description = description
+        if (deadline) obj.deadline = deadline
+        obj.developers = []
+        obj.chatMessages = []
+        obj.kanbanItems = []
+
         await DBProject.updateOne({_id: this._id(), "modules.name": { "$ne": _name } }, {
-            $push: { modules: {
-                name: _name,
-                chief: chiefID,
-                developers: [],
-                chatMessages: [],
-                kanbanItems: []
-            } as IDBModule }
+            $push: { modules: obj as IDBModule }
         })
     }
 
