@@ -36,7 +36,7 @@ export async function newMessage(request: any, result: any) {
 
 export async function getMessages(request: any, result: any) {
     try {
-        let skipMessage = request.body.skipN ? request.body.skipN : 0
+        let skipMessage = request.params.skipN ? parseInt(request.params.skipN, 10) : 0
 
         let messages = await _getMessages(request.params.projectName, request.params.moduleName, skipMessage)
 

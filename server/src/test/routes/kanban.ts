@@ -270,20 +270,20 @@ describe('test kanban\' operations', function() {
             .set({ 'Authorization': chiefToken }).expect(200)
 
         // skip first
-        res = await request.get('/projects/' + PROJECT[2].name + '/modules/' + PROJECT[2].modules[0] + '/kanban')
-            .set({ 'Authorization': developerToken }).send({ skipN: 1 }).expect(200)
+        res = await request.get('/projects/' + PROJECT[2].name + '/modules/' + PROJECT[2].modules[0] + '/kanban/1')
+            .set({ 'Authorization': developerToken }).expect(200)
         if (res.body.length !== initialTasksN -1) throw 'Wrong number of tasks returned'
 
         // filter user
-        res = await request.get('/projects/' + PROJECT[2].name + '/modules/' + PROJECT[2].modules[0] + '/kanban')
-            .set({ 'Authorization': developerToken }).send({ user: developer.email() }).expect(200)
+        res = await request.get('/projects/' + PROJECT[2].name + '/modules/' + PROJECT[2].modules[0] + '/kanban/0/' + developer.email())
+            .set({ 'Authorization': developerToken }).expect(200)
         if (res.body.length !== 0) throw 'Wrong number of tasks returned'
 
         await module.updateTaskStatus(task1ID, KANBAN_STATES.IN_PROGRESS, developer._id())
 
         // filter user
-        res = await request.get('/projects/' + PROJECT[2].name + '/modules/' + PROJECT[2].modules[0] + '/kanban')
-            .set({ 'Authorization': developerToken }).send({ user: developer.email() }).expect(200)
+        res = await request.get('/projects/' + PROJECT[2].name + '/modules/' + PROJECT[2].modules[0] + '/kanban/0/' + developer.email())
+            .set({ 'Authorization': developerToken }).expect(200)
         if (res.body.length !== 1) throw 'Wrong number of tasks returned'
 
         return Promise.resolve()
