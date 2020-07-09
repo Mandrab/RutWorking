@@ -180,9 +180,8 @@ describe('test modules\' operations', function() {
         await request.delete('/projects/FAKE' + PROJECTS[0].name + '/modules/' + moduleName)
             .set({ 'Authorization': chiefToken }).expect(404)
 
-        // TODO uncomment: delete not implemented.. no module
-        //await request.delete('/projects/' + PROJECTS[0].name + '/modules/FAKE' + moduleName)
-        //    .set({ 'Authorization': chiefToken }).expect(404)
+        await request.delete('/projects/' + PROJECTS[0].name + '/modules/FAKE' + moduleName)
+            .set({ 'Authorization': chiefToken }).expect(404)
 
         // valid token
         await request.delete('/projects/' + PROJECTS[0].name + '/modules/' + moduleName)

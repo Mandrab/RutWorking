@@ -4,7 +4,7 @@
  * @author Paolo Baldini
  */
 import { isRole, _isRole, _isChief, or, _isDeveloper, isChief, isActive } from '../auths/jwt'
-import { newModule, getModuleInfo, endModule, addDeveloper } from '../controllers/module'
+import { newModule, getModuleInfo, deleteModule, addDeveloper } from '../controllers/module'
 import { Roles } from '../models'
 
 const _isAdmin = _isRole(Roles.ADMIN)
@@ -35,5 +35,5 @@ module.exports = function (app: any) {
     app.delete('/projects/:projectName/modules/:moduleName', [
         isActive,
         or(_isAdmin, _isModuleChief)
-    ], endModule) // TODO
+    ], deleteModule)
 }

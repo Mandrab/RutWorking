@@ -38,6 +38,8 @@ export class Project {
 
     async refresh() { this.project = await DBProject.findById(this._id()) }
 
+    async delete() { return await DBProject.findByIdAndRemove(this._id()) }
+
     /**
      * Create a project object by the project found throught the `searchStrategy`
      *

@@ -56,4 +56,15 @@ export async function getModuleInfo(request: any, result: any) {
     }
 }
 
-export async function endModule(request: any, result: any) { result.status(200).send('TODO')/* TODO */ }
+export async function deleteModule(request: any, result: any) {
+    try {
+        let project = await Project.findByName(request.params.projectName)
+        let module = project.modules().find(it => it.name() === request.params.moduleName)
+
+        await module.delete()
+        result.status(200).send('Module succesfully removed')
+    } catch(err) {
+        if (err.code && err.message) result.status(err.code).send(err.message)
+        else result.status(500).send('Internal error')
+    }
+}

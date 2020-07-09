@@ -27,6 +27,12 @@ export class Module {
 
     constructor(private module: IDBModule, private parentID: Schema.Types.ObjectId) { }
 
+    async delete() {
+        return await DBProject.updateOne({ _id: this.parentID }, {
+            $pull: { "modules": { name: this.name() } }
+        })
+    }
+
     async addDevelop(userID: Schema.Types.ObjectId) {
         await DBProject.updateOne({_id: this.parentID, "modules._id": this._id() }, {
             $addToSet: { "modules.$.developers": userID }
