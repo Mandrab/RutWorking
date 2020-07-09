@@ -38,7 +38,15 @@ export async function getProjects(skipFirst: number = 0, userID?: Schema.Types.O
         let result: any = {
             name: it.name,
             chief: (await User.findById(it.chief)).email(),
-            modules: it.modules.map(it => it.name)
+            modules: it.modules.map(it => {
+                let module: any = {
+                    name: it.name,
+                    chiefID: it.chief
+                }
+                if (it.description) module.description = it.description
+                if (it.deadline) module.deadline = it.deadline
+                return module
+            })
         }
         if (it.description) result.description = it.description
         if (it.deadline) result.deadline = it.deadline
@@ -54,7 +62,15 @@ export async function getProjectInfo(projectName: string) {
     let result: any = {
         name: project.name(),
         chief: chief.email(),
-        modules: project.modules().map(it => it.name())
+        modules: project.modules().map(it => {
+            let module: any = {
+                name: it.name(),
+                chiefID: it.chiefID()
+            }
+            if (it.description()) result.description = it.description()
+            if (it.deadline()) result.deadline = it.deadline()
+            return module
+        })
     }
     if (project.description()) result.description = project.description()
     if (project.deadline()) result.deadline = project.deadline()
