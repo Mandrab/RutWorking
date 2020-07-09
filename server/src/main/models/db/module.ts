@@ -57,7 +57,7 @@ export enum KANBAN_STATES {
  */
 export interface IDBKanbanItem extends Document {
     taskDescription: string,
-    status: Schema.Types.ObjectId,
+    status: string,
     assignee: Schema.Types.ObjectId,
 }
 

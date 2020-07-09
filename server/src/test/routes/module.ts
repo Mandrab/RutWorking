@@ -113,7 +113,7 @@ describe('test modules\' operations', function() {
         ])
     })
 
-    after(async function() { return clean() })
+    //after(async function() { return clean() })
 
     var clean = async () => {
         try { await DBUser.deleteOne({ email: PROJECTS[0].chief.email }) } catch (_) { }
@@ -350,6 +350,7 @@ describe('test modules\' operations', function() {
         await module.newTask('x')
         await module.newTask('y')
         await module.refresh()
+
         let task1 = module.kanbanItems()[0]
         let task2 = module.kanbanItems()[1]
         module.updateTaskStatus(task1._id(), KANBAN_STATES.IN_PROGRESS, user._id())
@@ -388,8 +389,13 @@ describe('test modules\' operations', function() {
             '/developers/' + user.email()).set({ 'Authorization': chiefToken }).expect(200)
 
         await module.refresh()
+
         if (module.developersIDs().length !== 0) throw 'Wrong number of developers!'
-        if (module.kanbanItems().length !== 1) throw 'Wrong number of tasks!'
+        if (module.kanbanItems().length !== 2) throw 'Wrong number of tasks!'
+        if (
+            !module.kanbanItems().some(it => it.status() === KANBAN_STATES.DONE)
+            && !module.kanbanItems().some(it => it.status() === KANBAN_STATES.TODO)
+        ) throw 'Wrong tasks states!'
 
         return Promise.resolve()
     })

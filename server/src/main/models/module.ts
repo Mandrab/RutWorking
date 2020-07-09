@@ -42,12 +42,25 @@ export class Module {
     }
 
     async removeDeveloper(userID: Schema.Types.ObjectId) {
-        await DBProject.updateOne({ _id: this.parentID, "modules._id": this._id() },
+        // remove user from module developers
+        await DBProject.updateOne(
+            { _id: this.parentID, "modules._id": this._id() },
+            { $pull: { "modules.$.developers": userID } }
+        )
+        // reset user's task in-progress as to-do
+        await DBProject.updateMany(
+            { _id: this.parentID },
             {
-                $pull: {
-                    "modules.$.developers": userID,
-                    "modules.$.kanbanItems": { assignee: userID, status: { $ne: KANBAN_STATES.DONE } }
-                }
+                $set: { "modules.$[module].kanbanItems.$[kanbanItem].status": KANBAN_STATES.TODO },
+                $unset: { "modules.$[module].kanbanItems.$[kanbanItem].assignee": "" }
+            }, {
+                arrayFilters : [
+                    { "module._id" : this._id() },
+                    {
+                        "kanbanItem.status": { $ne: KANBAN_STATES.DONE },
+                        "kanbanItem.assignee": userID
+                    }
+                ] 
             }
         )
     }
@@ -134,7 +147,7 @@ class Message implements IMessage {
 export interface IKanbanItem {
     _id(): Schema.Types.ObjectId
     taskDescription(): string
-    status(): Schema.Types.ObjectId
+    status(): string,
     assigneeID(): Schema.Types.ObjectId
     assignee(): Promise<User>
 }
@@ -142,7 +155,7 @@ export interface IKanbanItem {
 class KanbanItem implements IKanbanItem {
     _id(): Schema.Types.ObjectId { return this.kanbanItem._id }
     taskDescription(): string { return this.kanbanItem._id }
-    status(): Schema.Types.ObjectId { return this.kanbanItem.status }
+    status(): string { return this.kanbanItem.status }
     assigneeID(): Schema.Types.ObjectId { return this.kanbanItem.assignee }
     assignee(): Promise<User> { return User.findById(this.kanbanItem.assignee) }
 

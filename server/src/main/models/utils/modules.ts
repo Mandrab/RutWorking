@@ -50,7 +50,7 @@ export async function removeDeveloper(projectName: string, moduleName: string, u
     let project = await Project.findByName(projectName)
     let module = project.modules().find(it => it.name() === moduleName)
 
-    module.removeDeveloper(user._id())
+    await module.removeDeveloper(user._id())
 }
 
 export async function getTasks(projectName: string, moduleName: string, skipFirst: number = 0, userID?: Schema.Types.ObjectId) {
