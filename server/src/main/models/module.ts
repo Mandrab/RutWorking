@@ -33,10 +33,21 @@ export class Module {
         })
     }
 
-    async addDevelop(userID: Schema.Types.ObjectId) {
+    async addDeveloper(userID: Schema.Types.ObjectId) {
         await DBProject.updateOne({_id: this.parentID, "modules._id": this._id() }, {
             $addToSet: { "modules.$.developers": userID }
         })
+    }
+
+    async removeDeveloper(userID: Schema.Types.ObjectId) {
+        await DBProject.updateOne({ _id: this.parentID, "modules._id": this._id() },
+            {
+                $pull: {
+                    "modules.$.developers": userID,
+                    "modules.$.kanbanItems": { assignee: userID, status: { $ne: KANBAN_STATES.DONE } }
+                }
+            }
+        )
     }
 
     /**

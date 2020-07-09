@@ -34,7 +34,15 @@ export async function addDeveloper(projectName: string, moduleName: string, user
     let project = await Project.findByName(projectName)
     let module = project.modules().find(it => it.name() === moduleName)
 
-    module.addDevelop(user._id())
+    module.addDeveloper(user._id())
+}
+
+export async function removeDeveloper(projectName: string, moduleName: string, userEmail: string) {
+    let user = await User.findByEmail(userEmail)
+    let project = await Project.findByName(projectName)
+    let module = project.modules().find(it => it.name() === moduleName)
+
+    module.removeDeveloper(user._id())
 }
 
 export async function getTasks(projectName: string, moduleName: string, skipFirst: number = 0, userID?: Schema.Types.ObjectId) {

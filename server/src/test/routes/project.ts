@@ -211,7 +211,7 @@ describe('test projects\' operations', function() {
         let project = await Project.findByName(PROJECT[3].name)
         await project.newModule('module', user2._id())
         await project.refresh()
-        project.modules().find(it => it.name() === 'module').addDevelop(user._id())
+        project.modules().find(it => it.name() === 'module').addDeveloper(user._id())
 
         // valid mail and developer
         response = await request.get('/projects/0/' + user.email()).set({ 'Authorization': userToken })

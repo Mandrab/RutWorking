@@ -4,7 +4,7 @@
  * @author Paolo Baldini
  */
 import { isRole, _isRole, _isChief, or, _isDeveloper, isChief, isActive } from '../auths/jwt'
-import { newModule, getModuleInfo, deleteModule, addDeveloper } from '../controllers/module'
+import { newModule, getModuleInfo, deleteModule, addDeveloper, removeDeveloper } from '../controllers/module'
 import { Roles } from '../models'
 
 const _isAdmin = _isRole(Roles.ADMIN)
@@ -31,9 +31,15 @@ module.exports = function (app: any) {
         isChief('module')
     ], addDeveloper)
 
-    // the project chief or an admin can block a project
+    // the project chief or an admin can delete a project
     app.delete('/projects/:projectName/modules/:moduleName', [
         isActive,
         or(_isAdmin, _isModuleChief)
     ], deleteModule)
+
+    // the project chief or an admin can remove a developer
+    app.delete('/projects/:projectName/modules/:moduleName/developers/:developerEmail', [
+        isActive,
+        isChief('module')
+    ], removeDeveloper)
 }

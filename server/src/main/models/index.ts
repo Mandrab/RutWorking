@@ -18,6 +18,7 @@ export {
     newModule,
     getModuleInfo,
     addDeveloper,
+    removeDeveloper,
     getTasks,
     getMessages
 } from './utils/modules'

@@ -82,7 +82,7 @@ export async function getTasks(request: any, result: any) {
         } else tasks = await _getTasks(request.params.projectName, request.params.moduleName, skipTask)
 
         result.status(200).send(tasks)
-    } catch (err) {console.log(err)
+    } catch (err) {
         if (err.code && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
