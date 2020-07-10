@@ -25,7 +25,7 @@
 			</div>
 			<div class="col-12 col-md-8 col-xl-9">
 				<div>
-                    <createProjectForm v-if="creating" @hide="hideProjectCreationForm"></createProjectForm>
+                    <createProjectForm v-if="creating" @projectAdded="addProject" @hide="hideProjectCreationForm"></createProjectForm>
 				</div>
                 <div>
                     <projectDetail v-if="showDetail" :project="projectDetail"></projectDetail>
@@ -66,6 +66,10 @@ export default {
         this.init();
     },
     methods: {
+        addProject () {
+            alert("progetto aggiunto mi accingo a refreshare");
+            this.getProjectList();
+        },
         showUserName () {
             this.username = JSON.parse(localStorage.getItem('user')).email;
         },

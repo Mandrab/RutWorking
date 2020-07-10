@@ -72,13 +72,23 @@ export default {
                 "description": this.project.description,
                 "deadline": this.deadline.toString(),
             }
-            vm.$http.post(localStorage.getItem('path') + '/projects/' + project.projectName, json, tokenjson).then(function(response) {
+            vm.$http.post(localStorage.getItem('path') + '/projects/project/' + project.projectName, json, tokenjson).then(function(response) {
                 console.log(response.body);
                 console.log(this.creating);
+                //mando un emit al padre con il progetto appena creato
+                //var myEmail = localStorage.getItem
+                /*var project =   {
+                                    "name": project.projectName,
+                                    "chief": "prova@gmail.com",
+                                    "modules": [],
+                                    "description": "descrizione progetto 4",
+                                    "deadline": "2020-09-27T00:00:00.000Z"
+                                }*/
+                this.$emit('projectAdded');
                 this.closeForm();
-                console.log(this.creating);
             }, (err) => {
                 alert(err);
+                console.log(err);
                 console.log(err.body);
                 this.creating = false;
             });
