@@ -6,6 +6,7 @@
 import {
     newModule as _newModule,
     addDeveloper as _addDeveloper,
+    removeDeveloper as _removeDeveloper,
     getModuleInfo as _getModuleInfo,
     Project
 } from '../models'
@@ -19,8 +20,13 @@ export async function newModule(request: any, result: any) {
 
         if (user.toString() !== project.chiefID().toString()) return result.status(403).send('Unauthorized!')
 
-        if (!request.chief) await _newModule(request.params.moduleName, user, project.name())
-        else await _newModule(request.params.moduleName, request.chief, project.name())
+        await _newModule(
+            request.params.moduleName,
+            request.chief ? request.chief : user,
+            project.name(),
+            request.body.description,
+            request.body.deadline
+        )
 
         result.status(201).send('Project succesfully created!')
     } catch(err) {
@@ -37,7 +43,21 @@ export async function addDeveloper(request: any, result: any) {
 
         await _addDeveloper(projectName, moduleName, userEmail)
         result.status(200).send('Succesfully added!')
-    } catch(err) {console.log(err)
+    } catch(err) {
+        if (err.code && err.message) result.status(err.code).send(err.message)
+        else result.status(500).send('Internal error')
+    }
+}
+
+export async function removeDeveloper(request: any, result: any) {
+    try {
+        let projectName = request.params.projectName
+        let moduleName = request.params.moduleName
+        let userEmail = request.params.developerEmail
+
+        await _removeDeveloper(projectName, moduleName, userEmail)
+        result.status(200).send('Developer succesfully removed')
+    } catch(err) {
         if (err.code && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
@@ -56,4 +76,15 @@ export async function getModuleInfo(request: any, result: any) {
     }
 }
 
-export async function endModule(request: any, result: any) { result.status(200).send('TODO')/* TODO */ }
+export async function deleteModule(request: any, result: any) {
+    try {
+        let project = await Project.findByName(request.params.projectName)
+        let module = project.modules().find(it => it.name() === request.params.moduleName)
+
+        await module.delete()
+        result.status(200).send('Module succesfully removed')
+    } catch(err) {
+        if (err.code && err.message) result.status(err.code).send(err.message)
+        else result.status(500).send('Internal error')
+    }
+}

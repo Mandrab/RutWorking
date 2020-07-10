@@ -8,7 +8,7 @@ import {
     getProjects as _getProjects,
     getProjectInfo as _getProjectInfo
 } from '../models/utils/projects'
-import { User } from '../models'
+import { User, Project } from '../models'
 
 export async function newProject(request: any, result: any) {
     try {
@@ -51,4 +51,14 @@ export async function getProjectInfo(request: any, result: any) {
     }
 }
 
-export async function blockProject(request: any, result: any) { result.status(200).send('TODO')/* TODO */ }
+export async function deleteProject(request: any, result: any) {
+    try {
+        let project = await Project.findByName(request.params.name)
+        await project.delete()
+
+        result.status(200).send('Project succesfully removed')
+    } catch (err) {
+        if (err.code && err.message) result.status(err.code).send(err.message)
+        else result.status(500).send('Internal error')
+    }
+}

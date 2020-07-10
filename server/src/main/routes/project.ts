@@ -4,7 +4,7 @@
  * @author Paolo Baldini
  */
 import { isRole, _isRole, _isChief, or, isActive } from '../auths/jwt'
-import { newProject, getProjectInfo, blockProject, getProjects } from '../controllers/project'
+import { newProject, getProjectInfo, deleteProject, getProjects } from '../controllers/project'
 import { Roles } from '../models'
 
 const isUser = isRole(Roles.USER)
@@ -14,7 +14,7 @@ const _isProjectChief = _isChief('project')
 
 module.exports = function (app: any) {
     // user can setup a new project
-    app.post('/projects/:name', [isActive, isUser], newProject)
+    app.post('/projects/project/:name', [isActive, isUser], newProject)
 
     // get info of a project
     app.get('/projects/project/:name', [isActive, or(_isUser, _isAdmin)], getProjectInfo)
@@ -23,5 +23,5 @@ module.exports = function (app: any) {
     app.get('/projects/:skipN?/:user?', [isActive, isUser], getProjects)
 
     // project chief or admin can block a project
-    app.delete('/projects/:name', [isActive, or(_isProjectChief, _isAdmin)], blockProject) // TODO
+    app.delete('/projects/project/:name', [isActive, or(_isProjectChief, _isAdmin)], deleteProject)
 }

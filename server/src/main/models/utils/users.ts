@@ -29,7 +29,7 @@ export async function login(userEmail: string, password: string): Promise<string
 
         if (!user.isActive()) throw { code: 403, message: 'Unable to login! Account has been deactivated!' }
 
-        return jwtSign({ id: user._id() },authSecret, { expiresIn: 86400 }) // 24 hours
+        return jwtSign({ id: user._id() }, authSecret, { expiresIn: 86400 }) // 24 hours
     } catch (err) {
         if (err.code && err.message) throw err
         throw { code: 500, message: 'Internal error!' }

@@ -41,7 +41,7 @@ export async function getMessages(request: any, result: any) {
         let messages = await _getMessages(request.params.projectName, request.params.moduleName, skipMessage)
 
         result.status(200).send(messages)
-    } catch (err) {console.log(err)
+    } catch (err) {
         if (err.code && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }

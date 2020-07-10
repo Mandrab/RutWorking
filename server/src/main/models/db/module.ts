@@ -10,6 +10,8 @@ mongooseSet('useCreateIndex', true)
 export interface IDBModule extends Document {
     name: string,
     chief: Schema.Types.ObjectId,
+    description: string,
+    deadline: Date,
     developers: Array<Schema.Types.ObjectId>,
     chatMessages: Array<IDBMessage>,
     kanbanItems: Array<IDBKanbanItem>
@@ -55,7 +57,7 @@ export enum KANBAN_STATES {
  */
 export interface IDBKanbanItem extends Document {
     taskDescription: string,
-    status: Schema.Types.ObjectId,
+    status: string,
     assignee: Schema.Types.ObjectId,
 }
 
@@ -90,6 +92,8 @@ export const ModuleSchema = new Schema({
         ref: "User",
         required: true
     },
+    description: String,
+    deadline: Date,
     developers: [{
         type: Schema.Types.ObjectId,
         ref: "User"

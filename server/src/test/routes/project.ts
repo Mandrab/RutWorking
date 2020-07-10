@@ -85,27 +85,27 @@ describe('test projects\' operations', function() {
         let userToken = sign({ id: user._id() }, secret, { expiresIn: 86400 })
 
         // no token passed
-        await request.post('/projects/' + PROJECT[0].name).expect(500).expect('Token has not been passed!')
+        await request.post('/projects/project/' + PROJECT[0].name).expect(500).expect('Token has not been passed!')
 
         // invalid token
-        await request.post('/projects/' + PROJECT[0].name).set({ 'Authorization': 'john' }).expect(401)
+        await request.post('/projects/project/' + PROJECT[0].name).set({ 'Authorization': 'john' }).expect(401)
 
         // valid token but admin
-        await request.post('/projects/' + PROJECT[0].name).set({ 'Authorization': adminToken }).expect(403)
+        await request.post('/projects/project/' + PROJECT[0].name).set({ 'Authorization': adminToken }).expect(403)
 
         // valid token
-        await request.post('/projects/' + PROJECT[0].name).set({ 'Authorization': userToken }).expect(201)
+        await request.post('/projects/project/' + PROJECT[0].name).set({ 'Authorization': userToken }).expect(201)
 
         // post with description
-        await request.post('/projects/' + PROJECT[4].name).set({ 'Authorization': userToken })
+        await request.post('/projects/project/' + PROJECT[4].name).set({ 'Authorization': userToken })
             .send({ description: 'qwerty' }).expect(201)
 
         // post with deadline
-        await request.post('/projects/' + PROJECT[5].name).set({ 'Authorization': userToken })
+        await request.post('/projects/project/' + PROJECT[5].name).set({ 'Authorization': userToken })
             .send({ deadline: new Date().toString() }).expect(201)
 
         // post with description and deadline
-        await request.post('/projects/' + PROJECT[6].name).set({ 'Authorization': userToken })
+        await request.post('/projects/project/' + PROJECT[6].name).set({ 'Authorization': userToken })
             .send({ description: 'qwerty', deadline: new Date().toString() }).expect(201)
 
         return Promise.resolve()
@@ -124,23 +124,32 @@ describe('test projects\' operations', function() {
         let user2Token = sign({ id: user2._id() }, secret, { expiresIn: 86400 })
         try { await new DBProject({ name: PROJECT[1].name, chief: user._id(), modules: [] }).save() } catch (_) {}
 
-        // no project with this name
-        await request.delete('/projects/X' + PROJECT[1].name).expect(500).expect('Token has not been passed!')
+        // no token passed
+        await request.delete('/projects/project/' + PROJECT[1].name).expect(500)
+            .expect('Token has not been passed!')
 
         // invalid token
-        await request.delete('/projects/' + PROJECT[1].name).set({ 'Authorization': 'john' }).expect(401)
+        await request.delete('/projects/project/' + PROJECT[1].name).set({ 'Authorization': 'john' })
+            .expect(401)
 
         // valid token but not chief
-        await request.delete('/projects/' + PROJECT[1].name).set({ 'Authorization': user2Token }).expect(403)
+        await request.delete('/projects/project/' + PROJECT[1].name).set({ 'Authorization': user2Token })
+            .expect(403)
+
+        // no project with this name (user cannot be chief of undefined)
+        await request.delete('/projects/project/X' + PROJECT[1].name).set({ 'Authorization': userToken })
+            .expect(403)
 
         // valid token and chief
-        await request.delete('/projects/' + PROJECT[1].name).set({ 'Authorization': userToken }).expect(200)
+        await request.delete('/projects/project/' + PROJECT[1].name).set({ 'Authorization': userToken })
+            .expect(200)
 
         // create a project to delete
         await new DBProject({ name: PROJECT[2].name, chief: user._id(), modules: [] }).save()
 
         // valid token and admin
-        await request.delete('/projects/' + PROJECT[2].name).set({ 'Authorization': adminToken }).expect(200)
+        await request.delete('/projects/project/' + PROJECT[2].name).set({ 'Authorization': adminToken })
+            .expect(200)
 
         return Promise.resolve()
     })
@@ -202,7 +211,7 @@ describe('test projects\' operations', function() {
         let project = await Project.findByName(PROJECT[3].name)
         await project.newModule('module', user2._id())
         await project.refresh()
-        project.modules().find(it => it.name() === 'module').addDevelop(user._id())
+        project.modules().find(it => it.name() === 'module').addDeveloper(user._id())
 
         // valid mail and developer
         response = await request.get('/projects/0/' + user.email()).set({ 'Authorization': userToken })

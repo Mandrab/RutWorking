@@ -14,6 +14,8 @@ export class Module {
     name(): string { return this.module.name }
     chiefID(): Schema.Types.ObjectId { return this.module.chief }
     chief(): Promise<User> { return User.findById(this.module.chief) }
+    description() { return this.module.description }
+    deadline() { return this.module.deadline }
     developersIDs(): Array<Schema.Types.ObjectId> { return this.module.developers }
     developers(): Array<Promise<User>> {
         return this.module.developers.map((developerID: Schema.Types.ObjectId) => User.findById(developerID))
@@ -27,10 +29,40 @@ export class Module {
 
     constructor(private module: IDBModule, private parentID: Schema.Types.ObjectId) { }
 
-    async addDevelop(userID: Schema.Types.ObjectId) {
+    async delete() {
+        return await DBProject.updateOne({ _id: this.parentID }, {
+            $pull: { "modules": { name: this.name() } }
+        })
+    }
+
+    async addDeveloper(userID: Schema.Types.ObjectId) {
         await DBProject.updateOne({_id: this.parentID, "modules._id": this._id() }, {
             $addToSet: { "modules.$.developers": userID }
         })
+    }
+
+    async removeDeveloper(userID: Schema.Types.ObjectId) {
+        // remove user from module developers
+        await DBProject.updateOne(
+            { _id: this.parentID, "modules._id": this._id() },
+            { $pull: { "modules.$.developers": userID } }
+        )
+        // reset user's task in-progress as to-do
+        await DBProject.updateMany(
+            { _id: this.parentID },
+            {
+                $set: { "modules.$[module].kanbanItems.$[kanbanItem].status": KANBAN_STATES.TODO },
+                $unset: { "modules.$[module].kanbanItems.$[kanbanItem].assignee": "" }
+            }, {
+                arrayFilters : [
+                    { "module._id" : this._id() },
+                    {
+                        "kanbanItem.status": { $ne: KANBAN_STATES.DONE },
+                        "kanbanItem.assignee": userID
+                    }
+                ] 
+            }
+        )
     }
 
     /**
@@ -115,7 +147,7 @@ class Message implements IMessage {
 export interface IKanbanItem {
     _id(): Schema.Types.ObjectId
     taskDescription(): string
-    status(): Schema.Types.ObjectId
+    status(): string,
     assigneeID(): Schema.Types.ObjectId
     assignee(): Promise<User>
 }
@@ -123,7 +155,7 @@ export interface IKanbanItem {
 class KanbanItem implements IKanbanItem {
     _id(): Schema.Types.ObjectId { return this.kanbanItem._id }
     taskDescription(): string { return this.kanbanItem._id }
-    status(): Schema.Types.ObjectId { return this.kanbanItem.status }
+    status(): string { return this.kanbanItem.status }
     assigneeID(): Schema.Types.ObjectId { return this.kanbanItem.assignee }
     assignee(): Promise<User> { return User.findById(this.kanbanItem.assignee) }
 
