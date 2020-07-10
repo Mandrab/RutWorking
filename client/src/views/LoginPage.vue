@@ -71,6 +71,7 @@ export default {
             var json = { 'userEmail': username, 'password': password };
             vm.$http.post(localStorage.getItem('path') + '/login', json).then(function(response) {
                 console.log(response.body);
+                console.log(response.body.accessToken); //
                 var obj = { email: username, token: response.body.accessToken };
                 localStorage.setItem('user', JSON.stringify(obj));
                 var user = JSON.parse(localStorage.getItem('user')); //

@@ -1,12 +1,19 @@
 <template>
-                <aside>
-					<ul class="list-group">
-					<li class="list-group-item">My Projects
-                        <button @click="showProjectCreation" class="btn btn-primary" :disabled="creating">+</button>
-					</li>
-                    <projectTile v-for="(tile, index) in projectsArr" :item="tile" :key="index"></projectTile>
-					</ul>
-				</aside>
+    <aside>
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-10 p-0 h2">
+                    My Projects
+                </div>
+            <div class="col-2 p-0">
+                <button @click="showProjectCreation" class="btn btn-primary" :disabled="creating">+</button>
+            </div>
+            </div>
+		</li>
+		<ul class="list-group">
+            <projectTile v-for="(tile, index) in projectsArr" :item="tile" :key="index" @openDetail="openDetail"></projectTile>
+		</ul>
+	</aside>
 </template>
 
 <script>
@@ -32,13 +39,16 @@ export default {
     },
     methods: {
         showProjectCreation () {
-            this.$emit('show');
+            this.$emit('showCreationForm');
         },
         showProject () {
             console.log(this.projects);
             this.projects.forEach(p => {
                 this.projectsArr.push(p);
             });
+        },
+        openDetail (event) {
+            this.$emit('detail', event);
         }
         
     }

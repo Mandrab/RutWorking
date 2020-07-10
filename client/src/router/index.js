@@ -23,6 +23,12 @@ const routes = [
     component: () =>
       import(/* webpackChunkName: "register" */ "../views/RegisterPage.vue") // lazy loading
   },
+  {
+    path: "/personalarea",
+    name: "PersonalArea",
+    component: () =>
+      import(/* webpackChunkName: "register" */ "../views/PersonalArea.vue") // lazy loading
+  },
   // otherwise redirect to home
   { path: '*', redirect: '/' }
 ];

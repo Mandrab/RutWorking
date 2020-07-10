@@ -1,10 +1,9 @@
 <template>
-    <li class="list-group-item"> 
+    <li class="list-group-item" @click="open"> 
         <div class="row font-weight-bold h5">
             {{ item.name }}
         </div>
-        
-        <div v-if='ready' class="row float-right small" v-bind:style="{ color: deadlineColor }">
+        <div v-if="ready" class="row float-right small" v-bind:style="{ color: deadlineColor }">
             {{ new Date(item.deadline).getDate() }}/{{ new Date(item.deadline).getMonth() }}/{{ new Date(item.deadline).getFullYear() }}
         </div>
     </li>		
@@ -37,6 +36,9 @@ export default {
                 this.deadlineColor = 'green';
             }
             this.ready = true;
+        },
+        open () {
+            this.$emit('openDetail', this.item);
         }
     }
 };
