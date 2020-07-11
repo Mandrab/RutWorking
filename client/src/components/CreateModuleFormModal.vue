@@ -10,7 +10,7 @@
                 </slot>
               </div>
 
-              <div class="modal-body text-danger">
+              <div class="modal-body">
                 <slot name="body">
                     
                     <form @submit.prevent="handleSubmit">
@@ -35,9 +35,10 @@
                         <button @click="closeForm" class="btn btn-link">Cancel</button>
                     </div>
                 </form>
-
                 </slot>
               </div>
+
+              <!-- Lista di moduli component -->
 
               <div class="modal-footer">
                 <slot name="footer">
@@ -65,6 +66,11 @@ export default {
             creating: false,
         }
     },
+    props: {
+        projectName: {
+            type: String
+        }
+    },
     watch: {
         deadline: function () {
             var date = new Date(this.deadline);
@@ -83,7 +89,6 @@ export default {
                     this.addModule(this.module);
                 }
             });
-           //this.addModule(this.module);
         },
         addModule (module) {
             this.creating = true;
@@ -93,19 +98,7 @@ export default {
                 "description": this.module.description,
                 "deadline": this.deadline.toString(),
             }
-
-
-
-
-            /*
-            
-            app.post('/projects/:projectName/modules/:moduleName', [
-                isActive,
-                isRole(Roles.USER)
-            ], newModule)
-    
-            */
-            vm.$http.post(localStorage.getItem('path') + '/modules/module/' + module.moduleName, json, tokenjson).then(function(response) {
+            vm.$http.post(localStorage.getItem('path') + 'projects/'+this.projectName+'/modules/' + module.moduleName, json, tokenjson).then(function(response) {
                 console.log(response.body);
                 console.log(this.creating);
                 //mando un emit al padre con il modulo appena creato
@@ -130,8 +123,9 @@ export default {
             this.creating = false;
             this.$emit('hide'); // notifico il padre
 
+        }
     }
-};
+}
 </script>
 
 <style scoped>
