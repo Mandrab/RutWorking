@@ -67,8 +67,8 @@ export async function getProjectInfo(projectName: string) {
                 name: it.name(),
                 chiefID: it.chiefID()
             }
-            if (it.description()) result.description = it.description()
-            if (it.deadline()) result.deadline = it.deadline()
+            if (it.description()) module.description = it.description()
+            if (it.deadline()) module.deadline = it.deadline()
             return module
         })
     }

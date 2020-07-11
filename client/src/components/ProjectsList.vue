@@ -6,7 +6,7 @@
                     My Projects
                 </div>
                 <div class="col-2 p-0">
-                    <button @click="showProjectCreation" class="btn btn-primary" :disabled="creating">+</button>
+                    <button @click="showProjectCreation" class="btn btn-primary">+</button>
                 </div>
             </div>
 		</li>
@@ -22,7 +22,6 @@ import projectTile from '../components/ProjectTile.vue'
 export default {
     data () {
         return {
-            creating: false,
             projectsArr: []
         }
     },

@@ -1,6 +1,6 @@
 <template>
-    <li class="list-group-item">
-        <div @click="open">
+    <li class="list-group-item" @click="open">
+        <div>
             <div class="row font-weight-bold h5">
                 {{ item.name }}
             </div>
@@ -33,6 +33,7 @@ export default {
     },
     methods: {
         checkDeadline () {
+            this.ready = false;
             var date = new Date(this.item.deadline);
             var today = new Date();
             if (date.getFullYear() < today.getFullYear() || date.getMonth() < today.getMonth() || date.getDate() < today.getDate()) {

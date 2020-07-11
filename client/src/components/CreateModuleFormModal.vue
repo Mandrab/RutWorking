@@ -64,10 +64,6 @@ export default {
             creating: false,
         }
     },
-    created: function () {
-        console.log("lsakdlaskdalskdlakdalskd")
-        console.log(this.mod);  
-    },
     props: {
         project: {
             type: Object

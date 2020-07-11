@@ -28,6 +28,7 @@ export default {
     },
     methods: {
         checkDeadline () {
+            this.ready = false;
             var date = new Date(this.item.deadline);
             var today = new Date();
             if (date.getFullYear() < today.getFullYear() || date.getMonth() < today.getMonth() || date.getDate() < today.getDate()) {

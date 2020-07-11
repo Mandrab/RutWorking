@@ -71,6 +71,7 @@ export default {
             this.projectReady = false;
             var vm = this;
             var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
+            console.log(localStorage.getItem('path') + '/projects/project/'+this.project.name);
             vm.$http.get(localStorage.getItem('path') + '/projects/project/'+this.project.name, tokenJson).then(function(response) {
                 console.log(response.body);
                 var res = response.body;
@@ -79,7 +80,7 @@ export default {
                 } catch (error) {console.log(error)}
                 this.projectDetail = res;//lo memorizzo nei data di questa view per poi poterlo passare al componente container (tramite props) che lo userà per creare i componenti tiles
 
-                this.modules = res.modules;
+                this.modulesArr = res.modules;
 
                 this.projectReady = true;
             }, (err) => {
