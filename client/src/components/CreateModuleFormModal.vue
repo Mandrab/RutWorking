@@ -38,8 +38,6 @@
                 </slot>
               </div>
 
-              <!-- Lista di moduli component -->
-
               <div class="modal-footer">
                 <slot name="footer">
                   <button class="modal-default-button btn btn-primary" @click="$emit('closeModal')">

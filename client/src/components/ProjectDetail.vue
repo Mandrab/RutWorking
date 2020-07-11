@@ -7,6 +7,9 @@
         <button class="btn btn-primary" v-if="isProjectChief" @click="showModalForm">+</button>
         {{ this.project.modules }}
 
+
+        <!-- Lista di moduli component -->
+
         <createModuleFormModal v-if="showModal" :project="project" @closeModal="closeModal" @moduleAdded="getModules"></createModuleFormModal>
     </div>
 </template>
