@@ -217,17 +217,29 @@ paths:
                     chief:
                       type: string
                       description: Email of the project's chief
-                    modules:
-                      type: array
-                      items:
-                        type: string
-                        description: Name of the module
                     description:
                       type: string
                       description: Description of the project. May not exist
                     deadline:
                       type: string
                       description: Deadline of the project
+                    modules:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                            description: Name of the module
+                          chief:
+                            type: string
+                            description: Email of the module's chief
+                          description:
+                            type: string
+                            description: OPTIONAL description of the module. Not set if description is not present
+                          deadline:
+                            type: string
+                            description: OPTIONAL deadline of the module. Not set if deadline is not present
         403:
           description: Account is blocked
         404:
@@ -325,7 +337,7 @@ paths:
         404:
           description: User-token not found
 
-  '/projects/{projectName}':
+  '/projects/project/{projectName}':
     post:
       tags: [projects]
       summary: Create a new project and become its chief
@@ -356,8 +368,6 @@ paths:
           description: Account is blocked
         404:
           description: User-token not found
-
-  '/projects/project/{projectName}':
     get:
       tags: [projects]
       summary: Get project info (submodules). Needs to be a member of the project
@@ -368,7 +378,6 @@ paths:
           schema:
             type: string
           required: true
-      # TODO auth
       responses:
         200:
           description: Info of the project
@@ -377,17 +386,52 @@ paths:
               schema:
                 type: object
                 properties:
-                  name:
-                    type: string
-                    description: Name of the project
-                  chief:
-                    type: string
-                    description: Email of the project's chief
-                  modules:
-                    type: array
-                    items:
+                    name:
                       type: string
-                      description: Name of the module
+                      description: Name of the project
+                    chief:
+                      type: string
+                      description: Email of the project's chief
+                    description:
+                      type: string
+                      description: Description of the project. May not exist
+                    deadline:
+                      type: string
+                      description: Deadline of the project
+                    modules:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                            description: Name of the module
+                          chief:
+                            type: string
+                            description: Email of the module's chief
+                          description:
+                            type: string
+                            description: OPTIONAL description of the module. Not set if description is not present
+                          deadline:
+                            type: string
+                            description: OPTIONAL deadline of the module. Not set if deadline is not present
+        403:
+          description: Account is blocked
+        404:
+          description: Project or user-token not found
+    delete:
+      tags: [projects]
+      summary: Delete specified project
+      parameters:
+        - in: path
+          name: projectName
+          description: Name of the project
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: Project succesfully removed
         403:
           description: Account is blocked
         404:
@@ -450,16 +494,42 @@ paths:
                     description: Name of the module
                   chief:
                     type: string
-                    description: Email of the module chief
-                  developers:
-                    type: array
-                    items:
-                      type: string
-                      description: Emails of the developers of the module
+                    description: Email of the module's chief
+                  description:
+                    type: string
+                    description: OPTIONAL description of the module. Not set if description is not present
+                  deadline:
+                    type: string
+                    description: OPTIONAL deadline of the module. Not set if deadline is not present
         403:
           description: Not project/module-chief nor developer or admin. Otherwise the account is blocked.
         404:
           description: Project or user-token not found
+    delete:
+      tags: [modules]
+      summary: Delete a module in the project
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: projectName
+          description: Name of the project
+          schema:
+            type: string
+          required: true
+        - in: path
+          name: moduleName
+          description: Name of the module
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: Module succesfully removed
+        403:
+          description: Not module-chief. Otherwise the account is blocked.
+        404:
+          description: Project, module or user-token not found
 
   '/projects/{projectName}/modules/{moduleName}/developers/{userEmail}':
     post:
@@ -493,6 +563,37 @@ paths:
           description: Not module-chief. Otherwise the account is blocked.
         404:
           description: Project, module or user-token not found
+    delete:
+      tags: [modules]
+      summary: Remove a developer from a project. It reset it's assigned tasks as 'TO-DO'
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: projectName
+          description: Name of the project
+          schema:
+            type: string
+          required: true
+        - in: path
+          name: moduleName
+          description: Name of the module
+          schema:
+            type: string
+          required: true
+        - in: path
+          name: userEmail
+          description: Email of the user to add
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: Developer succesfully removed
+        403:
+          description: Not module-chief. Otherwise the account is blocked.
+        404:
+          description: Project, module or users not found
 
   '/projects/{projectName}/modules/{moduleName}/messages':
     post:
