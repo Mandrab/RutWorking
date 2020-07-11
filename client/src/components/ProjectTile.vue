@@ -4,7 +4,7 @@
             {{ item.name }}
         </div>
         <div v-if="ready" class="row float-right small" v-bind:style="{ color: deadlineColor }">
-            {{ new Date(item.deadline).getDate() }}/{{ new Date(item.deadline).getMonth() }}/{{ new Date(item.deadline).getFullYear() }}
+            {{ new Date(item.deadline).getDate() }}/{{ new Date(item.deadline).getMonth() + 1 }}/{{ new Date(item.deadline).getFullYear() }}
         </div>
     </li>		
 </template>

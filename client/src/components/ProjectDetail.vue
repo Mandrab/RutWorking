@@ -1,5 +1,5 @@
 <template>
-    <div class="col-sm-6 offset-sm-3">
+    <div class="col-sm-12 offset-sm-0">
         <div class="projectInfo" v-if="projectReady">
             <h2>{{ this.project.name }}</h2>
             <div>
