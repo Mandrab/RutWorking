@@ -5,9 +5,9 @@
                 <div class="col-10 p-0 h2">
                     My Projects
                 </div>
-            <div class="col-2 p-0">
-                <button @click="showProjectCreation" class="btn btn-primary" :disabled="creating">+</button>
-            </div>
+                <div class="col-2 p-0">
+                    <button @click="showProjectCreation" class="btn btn-primary" :disabled="creating">+</button>
+                </div>
             </div>
 		</li>
 		<ul class="list-group">
