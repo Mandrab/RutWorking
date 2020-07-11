@@ -30,7 +30,7 @@
                         <div v-if="submitted && errors.has('deadline')" class="invalid-feedback">{{ errors.first('deadline') }}</div>
                     </div>
                     <div class="form-group">
-                        <button @click="handleSubmit" class="btn btn-primary" :disabled="creating">Add Module</button>
+                        <button @click.prevent="handleSubmit" class="btn btn-primary" :disabled="creating">Add Module</button>
                         <img v-show="creating" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
                         <button @click.prevent="closeForm" class="btn btn-link">Cancel</button>
                     </div>
@@ -64,6 +64,10 @@ export default {
             creating: false,
         }
     },
+    created: function () {
+        console.log("lsakdlaskdalskdlakdalskd")
+        console.log(this.mod);  
+    },
     props: {
         project: {
             type: Object
@@ -85,14 +89,13 @@ export default {
     methods: {
         handleSubmit() {
             this.submitted = true;
-            alert("qualcuno ha premuto ok")
             this.$validator.validate().then(valid => {
                 if (valid) {
-                    this.addModule(this.mod);
+                    this.addModule();
                 }
             });
         },
-        addModule (mod) {
+        addModule () {
             this.creating = true;
             var vm = this;
             var tokenjson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
@@ -100,7 +103,9 @@ export default {
                 "description": this.mod.description,
                 "deadline": this.deadline.toString(),
             }
-            vm.$http.post(localStorage.getItem('path') + 'projects/'+this.project.name+'/modules/' + this.mod.moduleName, json, tokenjson).then(function(response) {
+            console.log(localStorage.getItem('path') + '/projects/'+this.project.name+'/modules/' + this.mod.moduleName);
+
+            vm.$http.post(localStorage.getItem('path') + '/projects/'+this.project.name+'/modules/' + this.mod.moduleName, json, tokenjson).then(function(response) {
                 console.log(response.body);
                 console.log(this.creating);
                 this.$emit('moduleAdded');
