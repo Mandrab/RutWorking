@@ -32,7 +32,7 @@ export default {
         }
     },
     created () {
-        this.showProject();
+        this.showProjectList();
     },
     components: {
         projectTile
@@ -41,7 +41,7 @@ export default {
         showProjectCreation () {
             this.$emit('showCreationForm');
         },
-        showProject () {
+        showProjectList () {
             console.log(this.projects);
             this.projects.forEach(p => {
                 this.projectsArr.push(p);

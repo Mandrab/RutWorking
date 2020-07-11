@@ -1,26 +1,27 @@
 <template>
     <div class="col-sm-6 offset-sm-3">
-        <h2>Create Project</h2>
-        <div v-if="projectReady">
-
-            {{ this.project.name }}
-            {{ this.project.description }}
-            {{ this.project.deadline }}
+        <div class="projectInfo" v-if="projectReady">
+            <h2>{{ this.project.name }}</h2>
+            <div>
+                Description: {{ this.project.description }}
+            </div>
+            <div>
+                Deadline: {{ new Date(this.project.deadline).getDate() }}/{{ new Date(this.project.deadline).getMonth() }}/{{ new Date(this.project.deadline).getFullYear() }}
+            </div>
             <button class="btn btn-primary" v-if="isProjectChief" @click="showModalForm">+</button>
-            {{ this.project.modules }}
+            <!--{{ this.project.modules }}-->
         </div>
-        
 
-
-        <!--  componente v-if="projectReady  :modules="modules" @moduleCliked="openModule()"      Lista di moduli component -->
+        <modulesList v-if="projectReady" @clickModule="openModule" :modules="modulesArr"></modulesList>
 
         <createModuleFormModal v-if="showModal" :project="project" @closeModal="closeModal" @moduleAdded="getProjectInfo"></createModuleFormModal>
     </div>
 </template>
 
 <script>
-
 import createModuleFormModal from './CreateModuleFormModal.vue';
+import modulesList from './ModulesList.vue';
+
 export default {
     data () {
         return {
@@ -29,12 +30,13 @@ export default {
             projectDetail: {},
             isProjectChief: false,
             showModal: false,
-            modules: [],
+            modulesArr: [],
             projectReady: false
         }
     },
     components: {
-        createModuleFormModal
+        createModuleFormModal,
+        modulesList
     },
     props: {
         project: {
@@ -85,6 +87,9 @@ export default {
                 console.log(err.body);
                 this.projectReady = true;
             });
+        },
+        openModule (event) {
+            console.log(event);
         }
     }
 };
