@@ -57,6 +57,7 @@ export default {
             } else {
                 this.isProjectChief = false;
             }
+            this.getProjectInfo();
         }
     },
     methods: {
@@ -70,7 +71,6 @@ export default {
             this.projectReady = false;
             var vm = this;
             var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
-            //var json = { "user": this.username }//in realta la mail??? attenzione ai nomi
             vm.$http.get(localStorage.getItem('path') + '/projects/project/'+this.project.name, tokenJson).then(function(response) {
                 console.log(response.body);
                 var res = response.body;
@@ -83,7 +83,8 @@ export default {
 
                 this.projectReady = true;
             }, (err) => {
-                alert(err);
+                alert("err");
+                alert(err.body);
                 console.log(err.body);
                 this.projectReady = true;
             });

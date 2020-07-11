@@ -18,7 +18,8 @@
 
     <div class="row mt-5"></div>
 
-    <div class="row">
+    <div class="bg-light rounded">
+            <div class="row">
 		<div class="col-sm-6 offset-sm-3">
             <h2>User Info</h2>
             <div>
@@ -53,6 +54,10 @@
 		</div>
 			
 	</div>
+
+        
+    </div>
+
 
   </div>
 </template>
