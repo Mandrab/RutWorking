@@ -16,12 +16,12 @@
                     <form @submit.prevent="handleSubmit">
                     <div class="form-group">
                         <label for="module-name">Module Name</label>
-                        <input type="text" v-model="module.moduleName" v-validate="'required'" name="module-name" class="form-control" :class="{ 'is-invalid': submitted && errors.has('module-name') }" />
-                        <div v-if="submitted && errors.has('module-name')" class="invalid-feedback">{{ errors.first('module-name') }}</div>
+                        <input type="text" v-model="mod.moduleName" v-validate="'required'" name="module-name" class="form-control" :class="{ 'is-invalid': submitted && errors.has('module-name') }" />
+                        <div v-if="submitted && errors.has('module-name')" class="invalid-feedback">{{ errors.first('mod-name') }}</div>
                     </div>
                     <div class="form-group">
                         <label for="description">Description</label>
-                        <textarea rows=5 columns=10 v-model="module.description" v-validate="'required'" name="description" class="form-control" :class="{ 'is-invalid': submitted && errors.has('description') }" />
+                        <textarea rows=5 columns=10 v-model="mod.description" v-validate="'required'" name="description" class="form-control" :class="{ 'is-invalid': submitted && errors.has('description') }" />
                         <div v-if="submitted && errors.has('description')" class="invalid-feedback">{{ errors.first('description') }}</div>
                     </div>
                     <div class="form-group">
@@ -32,7 +32,7 @@
                     <div class="form-group">
                         <button @click="handleSubmit" class="btn btn-primary" :disabled="creating">Add Module</button>
                         <img v-show="creating" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
-                        <button @click="closeForm" class="btn btn-link">Cancel</button>
+                        <button @click.prevent="closeForm" class="btn btn-link">Cancel</button>
                     </div>
                 </form>
                 </slot>
@@ -57,7 +57,7 @@
 export default {
     data () {
         return {
-            module: {
+            mod: {
                 moduleName: '',
                 description: '',
             },
@@ -67,15 +67,18 @@ export default {
         }
     },
     props: {
-        projectName: {
-            type: String
+        project: {
+            type: Object
         }
     },
     watch: {
         deadline: function () {
-            var date = new Date(this.deadline);
+            console.log(this.deadline.toString())
+            var date = new Date(this.deadline.toString());
             var today = new Date();
-            if (date.getFullYear() < today.getFullYear() || date.getMonth() < today.getMonth() || date.getDate() < today.getDate()) {
+            var projectDline = new Date(this.project.deadline);
+            if (date.getFullYear() < today.getFullYear() || date.getMonth() < today.getMonth() || date.getDate() < today.getDate() ||
+            date.getFullYear() > projectDline.getFullYear() || date.getMonth() > projectDline.getMonth() || date.getDate() > projectDline.getDate()) {
                 this.deadline = '';
                 alert("Invalid date!");
             }
@@ -84,32 +87,24 @@ export default {
     methods: {
         handleSubmit() {
             this.submitted = true;
+            alert("qualcuno ha premuto ok")
             this.$validator.validate().then(valid => {
                 if (valid) {
-                    this.addModule(this.module);
+                    this.addModule(this.mod);
                 }
             });
         },
-        addModule (module) {
+        addModule (mod) {
             this.creating = true;
             var vm = this;
             var tokenjson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
             var json = {
-                "description": this.module.description,
+                "description": this.mod.description,
                 "deadline": this.deadline.toString(),
             }
-            vm.$http.post(localStorage.getItem('path') + 'projects/'+this.projectName+'/modules/' + module.moduleName, json, tokenjson).then(function(response) {
+            vm.$http.post(localStorage.getItem('path') + 'projects/'+this.project.name+'/modules/' + this.mod.moduleName, json, tokenjson).then(function(response) {
                 console.log(response.body);
                 console.log(this.creating);
-                //mando un emit al padre con il modulo appena creato
-                //var myEmail = localStorage.getItem
-                /*var module =   {
-                                    "name": module.moduleName,
-                                    "chief": "prova@gmail.com",
-                                    "modules": [],
-                                    "description": "descrizione progetto 4",
-                                    "deadline": "2020-09-27T00:00:00.000Z"
-                                }*/
                 this.$emit('moduleAdded');
                 this.closeForm();
             }, (err) => {
@@ -121,7 +116,7 @@ export default {
         },
         closeForm () {
             this.creating = false;
-            this.$emit('hide'); // notifico il padre
+            this.$emit('closeModal'); // notifico il padre
 
         }
     }
@@ -147,7 +142,7 @@ export default {
 }
 
 .modal-container {
-  width: 300px;
+  width: 80%;
   margin: 0px auto;
   padding: 20px 30px;
   background-color: #fff;

@@ -96,6 +96,7 @@ export default {
         },
         showProjectCreationForm () {
             this.creating = true;
+            this.hideProjectDetail();
         },
         hideProjectCreationForm () {
             this.creating = false;
@@ -103,6 +104,7 @@ export default {
         showProjectDetail (event) {
             this.projectDetail = event;
             this.showDetail = true;
+            this.hideProjectCreationForm()
         },
         hideProjectDetail () {
             this.showDetail = false;

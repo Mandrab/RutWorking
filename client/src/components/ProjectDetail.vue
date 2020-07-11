@@ -6,23 +6,27 @@
         {{ this.project.deadline }}
         <button class="btn btn-primary" v-if="isProjectChief" @click="showModalForm">+</button>
         {{ this.project.modules }}
+
+        <createModuleFormModal v-if="showModal" :project="project" @closeModal="closeModal" @moduleAdded="getModules"></createModuleFormModal>
     </div>
 </template>
 
 <script>
 
-
+import createModuleFormModal from './CreateModuleFormModal.vue';
 export default {
     data () {
         return {
             creating: false,
             projectsArr: [],
             projectDetail: {},
-            isProjectChief: false
+            isProjectChief: false,
+            showModal: false,
+            modules: []
         }
     },
     components: {
-
+        createModuleFormModal
     },
     props: {
         project: {
@@ -34,7 +38,6 @@ export default {
         if (JSON.parse(localStorage.getItem('user')).email == this.project.chief) {
             this.isProjectChief = true;
         }
-        alert(this.project.chief + " " + JSON.parse(localStorage.getItem('user')).email);
 
     },
     watch: {
@@ -48,13 +51,18 @@ export default {
     },
     methods: {
         showModalForm () {
-            alert("form modale");
+            this.showModal = true;
         },
-        getModulesDetail () {
+        closeModal () {
+            this.showModal = false;
+        },
+        getModules () {
             /*
             this.project.modules.forEach(m => {
                 
-            } )*/
+            } )
+            
+            modules.add(.....)*/
         }
         
     }
