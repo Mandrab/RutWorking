@@ -1,14 +1,14 @@
 <template>
-    <div class="mt-2">
+    <div class="mt-2 mb-2">
         <li class="list-group-item" @click="open">
         <div>
             <div class="row font-weight-bold h5">
                 {{ item.name }}
             </div>
-            <div v-if="ready" class="row float-right small" v-bind:style="{ color: deadlineColor }">
+            <div v-if="ready" class="col-sm-2 row float-right small" v-bind:style="{ color: deadlineColor }">
                 {{ new Date(item.deadline).getDate() }}/{{ new Date(item.deadline).getMonth() + 1 }}/{{ new Date(item.deadline).getFullYear() }}
             </div>
-            <div>
+            <div class="col-sm-10 text-left pl-0">
                 {{ item.description }}
             </div>
         </div>

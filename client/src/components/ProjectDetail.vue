@@ -1,15 +1,32 @@
 <template>
     <div class="col-sm-12 offset-sm-0">
         <div class="projectInfo" v-if="projectReady">
-            <h2>{{ this.project.name }}</h2>
-            <div>
-                Description: {{ this.project.description }}
+            <div v-if="isProjectChief" class="row">
+                <div class="col-sm-9 text-left pl-0">
+                    <h2>{{ this.project.name }}</h2>
+                </div>
+                <div class="col-sm-2">
+                    Deadline: {{ new Date(this.project.deadline).getDate() }}/{{ new Date(this.project.deadline).getMonth() + 1}}/{{ new Date(this.project.deadline).getFullYear() }}
+                </div>
+                <div class="col-sm-1">
+                    <button class="btn btn-primary" @click="showModalForm">+</button>
+                </div>
             </div>
-            <div>
-                Deadline: {{ new Date(this.project.deadline).getDate() }}/{{ new Date(this.project.deadline).getMonth() }}/{{ new Date(this.project.deadline).getFullYear() }}
+
+            <div v-if="!isProjectChief" class="row">
+                <div class="col-sm-10 text-left pl-0">
+                    <h2>{{ this.project.name }}</h2>
+                </div>
+                <div class="col-sm-2">
+                    Deadline: {{ new Date(this.project.deadline).getDate() }}/{{ new Date(this.project.deadline).getMonth() + 1}}/{{ new Date(this.project.deadline).getFullYear() }}
+                </div>
             </div>
-            <button class="btn btn-primary" v-if="isProjectChief" @click="showModalForm">+</button>
-            <!--{{ this.project.modules }}-->
+
+            <div class="row">
+                <div class="float-lg-left">
+                    {{ this.project.description }}
+                </div>
+            </div>
         </div>
 
         <modulesList v-if="projectReady" @clickModule="openModule" :modules="modulesArr"></modulesList>
