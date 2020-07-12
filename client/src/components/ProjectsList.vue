@@ -1,5 +1,5 @@
 <template>
-    <aside>
+    <div>
         <li class="list-group-item">
             <div class="row">
                 <div class="col-10 p-0 h2">
@@ -10,19 +10,27 @@
                 </div>
             </div>
 		</li>
-		<ul class="list-group">
-            <projectTile v-for="(tile, index) in projectsArr" :item="tile" :key="index" @openDetail="openDetail"></projectTile>
+        <div>
+            <ul class="list-group">
+            <projectTile v-for="(tile, index) in display" :item="tile" :key="index" @openDetail="openDetail"></projectTile>
 		</ul>
-	</aside>
+        <paginazione v-if="ready" :array="projectsArr" limit="6" @displayChanged="dispatchedPagination($event)" shown="8" :bottom="true"></paginazione>
+        </div>
+		
+
+	</div>
 </template>
 
 <script>
 import projectTile from '../components/ProjectTile.vue'
+import paginazione from '../components/paginazione.vue'
 
 export default {
     data () {
         return {
-            projectsArr: []
+            projectsArr: [],
+            readu: false,
+            display: []
         }
     },
     props: {
@@ -32,9 +40,11 @@ export default {
     },
     created () {
         this.showProjectList();
+        this.ready = true;
     },
     components: {
-        projectTile
+        projectTile,
+        paginazione
     },
     methods: {
         showProjectCreation () {
@@ -48,8 +58,10 @@ export default {
         },
         openDetail (event) {
             this.$emit('detail', event);
+        },
+        dispatchedPagination: function (toDisplay) {
+            this.display = toDisplay;
         }
-        
     }
 };
 </script>
