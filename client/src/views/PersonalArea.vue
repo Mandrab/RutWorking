@@ -1,65 +1,55 @@
 <template>
-  <div class="container-fluid">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#" @click="openHomePage">RutWorking</a>
-        
-        <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
-            <dropdownMenu class="navbar-nav ml-auto" v-model="showDropdownMenu" :right="true" :hover="true">
-                <a class="nav-link dropdown-toggle">
-                    {{ username }}
-                </a>
-                <div slot="dropdown">
-                    <a class="dropdown-item" href="#" @click="openHomePage">Home Page</a>
-                    <a class="dropdown-item" href="#" @click="logout">Logout</a>
+    <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#" @click="openHomePage">RutWorking</a>
+            
+            <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+                <dropdownMenu class="navbar-nav ml-auto" v-model="showDropdownMenu" :right="true" :hover="true">
+                    <a class="nav-link dropdown-toggle">
+                        {{ username }}
+                    </a>
+                    <div slot="dropdown">
+                        <a class="dropdown-item" href="#" @click="openHomePage">Home Page</a>
+                        <a class="dropdown-item" href="#" @click="logout">Logout</a>
+                    </div>
+                </dropdownMenu>
+            </div>
+        </nav>
+
+        <div class="row mt-5">
+            <div class="col-sm bg-light rounded p-5 mx-5 mb-5">
+                <h2>User Info</h2>
+                <div class="text-left p-2">
+                    <a> <b>Name</b>: {{ name }} </a>
                 </div>
-            </dropdownMenu>
+                <div class="text-left p-2">
+                    <a> <b>Surname</b>: {{ surname }} </a>
+                </div>
+                <div class="text-left p-2">
+                    <a> <b>E-mail</b>: {{ username }} </a>
+                </div>
+                <div class="text-left p-2">
+                    <a> <b>Role</b>: {{ role }} </a>
+                </div>
+            </div>
+            <div class="col-sm bg-light rounded p-5 mx-5 mb-5">
+                <h2>Access Management</h2>
+                <button @click="changePassword" class="btn btn-primary">Change password</button>
+            </div>
         </div>
-    </nav>
+    
+        <div class="row mt-5">
+            <div class="col-sm-6 offset-sm-3 bg-light rounded">
+                <h2>Statistics</h2>
+            </div>
+        </div>
 
-    <div class="row mt-5"></div>
-
-    <div class="bg-light rounded">
-            <div class="row">
-		<div class="col-sm-6 offset-sm-3">
-            <h2>User Info</h2>
-            <div>
-        <a> Name: {{ name }} </a>
+        <div class="row mt-5">
+            <div class="col-sm-6 offset-sm-3 bg-light rounded">
+                <h2>Gamification</h2>
+            </div>
+        </div>
     </div>
-    <div>
-        <a> Surname: {{ surname }} </a>
-    </div>
-    <div>
-        <a> E-mail: {{ username }} </a>
-    </div>
-    <div>
-        <a> Role: {{ role }} </a>
-    </div>
-		</div>
-	</div>
-
-    <div class="row mt-5"></div>
-
-    <div class="row">
-		<div class="col-sm-6 offset-sm-3">
-            <h2>Access Management</h2>
-            <button @click="changePassword" class="btn btn-primary">Change password</button>
-		</div>	
-	</div>
-
-    <div class="row mt-5"></div>
-
-    <div class="row">
-		<div class="col-sm-6 offset-sm-3">
-            <h2>Statistics</h2>
-		</div>
-			
-	</div>
-
-        
-    </div>
-
-
-  </div>
 </template>
 
 
