@@ -1,18 +1,23 @@
 <template>
     <div class="mt-2 mb-2">
         <li class="list-group-item" @click="open">
-        <div>
-            <div class="row font-weight-bold h5">
-                {{ item.name }}
+            <div>
+                <div class="row">
+                    <div class="col-12 col-sm-9 col-md-9 col-xl-9 text-left font-weight-bold h5 p-3 mb-0">
+                        {{ item.name }}
+                    </div>
+                    <div v-if="ready" class="col-12 col-sm-3 col-md-3 col-xl-3 float-right small p-3" v-bind:style="{ color: deadlineColor }">
+                        Deadline: {{ new Date(item.deadline).getDate() }}/{{ new Date(item.deadline).getMonth() + 1 }}/{{ new Date(item.deadline).getFullYear() }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-sm-12 col-md-12 col-xl-12 text-left">
+                        {{ item.description }}
+                    </div>
+                    
+                </div>
             </div>
-            <div v-if="ready" class="col-sm-2 row float-right small" v-bind:style="{ color: deadlineColor }">
-                {{ new Date(item.deadline).getDate() }}/{{ new Date(item.deadline).getMonth() + 1 }}/{{ new Date(item.deadline).getFullYear() }}
-            </div>
-            <div class="col-sm-10 text-left pl-0">
-                {{ item.description }}
-            </div>
-        </div>
-    </li>
+        </li>
     </div>
 </template>
 
