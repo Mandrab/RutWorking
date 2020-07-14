@@ -34,7 +34,7 @@
             </div>
             <div class="col-sm bg-light rounded p-5 mx-5 mb-5">
                 <h2>Access Management</h2>
-                <button @click="changePassword" class="btn btn-primary">Change password</button>
+                <button @click.prevent="changePassword" class="btn btn-primary">Change password</button>
             </div>
         </div>
     
@@ -49,12 +49,14 @@
                 <h2>Gamification</h2>
             </div>
         </div>
+        <changePwdModal v-if="this.showModalPasswordChange" @closeModal="closeModalPwd"></changePwdModal>
     </div>
 </template>
 
 
 <script>
 import dropdownMenu from '../components/DropdownMenu.vue';
+import changePwdModal from '../components/ChangePwdModal.vue';
 
 export default {
     data () {
@@ -63,11 +65,13 @@ export default {
             surname: '',
             username: '',
             role: '',
-            showDropdownMenu: false
+            showDropdownMenu: false,
+            showModalPasswordChange: false
         }
     },
     components: {
-        dropdownMenu
+        dropdownMenu,
+        changePwdModal
     },
     created () {
         this.init();
@@ -96,7 +100,10 @@ export default {
             
         },
         changePassword () {
-
+            this.showModalPasswordChange = true;
+        },
+        closeModalPwd () {
+            this.showModalPasswordChange = false;
         },
         openHomePage () {
             this.$router.push('/');
