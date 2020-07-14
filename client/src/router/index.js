@@ -1,7 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import LoginPage from "../views/LoginPage.vue";
-//import RegisterPage from "../views/RegisterPage.vue";
 import HomePage from "../views/HomePage.vue";
 
 Vue.use(VueRouter);
@@ -29,8 +28,20 @@ const routes = [
     component: () =>
       import(/* webpackChunkName: "register" */ "../views/PersonalArea.vue") // lazy loading
   },
+  {
+    path: "/workingarea",
+    name: "WorkingArea",
+    component: () =>
+      import(/* webpackChunkName: "register" */ "../views/WorkingArea.vue") // lazy loading
+  },
+  {
+    path: "/404",
+    name: "PageNotFound",
+    component: () =>
+      import(/* webpackChunkName: "register" */ "../views/PageNotFound.vue") // lazy loading
+  },
   // otherwise redirect to home
-  { path: '*', redirect: '/' }
+  { path: '*', redirect: '/404' }
 ];
 
 const router = new VueRouter({
