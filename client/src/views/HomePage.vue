@@ -111,7 +111,7 @@ export default {
             this.showDetail = false;
         },
         logout () {
-            this.$route.push('/login');
+            this.$router.push('/login');
         },
         init () {
             this.showUserName();
