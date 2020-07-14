@@ -3,15 +3,15 @@
   <!-- freccia sx disabilitata se il primo tag è attivo -->
   <li :class="{disabled: this.active==0}" @click.prevent="checkArrows(false)"><a href="#">&laquo;</a></li>
   <!-- il primo e l'ultimo tag vengono sempre mostrati, anche quando si specifica di visualizzare un massimo numero di tag -->
-  <li v-if="!firstCovered" @click.prevent="showCourses(0)"><a href="#">1</a></li>
+  <li v-if="!firstCovered" @click.prevent="showProjects(0)"><a href="#">1</a></li>
   <!-- appaiono i punti di sospensione se il primo tag non è immediatamente prima del frame di tag mostrati -->
-  <li v-if="firstUnreached"><a @click.prevent="showCourses(firstDisplayed - 1)">...</a></li>
+  <li v-if="firstUnreached"><a @click.prevent="showProjects(firstDisplayed - 1)">...</a></li>
   <!-- itera i tag da mostrare (tutti se la prop shown non è valoraizzata) -->
-  <li v-for="(showed,index) in displayed" :key="index" @click.prevent="showCourses(showed)" :class="{active: showed==active}"><a href="#">{{ showed+1 }}</a></li>
+  <li v-for="(showed,index) in displayed" :key="index" @click.prevent="showProjects(showed)" :class="{active: showed==active}"><a href="#">{{ showed+1 }}</a></li>
   <!-- appaiono i punti di sospensione se l'ultimo tag non è immediatamente dopo il frame di tag mostrati -->
-  <li v-if="lastUnreached"><a @click.prevent="showCourses(lastDisplayed + 1)">...</a></li>
+  <li v-if="lastUnreached"><a @click.prevent="showProjects(lastDisplayed + 1)">...</a></li>
   <!-- ultimo tag sempre visibile -->
-  <li v-if="!lastCovered" @click.prevent="showCourses(pages - 1)"><a href="#">{{pages}}</a></li>
+  <li v-if="!lastCovered" @click.prevent="showProjects(pages - 1)"><a href="#">{{pages}}</a></li>
   <!-- freccia dx disabilitata se l'ultimo tag è attivo -->
   <li :class="{disabled: this.active==pages-1}" @click.prevent="checkArrows(true)"><a href="#">&raquo;</a></li>
 </ul>
@@ -21,8 +21,8 @@
 export default {
   mounted: function() {
     this.$nextTick(function() {
-      this.handleCourses();
-      this.showCourses(this.active);
+      this.handleProjects();
+      this.showProjects(this.active);
     })
   },
   data: function() {
@@ -38,8 +38,8 @@ export default {
   watch: {
     'array': function() {
       this.pages = 0;
-      this.handleCourses();
-      this.showCourses(0);
+      this.handleProjects();
+      this.showProjects(0);
     }
   },
   computed: {
@@ -64,21 +64,21 @@ export default {
   },
   methods: {
     // calcola il numero di tag in cui suddividere l'array
-    handleCourses: function() {
+    handleProjects: function() {
       if (this.array.length > 0) {
         this.pages = Math.ceil(this.array.length / this.limit);
       }
     },
-    showCourses: function(index) {
+    showProjects: function(index) {
       //seleziona la frazione di array da mostrare, e aggiorna l'indice attivo
       this.active = index;
-      var displayCourses;
+      var displayProjects;
       if (index != this.pages - 1) {
-        displayCourses = this.array.slice(index * this.limit, (index + 1) * this.limit);
+        displayProjects = this.array.slice(index * this.limit, (index + 1) * this.limit);
       } else {
-        displayCourses = this.array.slice(index * this.limit, this.array.length);
+        displayProjects = this.array.slice(index * this.limit, this.array.length);
       }
-      this.$emit("displayChanged", displayCourses);
+      this.$emit("displayChanged", displayProjects);
 
       //elaboro quale tag mostrare
       this.displayed = [];
@@ -113,10 +113,10 @@ export default {
 
       if (isRight) {
         if (this.active < this.pages - 1) {
-          this.showCourses(this.active + 1);
+          this.showProjects(this.active + 1);
         }
       } else if (this.active > 0) {
-        this.showCourses(this.active - 1);
+        this.showProjects(this.active - 1);
       }
     }
   }
