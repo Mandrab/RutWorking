@@ -11,6 +11,11 @@
 
 <script>
 export default {
+    watch: {
+        item: function () {
+            this.checkDeadline();
+        }
+    },
     data () {
         return {
             ready: false,
@@ -30,8 +35,13 @@ export default {
         checkDeadline () {
             this.ready = false;
             var date = new Date(this.item.deadline);
+            var weekAgo = new Date();
+            weekAgo.setDate(date.getDate()-7)
             var today = new Date();
-            if (date.getFullYear() < today.getFullYear() || date.getMonth() < today.getMonth() || date.getDate() < today.getDate()) {
+            if (date <= today && date >= weekAgo ) {
+                this.deadlineColor = 'yellow';
+            }
+            else if(date < weekAgo) {
                 this.deadlineColor = 'red';
             } else { // fare l'intermedio giallo
                 this.deadlineColor = 'green';
