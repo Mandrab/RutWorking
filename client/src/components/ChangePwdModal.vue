@@ -61,6 +61,9 @@ export default {
                 if (valid && (this.newPassword == this.newPassword2)) {
                     this.changePWD();
                 }
+                if (this.newPassword == this.newPassword2){
+                    alert("The new Passwords does not match")
+                }
             });
         },
         changePWD () {
