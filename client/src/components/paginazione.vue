@@ -7,7 +7,7 @@
   <!-- appaiono i punti di sospensione se il primo tag non è immediatamente prima del frame di tag mostrati -->
   <li v-if="firstUnreached"><a @click.prevent="showCourses(firstDisplayed - 1)">...</a></li>
   <!-- itera i tag da mostrare (tutti se la prop shown non è valoraizzata) -->
-  <li v-for="showed in displayed" @click.prevent="showCourses(showed)" :class="{active: showed==active}"><a href="#">{{ showed+1 }}</a></li>
+  <li v-for="(showed,index) in displayed" :key="index" @click.prevent="showCourses(showed)" :class="{active: showed==active}"><a href="#">{{ showed+1 }}</a></li>
   <!-- appaiono i punti di sospensione se l'ultimo tag non è immediatamente dopo il frame di tag mostrati -->
   <li v-if="lastUnreached"><a @click.prevent="showCourses(lastDisplayed + 1)">...</a></li>
   <!-- ultimo tag sempre visibile -->
@@ -103,8 +103,8 @@ export default {
             ending = this.active + half + 1;
           }
         }
-        for (var i = starting; i < ending; i++) {
-          this.displayed.push(i);
+        for (var ii = starting; ii < ending; ii++) {
+          this.displayed.push(ii);
         }
       }
 
