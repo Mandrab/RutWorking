@@ -72,12 +72,13 @@ export default {
     showCourses: function(index) {
       //seleziona la frazione di array da mostrare, e aggiorna l'indice attivo
       this.active = index;
+      var displayCourses;
       if (index != this.pages - 1) {
-        this.displayCourses = this.array.slice(index * this.limit, (index + 1) * this.limit);
+        displayCourses = this.array.slice(index * this.limit, (index + 1) * this.limit);
       } else {
-        this.displayCourses = this.array.slice(index * this.limit, this.array.length);
+        displayCourses = this.array.slice(index * this.limit, this.array.length);
       }
-      this.$emit("displayChanged", this.displayCourses);
+      this.$emit("displayChanged", displayCourses);
 
       //elaboro quale tag mostrare
       this.displayed = [];
