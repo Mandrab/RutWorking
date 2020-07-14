@@ -56,14 +56,15 @@ export default {
     },
     methods: {
         handleSubmit() {
+            if (this.newPassword != this.newPassword2){
+                    alert("The new Passwords does not match")
+                }
             this.submitted = true;
             this.$validator.validate().then(valid => {
                 if (valid && (this.newPassword == this.newPassword2)) {
                     this.changePWD();
                 }
-                if (this.newPassword != this.newPassword2){
-                    alert("The new Passwords does not match")
-                }
+                
             });
         },
         changePWD () {
