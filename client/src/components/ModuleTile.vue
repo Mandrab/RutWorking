@@ -38,14 +38,24 @@ export default {
             type: Object
         }
     },
+    watch: {
+        item: function () {
+            this.checkDeadline();
+        }
+    },
     methods: {
         checkDeadline () {
             this.ready = false;
             var date = new Date(this.item.deadline);
+            var weekAgo = new Date();
             var today = new Date();
-            if (date.getFullYear() < today.getFullYear() || date.getMonth() < today.getMonth() || date.getDate() < today.getDate()) {
+            weekAgo.setDate(today.getDate()-7);
+            if (date <= today && date >= weekAgo ) {
+                this.deadlineColor = 'orange';
+            }
+            else if(date < weekAgo) {
                 this.deadlineColor = 'red';
-            } else { // fare l'intermedio giallo
+            } else { 
                 this.deadlineColor = 'green';
             }
             this.ready = true;
