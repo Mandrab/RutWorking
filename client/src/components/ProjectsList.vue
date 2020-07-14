@@ -14,7 +14,7 @@
             <ul class="list-group">
             <projectTile v-for="(tile, index) in display" :item="tile" :key="index" @openDetail="openDetail"></projectTile>
 		</ul>
-        <paginazione v-if="ready" :array="projectsArr" limit="6" @displayChanged="dispatchedPagination($event)" shown="8" :bottom="true"></paginazione>
+        <pagination v-if="ready" :array="projectsArr" limit="6" @displayChanged="dispatchedPagination($event)" shown="8" :bottom="true"></pagination>
         </div>
 		
 
@@ -23,7 +23,7 @@
 
 <script>
 import projectTile from '../components/ProjectTile.vue'
-import paginazione from '../components/paginazione.vue'
+import pagination from '../components/Pagination.vue'
 
 export default {
     data () {
@@ -44,7 +44,7 @@ export default {
     },
     components: {
         projectTile,
-        paginazione
+        pagination
     },
     methods: {
         showProjectCreation () {
