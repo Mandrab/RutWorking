@@ -272,17 +272,29 @@ paths:
                     chief:
                       type: string
                       description: Email of the project's chief
-                    modules:
-                      type: array
-                      items:
-                        type: string
-                        description: Name of the module
                     description:
                       type: string
                       description: Description of the project. May not exist
                     deadline:
                       type: string
                       description: Deadline of the project
+                    modules:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                            description: Name of the module
+                          chief:
+                            type: string
+                            description: Email of the module's chief
+                          description:
+                            type: string
+                            description: OPTIONAL description of the module. Not set if description is not present
+                          deadline:
+                            type: string
+                            description: OPTIONAL deadline of the module. Not set if deadline is not present
         403:
           description: Account is blocked
         404:
@@ -321,17 +333,29 @@ paths:
                     chief:
                       type: string
                       description: Email of the project's chief
-                    modules:
-                      type: array
-                      items:
-                        type: string
-                        description: Name of the module
                     description:
                       type: string
                       description: Description of the project. May not exist
                     deadline:
                       type: string
                       description: Deadline of the project
+                    modules:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                            description: Name of the module
+                          chief:
+                            type: string
+                            description: Email of the module's chief
+                          description:
+                            type: string
+                            description: OPTIONAL description of the module. Not set if description is not present
+                          deadline:
+                            type: string
+                            description: OPTIONAL deadline of the module. Not set if deadline is not present
         403:
           description: Account is blocked
         404:
