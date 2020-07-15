@@ -501,6 +501,11 @@ paths:
                   deadline:
                     type: string
                     description: OPTIONAL deadline of the module. Not set if deadline is not present
+                  developers:
+                    type: array
+                    items:
+                      type: string
+                      description: email of the developer
         403:
           description: Not project/module-chief nor developer or admin. Otherwise the account is blocked.
         404:
