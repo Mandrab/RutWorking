@@ -54,7 +54,7 @@ export async function changePassword(request: any, result: any) {
         if (user.comparePassword(request.body.oldPassword)) {
             await user.changePassword(request.body.newPassword)
             result.status(200).send('Successfully updated!')
-        } else result.status(401).send('Invalid password!')        
+        } else result.status(401).send('Invalid password!')
     } catch (err) {
         if (err.code && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')

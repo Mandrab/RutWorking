@@ -46,6 +46,8 @@ export async function getProjects(skipFirst: number = 0, userID?: Schema.Types.O
                     }
                     if (it.description) module.description = it.description
                     if (it.deadline) module.deadline = it.deadline
+                    if (userID) module.member = it.chief.toString() === userID.toString()
+                        || it.developers.map(id => id.toString()).includes(userID.toString())
                     return module
                 })
             )

@@ -356,6 +356,9 @@ paths:
                           deadline:
                             type: string
                             description: OPTIONAL deadline of the module. Not set if deadline is not present
+                          member:
+                            type: boolean
+                            description: True if the user specified in the path works in this module or is chief
         403:
           description: Account is blocked
         404:
