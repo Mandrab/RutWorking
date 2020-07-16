@@ -79,7 +79,8 @@ export default {
             var vm = this;
             var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
             //var json = { "user": this.username }//in realta la mail??? attenzione ai nomi
-            vm.$http.get(localStorage.getItem('path') + '/projects/'/*, json*/, tokenJson).then(function(response) {
+            vm.$http.get(localStorage.getItem('path') + '/projects/0/' + this.username/*, json*/, tokenJson).then(function(response) {
+                console.log("++++++++++++++++++++++++++++++++++++")
                 console.log(response.body);
                 var res = response.body;
                 try {//è un livello di sicurezza in più, potrebbe non servire tray atch in futuro

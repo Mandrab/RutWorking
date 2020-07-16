@@ -38,7 +38,7 @@ export default {
             deadlineColor: 'black',
             developers: [],
             developersReady: false,
-            isModuleChief: true // impostare a false quando ci sarà l'API sistemata
+            isModuleChief: false // impostare a false quando ci sarà l'API sistemata
         }
     },
     created () {
@@ -75,11 +75,11 @@ export default {
                 this.developersReady = true;
 
                 console.log(this.item);
-                /* Decommentare quando l'API sarà sistemata
+
                 if (JSON.parse(localStorage.getItem('user')).email == this.item.chief) {
                     this.isModuleChief = true;
                 }
-                */
+                
                 
             }, (err) => {
                 alert("err");
