@@ -36,7 +36,7 @@ module.exports = function (app: any) {
     // the project chief or an admin can delete a project
     app.delete('/projects/:projectName/modules/:moduleName', [
         isActive,
-        or(_isAdmin, _isModuleChief)
+        or(_isAdmin, _isProjectChief, _isModuleChief)
     ], deleteModule)
 
     // the project chief or an admin can remove a developer
