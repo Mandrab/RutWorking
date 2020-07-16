@@ -1,7 +1,7 @@
 <template>
     <div class="modules">
         <ul class="list-group">
-            <moduleTile v-for="(tile, index) in modulesArr" :projectName="projectName" :item="tile" :key="index" @openModule="openModule"></moduleTile>
+            <moduleTile v-for="(tile, index) in modulesArr" :projectName="projectName" :item="tile" :key="index" @openModule="openModule" @refreshModulesList="refreshModulesList"></moduleTile>
 		</ul>
     </div>
 </template>
@@ -36,9 +36,16 @@ export default {
             this.modules.forEach(p => {
                 this.modulesArr.push(p);
             });
+            console.log("modules");
+            console.log(this.modules);
+            console.log("modulesArr");
+            console.log(this.modulesArr);
         },
         openModule (event) {
             this.$emit('clickModule', event);
+        },
+        refreshModulesList (event) {
+            this.$emit('refreshModulesList', event);
         }
         
     }

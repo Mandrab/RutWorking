@@ -8,7 +8,8 @@ import {
     addDeveloper as _addDeveloper,
     removeDeveloper as _removeDeveloper,
     getModuleInfo as _getModuleInfo,
-    Project
+    Project,
+    User
 } from '../models'
 
 export async function newModule(request: any, result: any) {
@@ -22,7 +23,7 @@ export async function newModule(request: any, result: any) {
 
         await _newModule(
             request.params.moduleName,
-            request.chief ? request.chief : user,
+            request.body.chief ? (await User.findByEmail(request.body.chief))._id() : user,
             project.name(),
             request.body.description,
             request.body.deadline

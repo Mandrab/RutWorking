@@ -15,19 +15,19 @@ const request = require('supertest')('http://localhost:8080')
 const PROJECTS = [
     {
         chief: {
-            email: 'pchief@chief.chief'
+            email: 'pchief1@chief.chief'
         },
         name: 'project',
         modules: [{
             name: 'module1',
             chief: {
-                email: 'mchief@chief.chief'
+                email: 'mchiefp11@chief.chief'
             },
             developers: [ 'gianni' ]
         }, {
             name: 'module2',
             chief: {
-                email: 'mchief@chief.chief'
+                email: 'mchiefp12@chief.chief'
             },
             developers: [ 'solimano' ]
         }]
@@ -84,55 +84,48 @@ describe('test modules\' operations', function() {
         await clean()
 
         await Promise.all([
-            // add an initial project chief
-            register('x', 'y', PROJECTS[0].chief.email, 'z', Roles.USER),
-            // add an initial project chief
-            register('x', 'y', PROJECTS[1].chief.email, 'z', Roles.USER),
-            // add an initial project chief
-            register('x', 'y', PROJECTS[2].chief.email, 'z', Roles.USER),
-            // add an initial project chief
-            register('x', 'y', PROJECTS[3].chief.email, 'z', Roles.USER),
-            // add an initial module chief
-            register('x', 'y', PROJECTS[0].modules[0].chief.email, 'z', Roles.USER),
-            // add an initial module chief
-            register('x', 'y', PROJECTS[1].modules[0].chief.email, 'z', Roles.USER),
-            // add an initial module chief
-            register('x', 'y', PROJECTS[2].modules[0].chief.email, 'z', Roles.USER),
-            // add an initial module chief
-            register('x', 'y', PROJECTS[3].modules[0].chief.email, 'z', Roles.USER),
-            // add an initial developer
-            register('x', 'y', PROJECTS[0].modules[0].developers[0], 'z', Roles.USER),
-            // add an initial developer
-            register('x', 'y', PROJECTS[0].modules[1].developers[0], 'z', Roles.USER),
-            // add an initial developer
-            register('x', 'y', PROJECTS[1].modules[0].developers[0], 'z', Roles.USER),
-            // add an initial developer
-            register('x', 'y', PROJECTS[1].modules[0].developers[1], 'z', Roles.USER),
+            await Promise.all(PROJECTS.map(async project => {
+                // add an initial project chief
+                await register('x', 'y', project.chief.email, 'z', Roles.USER)
+
+                // add an initial module chief
+                await Promise.all(project.modules.map(async module => {
+                    await register('x', 'y', module.chief.email, 'z', Roles.USER)
+
+                    // add an initial developers
+                    await Promise.all(module.developers.map(async developer => {
+                        await register('x', 'y', developer, 'z', Roles.USER)
+                    }))
+                }))
+            })),
             // add an initial user
             register('x', 'y', USER.email, 'z', Roles.USER)
         ])
     })
 
-    //after(async function() { return clean() })
+    after(async function() { return clean() })
 
     var clean = async () => {
-        try { await DBUser.deleteOne({ email: PROJECTS[0].chief.email }) } catch (_) { }
-        try { await DBUser.deleteOne({ email: PROJECTS[1].chief.email }) } catch (_) { }
-        try { await DBUser.deleteOne({ email: PROJECTS[2].chief.email }) } catch (_) { }
-        try { await DBUser.deleteOne({ email: PROJECTS[3].chief.email }) } catch (_) { }
-        try { await DBUser.deleteOne({ email: PROJECTS[0].modules[0].chief.email }) } catch (_) { }
-        try { await DBUser.deleteOne({ email: PROJECTS[1].modules[0].chief.email }) } catch (_) { }
-        try { await DBUser.deleteOne({ email: PROJECTS[2].modules[0].chief.email }) } catch (_) { }
-        try { await DBUser.deleteOne({ email: PROJECTS[3].modules[0].chief.email }) } catch (_) { }
-        try { await DBUser.deleteOne({ email: PROJECTS[0].modules[0].developers[0] }) } catch (_) { }
-        try { await DBUser.deleteOne({ email: PROJECTS[0].modules[1].developers[0] }) } catch (_) { }
-        try { await DBUser.deleteOne({ email: PROJECTS[1].modules[0].developers[0] }) } catch (_) { }
-        try { await DBUser.deleteOne({ email: PROJECTS[1].modules[0].developers[1] }) } catch (_) { }
+        await Promise.all(PROJECTS.map(async project => {
+            // delete project chief
+            try { await DBUser.deleteOne({ email: project.chief.email }) } catch (_) { }
+
+            // delete project modules
+            await Promise.all(project.modules.map(async module => {
+                // delete module chief
+                try { await DBUser.deleteOne({ email: module.chief.email }) } catch (_) { }
+
+                // delete module developers
+                await Promise.all(module.developers.map(async developer => {
+                    try { await DBUser.deleteOne({ email: developer }) } catch (_) { }
+                }))
+            }))
+
+            // delete project
+            try { await DBProject.deleteOne({ name: project.name }) } catch (_) { }
+        }))
+        // delete user
         try { await DBUser.deleteOne({ email: USER.email }) } catch (_) { }
-        try { await DBProject.deleteOne({ name: PROJECTS[0].name }) } catch (_) { }
-        try { await DBProject.deleteOne({ name: PROJECTS[1].name }) } catch (_) { }
-        try { await DBProject.deleteOne({ name: PROJECTS[2].name }) } catch (_) { }
-        try { await DBProject.deleteOne({ name: PROJECTS[3].name }) } catch (_) { }
     }
 
 /**********************************************************************************************************************
@@ -163,11 +156,21 @@ describe('test modules\' operations', function() {
         await request.post('/projects/' + PROJECTS[0].name + '/modules/' + PROJECTS[0].modules[0].name)
             .set({ 'Authorization': chiefToken }).expect(201)
 
+        let project = await Project.findByName(PROJECTS[0].name)
+        if (!project.modules().some(it => it.name() === PROJECTS[0].modules[0].name
+                && it.chiefID().toString() === chief._id().toString()))
+            throw 'A module is expected to be added'
+
         // TODO: OK? -> NO ERROR TRYING TO ADD A NEW MODULE WITH EXISTING NAME
 
-        // valid token
+        // valid token and different chief
         await request.post('/projects/' + PROJECTS[0].name + '/modules/' + PROJECTS[0].modules[1].name)
-            .set({ 'Authorization': chiefToken }).expect(201)
+            .set({ 'Authorization': chiefToken }).send({ chief: USER.email }).expect(201)
+
+        await project.refresh()
+        if (!project.modules().some(it => it.name() === PROJECTS[0].modules[1].name
+            && it.chiefID().toString() === user._id().toString()))
+            throw 'A module is expected to be added with a different chief'
 
         return Promise.resolve()
     })
