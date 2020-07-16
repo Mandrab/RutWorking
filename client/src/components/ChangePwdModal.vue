@@ -64,7 +64,6 @@ export default {
                 if (valid && (this.newPassword == this.newPassword2)) {
                     this.changePWD();
                 }
-                
             });
         },
         changePWD () {
