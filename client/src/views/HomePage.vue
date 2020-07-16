@@ -25,7 +25,7 @@
 				<div>
                     <createProjectForm v-if="creating" @projectAdded="addProject" @hide="hideProjectCreationForm"></createProjectForm>
 				</div>
-                <div class="bg-light p-4 rounded" v-if="showDetail">
+                <div class="detail bg-light p-4 rounded" v-if="showDetail">
                     <projectDetail v-if="showDetail" :project="projectDetail"></projectDetail>
 				</div>
                 <div class="default-msg" v-if="!creating && !showDetail">

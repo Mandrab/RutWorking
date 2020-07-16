@@ -116,7 +116,7 @@ export default {
             var date = new Date(this.project.deadline);
             var weekAgo = new Date();
             var today = new Date();
-            weekAgo.setDate(today.getDate()-7);
+            weekAgo.setDate(today.getDate()+7);
             if (date <= today && date >= weekAgo ) {
                 this.deadlineColor = 'orange';
             }

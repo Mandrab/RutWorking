@@ -75,8 +75,7 @@ export default {
             var date = new Date(this.deadline.toString());
             var today = new Date();
             var projectDline = new Date(this.project.deadline);
-            if (date.getFullYear() < today.getFullYear() || date.getMonth() < today.getMonth() || date.getDate() < today.getDate() ||
-            date.getFullYear() > projectDline.getFullYear() || date.getMonth() > projectDline.getMonth() || date.getDate() > projectDline.getDate()) {
+            if (date<today || date>projectDline) {
                 this.deadline = '';
                 alert("Invalid date!");
             }
