@@ -1,6 +1,6 @@
 <template>
     <div class="mt-2 mb-2">
-        <li class="list-group-item" @click.stop="openModule">
+        <li class="list-group-item" @click="openModule">
             <div>
                 <div class="row">
                     <div class="col-12 col-sm-9 col-md-9 col-xl-9 text-left font-weight-bold h5 pb-0 mb-0">
@@ -16,7 +16,7 @@
                         {{ item.description }}
                     </div>
                     <div class="col-12 col-sm-2 col-md-2 col-xl-2">
-                        <button class="btn btn-primary" @click="deleteModule">D</button>
+                        <button class="btn btn-primary" @click.stop="deleteModule">D</button>
                     </div>
                 </div>
 
@@ -116,14 +116,12 @@ export default {
                     res = JSON.parse(res);
                     console.log(res);
                 } catch (error) {console.log(error)}
-                //this.projectDetail = res;//lo memorizzo nei data di questa view per poi poterlo passare al componente container (tramite props) che lo userà per creare i componenti tiles
 
-                //this.modulesArr = res.modules;
-
-                //this.projectReady = true;
+                this.$emit('refreshModulesList', this.item);
             }, (err) => {
                 console.log(err.body);
             });
+            
         }
     }
 };

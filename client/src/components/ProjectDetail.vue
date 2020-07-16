@@ -29,7 +29,7 @@
             </div>
         </div>
 
-        <modulesList v-if="projectReady" @clickModule="openModule" :modules="modulesArr" :projectName="project.name"></modulesList>
+        <modulesList v-if="projectReady" @clickModule="openModule" @refreshModulesList="getProjectInfo" :modules="modulesArr" :projectName="project.name"></modulesList>
 
         <createModuleFormModal v-if="showModal" :project="project" @closeModal="closeModal" @moduleAdded="getProjectInfo"></createModuleFormModal>
     </div>
@@ -102,6 +102,8 @@ export default {
                 this.projectDetail = res;//lo memorizzo nei data di questa view per poi poterlo passare al componente container (tramite props) che lo userà per creare i componenti tiles
 
                 this.modulesArr = res.modules;
+
+                console.log(this.modulesArr);
 
                 this.projectReady = true;
             }, (err) => {
