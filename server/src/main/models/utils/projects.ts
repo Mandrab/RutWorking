@@ -38,18 +38,23 @@ export async function getProjects(skipFirst: number = 0, userID?: Schema.Types.O
         let result: any = {
             name: it.name,
             chief: (await User.findById(it.chief)).email(),
-            modules: it.modules.map(it => {
-                let module: any = {
-                    name: it.name,
-                    chiefID: it.chief
-                }
-                if (it.description) module.description = it.description
-                if (it.deadline) module.deadline = it.deadline
-                return module
-            })
+            modules: await Promise.all(
+                it.modules.map(async it => {
+                    let module: any = {
+                        name: it.name,
+                        chief: (await User.findById(it.chief)).email()
+                    }
+                    if (it.description) module.description = it.description
+                    if (it.deadline) module.deadline = it.deadline
+                    if (userID) module.member = it.chief.toString() === userID.toString()
+                        || it.developers.map(id => id.toString()).includes(userID.toString())
+                    return module
+                })
+            )
         }
         if (it.description) result.description = it.description
         if (it.deadline) result.deadline = it.deadline
+
         return result
     })
     return await Promise.all(reshapedProjects)
@@ -62,15 +67,17 @@ export async function getProjectInfo(projectName: string) {
     let result: any = {
         name: project.name(),
         chief: chief.email(),
-        modules: project.modules().map(it => {
-            let module: any = {
-                name: it.name(),
-                chiefID: it.chiefID()
-            }
-            if (it.description()) module.description = it.description()
-            if (it.deadline()) module.deadline = it.deadline()
-            return module
-        })
+        modules: await Promise.all(
+            project.modules().map(async it => {
+                let module: any = {
+                    name: it.name(),
+                    chief: (await it.chief()).email()
+                }
+                if (it.description()) module.description = it.description()
+                if (it.deadline()) module.deadline = it.deadline()
+                return module
+            })
+        )
     }
     if (project.description()) result.description = project.description()
     if (project.deadline()) result.deadline = project.deadline()
