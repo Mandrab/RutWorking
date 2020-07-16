@@ -1,11 +1,11 @@
 <template>
     <div class="container-fluid">
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand" href="#" @click="openHomePage">RutWorking</a>
+            <a class="col-12 col-sm-6 col-md-6 col-xl-6 navbar-brand text-left mx-0" href="#" @click="openHomePage">RutWorking</a>
             
-            <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+            <div class="col-12 col-sm-6 col-md-6 col-xl-6 mx-0 text-right navbar-collapse">
                 <dropdownMenu class="navbar-nav ml-auto" v-model="showDropdownMenu" :right="true" :hover="true">
-                    <a class="nav-link dropdown-toggle">
+                    <a class="nav-link dropdown-toggle" v-bind:style="{ color: 'black' }">
                         {{ username }}
                     </a>
                     <div slot="dropdown">

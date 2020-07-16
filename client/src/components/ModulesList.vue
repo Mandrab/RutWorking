@@ -1,7 +1,7 @@
 <template>
-    <div>
+    <div class="modules">
         <ul class="list-group">
-            <moduleTile v-for="(tile, index) in modulesArr" :item="tile" :key="index" @openModule="openModule"></moduleTile>
+            <moduleTile v-for="(tile, index) in modulesArr" :projectName="projectName" :item="tile" :key="index" @openModule="openModule"></moduleTile>
 		</ul>
     </div>
 </template>
@@ -18,6 +18,9 @@ export default {
     props: {
         modules: {
             type: Array
+        },
+        projectName: {
+            type: String
         }
     },
     created () {

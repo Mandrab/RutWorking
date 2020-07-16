@@ -129,4 +129,14 @@ export default {
     padding: 20% 0%;
 
 }
+ 
+/*
+@media (max-width: 576px) {
+    .detail {
+      padding: 0px !important;
+      margin: 0px !important;
+    }
+}
+*/
+
 </style>
