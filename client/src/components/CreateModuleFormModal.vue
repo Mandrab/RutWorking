@@ -98,6 +98,7 @@ export default {
             var json = {
                 "description": this.mod.description,
                 "deadline": this.deadline.toString(),
+                //"chief": this.project.chief
             }
             console.log(localStorage.getItem('path') + '/projects/'+this.project.name+'/modules/' + this.mod.moduleName);
 

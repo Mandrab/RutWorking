@@ -5,10 +5,10 @@
                 <div class="col-12 col-sm-9 col-md-9 col-xl-9 text-left pl-0">
                     <h2>{{ project.name }}</h2>
                 </div>
-                <div class="col-12 col-sm-2 col-md-2 col-xl-2 text-left pl-0" v-bind:style="{ color: deadlineColor }">
+                <div class="col-10 col-sm-2 col-md-2 col-xl-2 text-left pl-0" v-bind:style="{ color: deadlineColor }">
                     Deadline: {{ new Date(project.deadline).getDate() }}/{{ new Date(project.deadline).getMonth() + 1}}/{{ new Date(project.deadline).getFullYear() }}
                 </div>
-                <div class="col-12 col-sm-1 col-md-1 col-xl-1">
+                <div class="col-2 col-sm-1 col-md-1 col-xl-1">
                     <button class="btn btn-primary" @click="showModalForm">+</button>
                 </div>
             </div>
@@ -23,7 +23,7 @@
             </div>
 
             <div class="row">
-                <div class="float-lg-left text-left">
+                <div class="float-lg-left text-left mt-2">
                     {{ project.description }}
                 </div>
             </div>

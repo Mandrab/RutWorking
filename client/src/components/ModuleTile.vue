@@ -2,7 +2,19 @@
     <div class="mt-2 mb-2">
         <li class="list-group-item" @click="open">
             <div>
-                <div class="row">
+                <div v-if="isProjectChief" class="row">
+                    <div class="col-10 col-sm-8 col-md-8 col-xl-8 text-left font-weight-bold h5 pb-0 mb-0">
+                        {{ item.name }}
+                    </div>
+                    <div class="col-2 col-sm-1 col-md-1 col-xl-1">
+                        <button class="btn btn-primary" @click="deleteModule">D</button>
+                    </div>
+                    <div v-if="ready" class="col-12 col-sm-3 col-md-3 col-xl-3 text-right float-right small pb-2" v-bind:style="{ color: deadlineColor }">
+                        Deadline: {{ new Date(item.deadline).getDate() }}/{{ new Date(item.deadline).getMonth() + 1 }}/{{ new Date(item.deadline).getFullYear() }}
+                    </div>
+                </div>
+
+                <div v-if="!isProjectChief" class="row">
                     <div class="col-12 col-sm-9 col-md-9 col-xl-9 text-left font-weight-bold h5 pb-0 mb-0">
                         {{ item.name }}
                     </div>
@@ -63,6 +75,8 @@ export default {
                 console.log(res);
                 this.developers = res.developers;
                 this.developersReady = true;
+
+                console.log("CHIEF" + this.item.chief);
                 
             }, (err) => {
                 alert("err");
@@ -89,6 +103,9 @@ export default {
         },
         open () {
             this.$emit('openModule', this.item);
+        },
+        deleteModule () {
+            
         }
     }
 };
