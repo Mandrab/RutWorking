@@ -3,9 +3,11 @@
  * 
  * @author Paolo Baldini
  */
-import { isRole, _isRole, _isChief, or, _isDeveloper, isChief, isActive } from '../auths/jwt'
+import { _isRole, _isChief, or, _isDeveloper, isChief, isActive } from '../auths/jwt'
 import { newModule, getModuleInfo, deleteModule, addDeveloper, removeDeveloper } from '../controllers/module'
 import { Roles } from '../models'
+
+const isProject = isChief('project')
 
 const _isAdmin = _isRole(Roles.ADMIN)
 
@@ -16,7 +18,7 @@ module.exports = function (app: any) {
     // project-chief (check inside) can create a module to work on
     app.post('/projects/:projectName/modules/:moduleName', [
         isActive,
-        isRole(Roles.USER)
+        isProject
     ], newModule)
 
     // get info of a module

@@ -16,7 +16,7 @@ export async function newModule(
     let user = await User.findById(chiefID)
     let project = await Project.findByName(projectName)
 
-    project.newModule(name, user._id(), description, deadline ? new Date(deadline) : null)
+    await project.newModule(name, user._id(), description, deadline ? new Date(deadline) : null)
     return { code: 200, message: ''}
 }
 
