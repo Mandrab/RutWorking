@@ -1,20 +1,8 @@
 <template>
     <div class="mt-2 mb-2">
-        <li class="list-group-item" @click="open">
+        <li class="list-group-item" @click.stop="openModule">
             <div>
-                <div v-if="isProjectChief" class="row">
-                    <div class="col-10 col-sm-8 col-md-8 col-xl-8 text-left font-weight-bold h5 pb-0 mb-0">
-                        {{ item.name }}
-                    </div>
-                    <div class="col-2 col-sm-1 col-md-1 col-xl-1">
-                        <button class="btn btn-primary" @click="deleteModule">D</button>
-                    </div>
-                    <div v-if="ready" class="col-12 col-sm-3 col-md-3 col-xl-3 text-right float-right small pb-2" v-bind:style="{ color: deadlineColor }">
-                        Deadline: {{ new Date(item.deadline).getDate() }}/{{ new Date(item.deadline).getMonth() + 1 }}/{{ new Date(item.deadline).getFullYear() }}
-                    </div>
-                </div>
-
-                <div v-if="!isProjectChief" class="row">
+                <div class="row">
                     <div class="col-12 col-sm-9 col-md-9 col-xl-9 text-left font-weight-bold h5 pb-0 mb-0">
                         {{ item.name }}
                     </div>
@@ -22,11 +10,20 @@
                         Deadline: {{ new Date(item.deadline).getDate() }}/{{ new Date(item.deadline).getMonth() + 1 }}/{{ new Date(item.deadline).getFullYear() }}
                     </div>
                 </div>
-                <div class="row">
+
+                <div v-if="isModuleChief" class="row">
+                    <div class="col-12 col-sm-10 col-md-10 col-xl-10 text-left">
+                        {{ item.description }}
+                    </div>
+                    <div class="col-12 col-sm-2 col-md-2 col-xl-2">
+                        <button class="btn btn-primary" @click="deleteModule">D</button>
+                    </div>
+                </div>
+
+                <div v-if="!isModuleChief" class="row">
                     <div class="col-12 col-sm-12 col-md-12 col-xl-12 text-left">
                         {{ item.description }}
                     </div>
-                    
                 </div>
             </div>
         </li>
@@ -40,7 +37,8 @@ export default {
             ready: false,
             deadlineColor: 'black',
             developers: [],
-            developersReady: false
+            developersReady: false,
+            isModuleChief: true // impostare a false quando ci sarà l'API sistemata
         }
     },
     created () {
@@ -76,7 +74,12 @@ export default {
                 this.developers = res.developers;
                 this.developersReady = true;
 
-                console.log("CHIEF" + this.item.chief);
+                console.log(this.item);
+                /* Decommentare quando l'API sarà sistemata
+                if (JSON.parse(localStorage.getItem('user')).email == this.item.chief) {
+                    this.isModuleChief = true;
+                }
+                */
                 
             }, (err) => {
                 alert("err");
@@ -101,11 +104,26 @@ export default {
             }
             this.ready = true;
         },
-        open () {
+        openModule () {
             this.$emit('openModule', this.item);
         },
         deleteModule () {
-            
+            var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
+            this.$http.delete(localStorage.getItem('path') + '/projects/' + this.projectName + '/modules/' + this.item.name, tokenJson).then(function(response) {
+                console.log(response.body);
+                var res = response.body;
+                try {//è un livello di sicurezza in più, potrebbe non servire tray atch in futuro
+                    res = JSON.parse(res);
+                    console.log(res);
+                } catch (error) {console.log(error)}
+                //this.projectDetail = res;//lo memorizzo nei data di questa view per poi poterlo passare al componente container (tramite props) che lo userà per creare i componenti tiles
+
+                //this.modulesArr = res.modules;
+
+                //this.projectReady = true;
+            }, (err) => {
+                console.log(err.body);
+            });
         }
     }
 };

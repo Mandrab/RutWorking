@@ -97,8 +97,7 @@ export default {
             var tokenjson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
             var json = {
                 "description": this.mod.description,
-                "deadline": this.deadline.toString(),
-                //"chief": this.project.chief
+                "deadline": this.deadline.toString()
             }
             console.log(localStorage.getItem('path') + '/projects/'+this.project.name+'/modules/' + this.mod.moduleName);
 
