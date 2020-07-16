@@ -97,7 +97,7 @@ export default {
             if (date <= today && date >= weekAgo ) {
                 this.deadlineColor = 'orange';
             }
-            else if(date < weekAgo) {
+            else if(date < today) {
                 this.deadlineColor = 'red';
             } else { 
                 this.deadlineColor = 'green';
