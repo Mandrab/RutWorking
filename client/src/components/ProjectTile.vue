@@ -34,11 +34,16 @@ export default {
     methods: {
         checkDeadline () {
             this.ready = false;
+            
+            console.log(this.item);
             var date = new Date(this.item.deadline);
-            var weekAgo = new Date();
+            
+            var weekLater = new Date();
             var today = new Date();
-            weekAgo.setDate(date.getDate()+7);
-            if (date <= today && date >= weekAgo ) {
+            weekLater.setDate(date.getDate()+7);
+
+            alert(date >= today && date <= weekLater)
+            if (date >= today && date <= weekLater ) {
                 this.deadlineColor = 'orange';
             }
             else if(date < today) {

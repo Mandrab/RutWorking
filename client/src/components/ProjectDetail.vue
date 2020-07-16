@@ -114,17 +114,22 @@ export default {
             });
         },
         checkDeadline () {
-            this.projectReady = false;
+            //this.projectReady = false;
+            console.log("____________ ________________ _______________")
+            console.log(this.project);
             var date = new Date(this.project.deadline);
-            var weekAgo = new Date();
+            
+            var weekLater = new Date();
             var today = new Date();
-            weekAgo.setDate(today.getDate()+7);
-            if (date <= today && date >= weekAgo ) {
+            weekLater.setDate(date.getDate()+7);
+
+            alert(date >= today && date <= weekLater)
+            if (date >= today && date <= weekLater ) {
                 this.deadlineColor = 'orange';
             }
-            else if (date < today) {
+            else if(date < today) {
                 this.deadlineColor = 'red';
-            } else { // fare l'intermedio giallo
+            } else { 
                 this.deadlineColor = 'green';
             }
             this.ready = true;
