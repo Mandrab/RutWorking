@@ -483,13 +483,22 @@ paths:
           schema:
             type: string
           required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                chief:
+                  type: string
+                  description: Email of the future module chief
       responses:
         201:
           description: Module created
         403:
           description: Not project-chief. Otherwise the account is blocked.
         404:
-          description: Project or user-token not found
+          description: Project or user not found
     get:
       tags: [modules]
       summary: Get info about a module
