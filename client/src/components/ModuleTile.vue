@@ -10,7 +10,7 @@
                         Deadline: {{ new Date(item.deadline).getDate() }}/{{ new Date(item.deadline).getMonth() + 1 }}/{{ new Date(item.deadline).getFullYear() }}
                     </div>
                 </div>
-
+                <!-- aggiungere anche isProjectChief -->
                 <div v-if="isModuleChief" class="row">
                     <div class="col-12 col-sm-10 col-md-10 col-xl-10 text-left">
                         {{ item.description }}
@@ -38,7 +38,7 @@ export default {
             deadlineColor: 'black',
             developers: [],
             developersReady: false,
-            isModuleChief: false // impostare a false quando ci sarà l'API sistemata
+            isModuleChief: false
         }
     },
     created () {
