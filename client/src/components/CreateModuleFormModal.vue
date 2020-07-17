@@ -75,7 +75,58 @@ export default {
             var date = new Date(this.deadline.toString());
             var today = new Date();
             var projectDline = new Date(this.project.deadline);
-            if (date<today || date>projectDline) {
+            if (date>projectDline) {
+              
+              //alert("oppala")
+              //alert(this.deadline);
+              //this.deadline = new Date(projectDline.getFullYear()+"-"+projectDline.getMonth()+1+"-"+projectDline.getDate());
+              
+              
+
+              var day = ("0" + projectDline.getDate()).slice(-2);
+              var month = ("0" + (projectDline.getMonth() + 1)).slice(-2);
+
+              var newDate = projectDline.getFullYear()+"-"+(month)+"-"+(day) ;
+
+              this.deadline = newDate;
+              //alert(this.deadline);
+
+              //var date = new Date('2011', '01', '18');
+              //alert('the original date is ' + date);
+              //alert(date.getDate());
+
+              /*
+              var newdate = new Date(date);
+              newdate.setDate(newdate.getDate() - (date.getDate()-1)); // minus the date
+
+              */
+
+              //var nd = new Date(newdate);
+              //alert('the new date is ' + nd);
+
+              /*
+              if(newdate>=projectDline){
+                //qui sei nel mese proprio sbagliato
+                alert("Invalid date!");
+                this.deadline = new Date(projectDline)
+              }else{
+                this.deadline = new Date(projectDline)
+              }
+
+              */
+
+              /*
+              var firstDayMonth = new Date();
+              console.log(date)
+              console.log(date.getDate())
+              console.log(date.getDate())
+              console.log("§§§§§§§§§§§§§§§§§§§")
+              firstDayMonth.setDate(date.getDate()-(date.getDate()+1));
+              console.log(firstDayMonth.getDate())
+              console.log(firstDayMonth)
+              */
+            }
+            if (date<today) {
                 this.deadline = '';
                 alert("Invalid date!");
             }

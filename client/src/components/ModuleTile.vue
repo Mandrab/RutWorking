@@ -6,31 +6,73 @@
                     <div class="col-12 col-sm-9 col-md-9 col-xl-9 text-left font-weight-bold h5 pb-0 mb-0">
                         {{ item.name }}
                     </div>
-                    <div v-if="ready" class="col-12 col-sm-3 col-md-3 col-xl-3 text-right float-right small pb-2" v-bind:style="{ color: deadlineColor }">
-                        Deadline: {{ new Date(item.deadline).getDate() }}/{{ new Date(item.deadline).getMonth() + 1 }}/{{ new Date(item.deadline).getFullYear() }}
+                    <div v-if="ready" class="col-9 col-sm-2 col-md-2 col-xl-2 text-right float-right small pb-2 pr-0" v-bind:style="{ color: deadlineColor }">
+                        {{ new Date(item.deadline).getDate() }}/{{ new Date(item.deadline).getMonth() + 1 }}/{{ new Date(item.deadline).getFullYear() }}
                     </div>
-                </div>
-                <!-- aggiungere anche isProjectChief -->
-                <div v-if="isModuleChief" class="row">
-                    <div class="col-12 col-sm-10 col-md-10 col-xl-10 text-left">
-                        {{ item.description }}
+                    <div v-if="ready" class="col-3 col-sm-1 col-md-1 col-xl-1 text-right float-right small pb-2 pl-0">
+                        <div>
+                            <div v-if="!isModuleChief">
+                                <button v-if="expanded" @click.stop="reduceModule" class="btn btn-sm btn-outline-info">^</button>
+                            <button v-else @click.stop="expandModule" class="btn btn-sm btn-outline-info">v</button>
+                            </div>
+                            <div v-else>
+                                <b-dropdown size="sm" id="dropdown-options" right class="m-2">
+                                    <template v-slot:button-content>
+                                        O
+                                    </template>
+                                    <b-dropdown-item v-if="isModuleChief && !expanded" @click.stop="expandModule">read description</b-dropdown-item>
+                                    <b-dropdown-item v-if="isModuleChief && expanded" @click.stop="reduceModule">hide description</b-dropdown-item>
+                                    <b-dropdown-item v-if="isModuleChief" @click.stop="">Add User</b-dropdown-item>
+                                    <b-dropdown-item v-if="isModuleChief" @click.stop="deleteModule" class="bg-danger">Delete Module</b-dropdown-item>
+                                </b-dropdown>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-12 col-sm-2 col-md-2 col-xl-2">
-                        <button class="btn btn-primary" @click.stop="deleteModule">D</button>
-                    </div>
+
                 </div>
 
-                <div v-if="!isModuleChief" class="row">
+                <div class="row">
+                    <div v-if="expanded" class="col-10 col-sm-10 col-md-10 col-xl-10 text-left">
+                        {{ item.description }}
+                    </div>
+                    <!--<div v-if="expanded" class="col-2 col-sm-2 col-md-2 col-xl-2 btns-opts">
+                        <button v-if="isModuleChief" class="btn btn-sm btn-primary" @click.stop="deleteModule">D</button>
+                        <button v-if="isModuleChief" class="btn btn-sm btn-primary" >U</button>
+                        
+                    </div>
+
+                    <div v-if="!expanded" class="col-10">
+                        <button v-if="expanded" @click.stop="reduceModule" class="btn btn-sm btn-outline-info">Press To Reduce</button>
+                        <button v-else @click.stop="expandModule" class="btn btn-sm btn-outline-info">Reed Description V</button>
+                    </div>
+                    <div v-if="!expanded" class="col-2 col-sm-2 col-md-2 col-xl-2 btns-opts">
+                        <button v-if="isModuleChief" class="btn btn-sm btn-primary" @click.stop="deleteModule">D</button>
+                        <button v-if="isModuleChief" class="btn btn-sm btn-primary" >U</button>
+                        
+                    </div>-->
+
+                    
+                    
+
+
+
+                </div>
+
+
+
+                <!--<div v-if="!isModuleChief" class="row">
                     <div class="col-12 col-sm-12 col-md-12 col-xl-12 text-left">
                         {{ item.description }}
                     </div>
-                </div>
+                </div>-->
             </div>
         </li>
     </div>
 </template>
 
 <script>
+
+
 export default {
     data () {
         return {
@@ -38,7 +80,8 @@ export default {
             deadlineColor: 'black',
             developers: [],
             developersReady: false,
-            isModuleChief: false
+            isModuleChief: false,
+            expanded: false
         }
     },
     created () {
@@ -88,13 +131,19 @@ export default {
                 this.developersReady = false;
             });
         },
+        reduceModule () {
+            this.expanded = false;
+        },
+        expandModule () {
+            this.expanded = true;
+        },
         checkDeadline () {
             this.ready = false;
             var date = new Date(this.item.deadline);
-            var weekAgo = new Date();
+            var weekLater = new Date();
             var today = new Date();
-            weekAgo.setDate(today.getDate()+7);
-            if (date <= today && date >= weekAgo ) {
+            weekLater.setDate(today.getDate()+7);
+            if (date >= today && date <= weekLater ) {
                 this.deadlineColor = 'orange';
             }
             else if(date < today) {
@@ -130,5 +179,10 @@ export default {
 <style scoped>
 .list-group-item:hover {
     background-color: lightgray;
+}
+@media (max-width: 576px) {
+    .btns-opts {
+      padding-left: 0px !important;
+    }
 }
 </style>
