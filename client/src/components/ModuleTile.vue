@@ -12,10 +12,10 @@
                 </div>
 
                 <div v-if="isModuleChief" class="row">
-                    <div class="col-12 col-sm-10 col-md-10 col-xl-10 text-left">
+                    <div class="col-10 col-sm-10 col-md-10 col-xl-10 text-left">
                         {{ item.description }}
                     </div>
-                    <div class="col-12 col-sm-2 col-md-2 col-xl-2">
+                    <div class="col-2 col-sm-2 col-md-2 col-xl-2 del-btn-module">
                         <button class="btn btn-primary" @click.stop="deleteModule">D</button>
                     </div>
                 </div>
@@ -130,5 +130,10 @@ export default {
 <style scoped>
 .list-group-item:hover {
     background-color: lightgray;
+}
+@media (max-width: 576px) {
+    .del-btn-module {
+      padding-left: 0px !important;
+    }
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-    <div class="col-sm-12 offset-sm-0">
+    <div class="col-sm-12 offset-sm-0 detail-project">
         <div class="projectInfo" v-if="projectReady">
             <div v-if="isProjectChief" class="row">
                 <div class="col-12 col-sm-9 col-md-9 col-xl-9 text-left pl-0">
@@ -123,7 +123,7 @@ export default {
             var today = new Date();
             weekLater.setDate(date.getDate()+7);
 
-            alert(date >= today && date <= weekLater)
+            //alert(date >= today && date <= weekLater)
             if (date >= today && date <= weekLater ) {
                 this.deadlineColor = 'orange';
             }
@@ -151,12 +151,12 @@ export default {
 
 <style scoped>
 
-/*
-@media (min-width: 576px) {
-    .projectInfo {
-      padding: 24px !important;
+
+@media (max-width: 576px) {
+    .detail-project {
+      padding: 0px !important;
     }
-}*/
+}
 
 </style>
 

@@ -42,7 +42,7 @@ export default {
             var today = new Date();
             weekLater.setDate(date.getDate()+7);
 
-            alert(date >= today && date <= weekLater)
+            //alert(date >= today && date <= weekLater)
             if (date >= today && date <= weekLater ) {
                 this.deadlineColor = 'orange';
             }
