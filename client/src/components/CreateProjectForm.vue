@@ -44,7 +44,7 @@ export default {
         deadline: function () {
             var date = new Date(this.deadline);
             var today = new Date();
-            if (date.getFullYear() < today.getFullYear() || date.getMonth() < today.getMonth() || date.getDate() < today.getDate()) {
+            if (date<today) {
                 this.deadline = '';
                 alert("Invalid date!");
             }

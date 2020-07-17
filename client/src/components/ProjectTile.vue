@@ -36,17 +36,17 @@ export default {
             this.ready = false;
             
             console.log(this.item);
-            var date = new Date(this.item.deadline);
+            var ProjectDline = new Date(this.item.deadline);
             
-            var weekLater = new Date();
+            
             var today = new Date();
-            weekLater.setDate(date.getDate()+7);
+            var weekLater = new Date(today);
+            weekLater.setDate(today.getDate()+7);
 
-            //alert(date >= today && date <= weekLater)
-            if (date >= today && date <= weekLater ) {
+            if (ProjectDline >= today && ProjectDline <= weekLater ) {
                 this.deadlineColor = 'orange';
             }
-            else if(date < today) {
+            else if(ProjectDline < today) {
                 this.deadlineColor = 'red';
             } else { 
                 this.deadlineColor = 'green';

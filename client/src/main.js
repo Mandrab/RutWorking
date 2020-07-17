@@ -8,6 +8,9 @@ import VeeValidate from 'vee-validate';
 Vue.use(VeeValidate);
 Vue.use(VueResource);
 
+import { DropdownPlugin } from 'bootstrap-vue'
+Vue.use(DropdownPlugin)
+
 Vue.config.productionTip = false;
 
 new Vue({
