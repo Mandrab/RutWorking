@@ -3,27 +3,27 @@
         <li class="list-group-item" @click="openModule">
             <div>
                 <div class="row">
-                    <div class="col-12 col-sm-9 col-md-9 col-xl-9 text-left font-weight-bold h5 pb-0 mb-0">
+                    <div class="col-12 col-sm-8 col-md-8 col-xl-8 text-left font-weight-bold h5 pb-0 mb-0">
                         {{ item.name }}
                     </div>
-                    <div v-if="ready" class="col-9 col-sm-2 col-md-2 col-xl-2 text-right float-right small pb-2 pr-0" v-bind:style="{ color: deadlineColor }">
-                        {{ new Date(item.deadline).getDate() }}/{{ new Date(item.deadline).getMonth() + 1 }}/{{ new Date(item.deadline).getFullYear() }}
+                    <div v-if="ready" class="col-6 col-sm-2 col-md-2 col-xl-2 text-left float-right small pt-2 pr-0" v-bind:style="{ color: deadlineColor }">
+                        Deadline: {{ new Date(item.deadline).getDate() }}/{{ new Date(item.deadline).getMonth() + 1 }}/{{ new Date(item.deadline).getFullYear() }}
                     </div>
-                    <div v-if="ready" class="col-3 col-sm-1 col-md-1 col-xl-1 text-right float-right small pb-2 pl-0">
+                    <div v-if="ready" class="col-6 col-sm-2 col-md-2 col-xl-2 text-right float-right small px-0">
                         <div>
                             <div v-if="!isModuleChief">
                                 <button v-if="expanded" @click.stop="reduceModule" class="btn btn-sm btn-outline-info">^</button>
-                            <button v-else @click.stop="expandModule" class="btn btn-sm btn-outline-info">v</button>
+                                <button v-else @click.stop="expandModule" class="btn btn-sm btn-outline-info">v</button>
                             </div>
                             <div v-else>
                                 <b-dropdown size="sm" id="dropdown-options" right class="m-2">
                                     <template v-slot:button-content>
-                                        O
+                                        ...
                                     </template>
-                                    <b-dropdown-item v-if="isModuleChief && !expanded" @click.stop="expandModule">read description</b-dropdown-item>
-                                    <b-dropdown-item v-if="isModuleChief && expanded" @click.stop="reduceModule">hide description</b-dropdown-item>
-                                    <b-dropdown-item v-if="isModuleChief" @click.stop="">Add User</b-dropdown-item>
-                                    <b-dropdown-item v-if="isModuleChief" @click.stop="deleteModule" class="bg-danger">Delete Module</b-dropdown-item>
+                                    <b-dropdown-item v-if="isModuleChief && !expanded" @click.stop="expandModule">Read description</b-dropdown-item>
+                                    <b-dropdown-item v-if="isModuleChief && expanded" @click.stop="reduceModule">Hide description</b-dropdown-item>
+                                    <b-dropdown-item v-if="isModuleChief" @click.stop="">Add user</b-dropdown-item>
+                                    <b-dropdown-item v-if="isModuleChief" @click.stop="deleteModule" class="bg-danger">Delete module</b-dropdown-item>
                                 </b-dropdown>
                             </div>
                         </div>
@@ -32,7 +32,7 @@
                 </div>
 
                 <div class="row">
-                    <div v-if="expanded" class="col-10 col-sm-10 col-md-10 col-xl-10 text-left">
+                    <div v-if="expanded" class="col-12 col-sm-12 col-md-12 col-xl-12 text-left">
                         {{ item.description }}
                     </div>
                     <!--<div v-if="expanded" class="col-2 col-sm-2 col-md-2 col-xl-2 btns-opts">
@@ -80,6 +80,7 @@ export default {
             deadlineColor: 'black',
             developers: [],
             developersReady: false,
+            isProjectChief: false,
             isModuleChief: false,
             expanded: false
         }
@@ -93,8 +94,8 @@ export default {
         item: {
             type: Object
         },
-        projectName: {
-            type: String
+        projectInfo: {
+            type: Object
         }
     },
     watch: {
@@ -106,8 +107,8 @@ export default {
         init () {
             this.developersReady = false;
             var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
-            console.log(localStorage.getItem('path') + '/projects/' + this.projectName + '/modules/' + this.item.name);
-            this.$http.get(localStorage.getItem('path') + '/projects/' + this.projectName + '/modules/' + this.item.name, tokenJson).then(function(response) {
+            console.log(localStorage.getItem('path') + '/projects/' + this.projectInfo.projectName + '/modules/' + this.item.name);
+            this.$http.get(localStorage.getItem('path') + '/projects/' + this.projectInfo.projectName + '/modules/' + this.item.name, tokenJson).then(function(response) {
                 console.log(response.body);
                 var res = response.body;
                 try {//è un livello di sicurezza in più, potrebbe non servire tray atch in futuro
@@ -122,8 +123,10 @@ export default {
                 if (JSON.parse(localStorage.getItem('user')).email == this.item.chief) {
                     this.isModuleChief = true;
                 }
-                
-                
+                if (JSON.parse(localStorage.getItem('user')).email == this.projectInfo.isProjectChief) {
+                    this.isProjectChief = true;
+                }
+
             }, (err) => {
                 alert("err");
                 alert(err.body);
@@ -158,7 +161,7 @@ export default {
         },
         deleteModule () {
             var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
-            this.$http.delete(localStorage.getItem('path') + '/projects/' + this.projectName + '/modules/' + this.item.name, tokenJson).then(function(response) {
+            this.$http.delete(localStorage.getItem('path') + '/projects/' + this.projectInfo.projectName + '/modules/' + this.item.name, tokenJson).then(function(response) {
                 console.log(response.body);
                 var res = response.body;
                 try {//è un livello di sicurezza in più, potrebbe non servire tray atch in futuro

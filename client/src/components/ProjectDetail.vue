@@ -29,7 +29,7 @@
             </div>
         </div>
 
-        <modulesList v-if="projectReady" @clickModule="openModule" @refreshModulesList="getProjectInfo" :modules="modulesArr" :projectName="project.name"></modulesList>
+        <modulesList v-if="projectReady" @clickModule="openModule" @refreshModulesList="getProjectInfo" :modules="modulesArr" :projectInfo="projectInfo"></modulesList>
 
         <createModuleFormModal v-if="showModal" :project="project" @closeModal="closeModal" @moduleAdded="getProjectInfo"></createModuleFormModal>
     </div>
@@ -49,7 +49,8 @@ export default {
             showModal: false,
             modulesArr: [],
             projectReady: false,
-            deadlineColor: 'black'
+            deadlineColor: 'black',
+            projectInfo: {}
         }
     },
     components: {
@@ -67,6 +68,7 @@ export default {
         if (JSON.parse(localStorage.getItem('user')).email == this.project.chief) {
             this.isProjectChief = true;
         }
+        this.projectInfo = {'projectName': this.project.name, 'isProjectChief': this.isProjectChief }
 
     },
     watch: {

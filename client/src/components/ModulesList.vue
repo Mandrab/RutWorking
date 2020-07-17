@@ -1,7 +1,7 @@
 <template>
     <div class="modules">
         <ul class="list-group">
-            <moduleTile v-for="(tile, index) in modulesArr" :projectName="projectName" :item="tile" :key="index" @openModule="openModule" @refreshModulesList="refreshModulesList"></moduleTile>
+            <moduleTile v-for="(tile, index) in modulesArr" :projectInfo="projectInfo" :item="tile" :key="index" @openModule="openModule" @refreshModulesList="refreshModulesList"></moduleTile>
 		</ul>
     </div>
 </template>
@@ -19,8 +19,8 @@ export default {
         modules: {
             type: Array
         },
-        projectName: {
-            type: String
+        projectInfo: {
+            type: Object
         }
     },
     created () {
