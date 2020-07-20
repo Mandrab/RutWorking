@@ -23,6 +23,7 @@
                                     <b-dropdown-item v-if="isModuleChief && !expanded" @click.stop="expandModule">Read description</b-dropdown-item>
                                     <b-dropdown-item v-if="isModuleChief && expanded" @click.stop="reduceModule">Hide description</b-dropdown-item>
                                     <b-dropdown-item v-if="isModuleChief" @click.stop="">Add user</b-dropdown-item>
+                                    <b-dropdown-divider></b-dropdown-divider>
                                     <b-dropdown-item v-if="isModuleChief" @click.stop="deleteModule" class="bg-danger">Delete module</b-dropdown-item>
                                 </b-dropdown>
                             </div>

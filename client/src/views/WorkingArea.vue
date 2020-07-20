@@ -40,7 +40,7 @@
 
     <div class="row">
         <div class="col-sm-8 col-md-8 col-xl-8">
-            <kanban></kanban>
+            <kanban :stages="statuses"></kanban>
         </div>
         <div class="col-sm-4 col-md-4 col-xl-4">
             <chat></chat>
@@ -66,7 +66,9 @@ export default {
             showDropdownMenu: false,
             module: {},
             moduleReady: false,
-            deadlineColor: 'black'
+            deadlineColor: 'black',
+            statuses: ['TODO', 'ASSIGNED', 'IN PROGRESS', 'DONE'],
+            blocks: [] //
         }
     },
     components: {

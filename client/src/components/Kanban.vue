@@ -1,88 +1,62 @@
 <template>
-    <div class="row">
-        <div class="col-12 col-sm-3 col-md-3 col-xl-3">
-            <h5> TODO </h5>
-        </div>
-        <div class="col-12 col-sm-3 col-md-3 col-xl-3">
-            <h5> ASSIGNED </h5>
-        </div>
-        <div class="col-12 col-sm-3 col-md-3 col-xl-3">
-            <h5> IN PROGRESS </h5>
-        </div>
-        <div class="col-12 col-sm-3 col-md-3 col-xl-3">
-            <h5> DONE </h5>
-        </div>
+<div class="container">
+    <div class="row d-none d-md-flex">
+      <div class="col-md-6" v-for="(text, index) in stages" :item="text" :key="index">
+        
+      </div>
     </div>
+    <div class="row d-md-none">
+      <div class="col-12">
+        <swiper>
+          <swiper-slide v-for="(text, index) in stages" class="px-2" :item="text" :key="index">
+           
+          </swiper-slide>
+          <div class="swiper-pagination"  slot="pagination"></div>
+        </swiper>
+      </div>
+    </div>
+  </div>
+
+<!--
+  <swiper ref="mySwiper" :options="swiperOptions">
+    <swiper-slide>Slide 1</swiper-slide>
+    <swiper-slide>Slide 2</swiper-slide>
+    <swiper-slide>Slide 3</swiper-slide>
+    <swiper-slide>Slide 4</swiper-slide>
+    <swiper-slide>Slide 5</swiper-slide>
+    <div class="swiper-pagination" slot="pagination"></div>
+  </swiper>
+    -->
 </template>
 
 <script>
 export default {
     data () {
         return {
-            ready: false,
-            deadlineColor: 'black',
-            developers: [],
-            developersReady: false
+          
         }
+    },
+    computed: {
+      
+    },
+    mounted() {
+      
     },
     created () {
-        console.log(this.item);
-        this.init();
-        this.checkDeadline();
+        
     },
     props: {
-        item: {
-            type: Object
-        },
-        projectName: {
-            type: String
-        }
+        stages: {
+          type: Array,
+          required: true,
+      }
     },
     watch: {
-        item: function () {
-            this.checkDeadline();
-        }
+        
     },
     methods: {
         init () {
-            this.developersReady = false;
-            var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
-            console.log(localStorage.getItem('path') + '/projects/' + this.projectName + '/modules/' + this.item.name);
-            this.$http.get(localStorage.getItem('path') + '/projects/' + this.projectName + '/modules/' + this.item.name, tokenJson).then(function(response) {
-                console.log(response.body);
-                var res = response.body;
-                try {//è un livello di sicurezza in più, potrebbe non servire tray atch in futuro
-                    res = JSON.parse(res);
-                } catch (error) {console.log(error)}
-                console.log(res);
-                this.developers = res.developers;
-                this.developersReady = true;
-                
-            }, (err) => {
-                alert("err");
-                alert(err.body);
-                console.log(err.body);
-                this.developersReady = false;
-            });
-        },
-        checkDeadline () {
-            this.ready = false;
-            var date = new Date(this.item.deadline);
-            var weekAgo = new Date();
-            var today = new Date();
-            weekAgo.setDate(today.getDate()-7);
-            if (date <= today && date >= weekAgo ) {
-                this.deadlineColor = 'orange';
-            }
-            else if(date < weekAgo) {
-                this.deadlineColor = 'red';
-            } else { 
-                this.deadlineColor = 'green';
-            }
-            this.ready = true;
-        },
-        open () {
-            this.$emit('openModule', this.item);
+            
         }
     }
 };
