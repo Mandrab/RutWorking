@@ -4,15 +4,25 @@
 
       
     <nav class="navbar navbar-expand-lg navbar-light bg-light rounded">
-        <a class="col-sm-6 col-md-6 col-xl-6 navbar-brand text-left mx-0 p-1" href="#">RutWorking</a>
+        <a class="col-6 col-sm-6 col-md-6 col-xl-6 navbar-brand text-left mx-0 p-1" href="#">RutWorking</a>
         <!-- collapse w-100 order-3 dual-collapse2 -->
-        <div class="col-sm-6 col-md-6 col-xl-6 mx-0 p-0">
-            <b-dropdown class="float-right" id="dropdown-options" right style="background-color: #F8F9FA;" variant=".">
+        <div class="col-6 col-sm-6 col-md-6 col-xl-6 mx-0 p-0">
+            <b-dropdown class="d-none d-sm-block d-md-block d-lg-block float-right" id="dropdown-options" right variant="light">
                 <template v-slot:button-content>
                     {{ username }}
                 </template>
                 <b-dropdown-item @click="openPersonalArea">Personal Area</b-dropdown-item>
+                <b-dropdown-item @click="logout">Logout</b-dropdown-item>
+            </b-dropdown>
+
+            <b-dropdown class="d-sm-none float-right" id="dropdown-options" right variant="light">
+                <template v-slot:button-content>
+                    ...
+                </template>
+                <b-dropdown-header disabled> {{ username }} </b-dropdown-header>
                 <b-dropdown-divider></b-dropdown-divider>
+                <b-dropdown-item @click="openPersonalArea">Personal Area</b-dropdown-item>
+                
                 <b-dropdown-item @click="logout">Logout</b-dropdown-item>
             </b-dropdown>
 

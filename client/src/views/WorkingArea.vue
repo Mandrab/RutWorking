@@ -1,18 +1,27 @@
 <template>
   <div class="container-fluid">
     <nav class="navbar navbar-expand-lg navbar-light bg-light rounded">
-        <a class="col-12 col-sm-6 col-md-6 col-xl-6 navbar-brand text-left mx-0" href="#" @click="openHomePage">RutWorking</a>
+        <a class="col-6 col-sm-6 col-md-6 col-xl-6 navbar-brand text-left mx-0 p-1" href="#" @click="openHomePage">RutWorking</a>
         <!-- collapse w-100 order-3 dual-collapse2 -->
-        <div class="col-12 col-sm-6 col-md-6 col-xl-6 mx-0 text-right navbar-collapse">
-            <dropdownMenu class="navbar-nav ml-auto" v-model="showDropdownMenu" :right="true" :hover="true">
-                <a class="nav-link dropdown-toggle" v-bind:style="{ color: 'black' }">
+        <div class="col-6 col-sm-6 col-md-6 col-xl-6 mx-0 p-0">
+            <b-dropdown class="d-none d-sm-block d-md-block d-lg-block float-right" id="dropdown-options" right variant="light">
+                <template v-slot:button-content>
                     {{ username }}
-                </a>
-                <div slot="dropdown">
-                    <a class="dropdown-item" href="#" @click="openPersonalArea">Personal Area</a>
-                    <a class="dropdown-item" href="#" @click="logout">Logout</a>
-                </div>
-            </dropdownMenu>
+                </template>
+                <b-dropdown-item @click="openPersonalArea">Personal Area</b-dropdown-item>
+                <b-dropdown-item @click="logout">Logout</b-dropdown-item>
+            </b-dropdown>
+
+            <b-dropdown class="d-sm-none float-right" id="dropdown-options" right variant="light">
+                <template v-slot:button-content>
+                    ...
+                </template>
+                <b-dropdown-header disabled> {{ username }} </b-dropdown-header>
+                <b-dropdown-divider></b-dropdown-divider>
+                <b-dropdown-item @click="openPersonalArea">Personal Area</b-dropdown-item>
+                
+                <b-dropdown-item @click="logout">Logout</b-dropdown-item>
+            </b-dropdown>
         </div>
     </nav>
 
@@ -55,7 +64,6 @@
 
 
 <script>
-import dropdownMenu from '../components/DropdownMenu.vue';
 import kanban from '../components/Kanban.vue';
 import chat from '../components/Chat.vue';
 
@@ -72,7 +80,6 @@ export default {
         }
     },
     components: {
-        dropdownMenu,
         kanban,
         chat
     },

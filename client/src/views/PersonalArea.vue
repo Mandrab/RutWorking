@@ -1,20 +1,29 @@
 <template>
     <div class="container-fluid">
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <a class="col-12 col-sm-6 col-md-6 col-xl-6 navbar-brand text-left mx-0" href="#" @click="openHomePage">RutWorking</a>
-            
-            <div class="col-12 col-sm-6 col-md-6 col-xl-6 mx-0 text-right navbar-collapse">
-                <dropdownMenu class="navbar-nav ml-auto" v-model="showDropdownMenu" :right="true" :hover="true">
-                    <a class="nav-link dropdown-toggle" v-bind:style="{ color: 'black' }">
-                        {{ username }}
-                    </a>
-                    <div slot="dropdown">
-                        <a class="dropdown-item" href="#" @click="openHomePage">Home Page</a>
-                        <a class="dropdown-item" href="#" @click="logout">Logout</a>
-                    </div>
-                </dropdownMenu>
-            </div>
-        </nav>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light rounded">
+        <a class="col-6 col-sm-6 col-md-6 col-xl-6 navbar-brand text-left mx-0 p-1" href="#" @click="openHomePage">RutWorking</a>
+        <!-- collapse w-100 order-3 dual-collapse2 -->
+        <div class="col-6 col-sm-6 col-md-6 col-xl-6 mx-0 p-0">
+            <b-dropdown class="d-none d-sm-block d-md-block d-lg-block float-right" id="dropdown-options" right variant="light">
+                <template v-slot:button-content>
+                    {{ username }}
+                </template>
+                <b-dropdown-item @click="openPersonalArea">Home Page</b-dropdown-item>
+                <b-dropdown-item @click="logout">Logout</b-dropdown-item>
+            </b-dropdown>
+
+            <b-dropdown class="d-sm-none float-right" id="dropdown-options" right variant="light">
+                <template v-slot:button-content>
+                    ...
+                </template>
+                <b-dropdown-header disabled> {{ username }} </b-dropdown-header>
+                <b-dropdown-divider></b-dropdown-divider>
+                <b-dropdown-item @click="openHomePage">Home Page</b-dropdown-item>
+                
+                <b-dropdown-item @click="logout">Logout</b-dropdown-item>
+            </b-dropdown>
+        </div>
+    </nav>
 
         <div class="row mt-5">
             <div class="col-sm bg-light rounded p-5 mx-5 mb-5">
@@ -55,7 +64,6 @@
 
 
 <script>
-import dropdownMenu from '../components/DropdownMenu.vue';
 import changePwdModal from '../components/ChangePwdModal.vue';
 
 export default {
@@ -70,7 +78,6 @@ export default {
         }
     },
     components: {
-        dropdownMenu,
         changePwdModal
     },
     created () {
