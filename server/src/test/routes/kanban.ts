@@ -189,7 +189,7 @@ describe('test kanban\' operations', function() {
 
         // no assignee specified
         await request.put('/projects/' + PROJECT[1].name + '/modules/' + PROJECT[1].modules[0] + '/kanban/' + task1ID)
-            .set({ 'Authorization': chiefToken }).send({ newState: 'IN-PROGRESS' }).expect(400)
+            .set({ 'Authorization': chiefToken }).send({ newState: 'IN-PROGRESS' }).expect(404)
 
         // TO-DO does not need an assignee
         await request.put('/projects/' + PROJECT[1].name + '/modules/' + PROJECT[1].modules[0] + '/kanban/' + task1ID)
