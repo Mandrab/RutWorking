@@ -11,6 +11,19 @@ export enum States {
     IN_PROGRESS = 'In-Progress',
     DONE = 'Done'
 }
+export namespace States {
+    export function parse(value: string) {
+        switch(value.toLocaleLowerCase()) {
+            case 'to-do':
+            case 'todo':
+                return States.TODO
+            case 'in-progress':
+                return States.IN_PROGRESS
+            case 'done':
+                return States.DONE
+        }
+    }
+}
 
 /**
  * Represent a state in the system with some utility methods

@@ -2,6 +2,7 @@ import { IDBModule, IDBMessage, IDBKanbanItem, DBProject } from "./db"
 import { Schema } from "mongoose"
 import { User } from "."
 import { KANBAN_STATES } from "./db/module"
+import { States } from "./status"
 
 /**
  * Represent a project module in the system with some utility methods
@@ -88,9 +89,13 @@ export class Module {
      * @param description tasks description
      * @param projectID parent project of the module
      */
-    async newTask(description: string) {
+    async newTask(description: string, status?: States, user?: User) {
+        let task: any = { taskDescription: description }
+        if (status) task.status = status
+        if (user) task.user = user
+
         await DBProject.updateOne({_id: this.parentID, "modules._id": this._id() }, {
-            $push: { "modules.$.kanbanItems": { taskDescription: description } }
+            $push: { "modules.$.kanbanItems": task }
         })
     }
 

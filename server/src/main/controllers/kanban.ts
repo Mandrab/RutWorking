@@ -3,7 +3,7 @@
  * 
  * @author Paolo Baldini
  */
-import { Project, User, getTasks as _getTasks } from '../models'
+import { Project, User, getTasks as _getTasks, States } from '../models'
 import { KANBAN_STATES } from '../models/db'
 import { sendNotification, Topics } from './notifications'
 
@@ -14,8 +14,10 @@ export async function newTask(request: any, result: any) {
         if (!module) return result.status(404).send('Module not found!')
 
         if (!request.body.description) return result.status(409).send('Message body not found!')
+        let status = request.body.status ? States.parse(request.body.status) : null
+        let user = request.body.assignee ? await User.findByEmail(request.body.assignee) : null
 
-        await module.newTask(request.body.description) // TODO parse to avoid code injection or strange things
+        await module.newTask(request.body.description, status, user) // TODO parse to avoid code injection or strange things
 
         result.status(201).send('Task succesfully created!')
     } catch(err) {
