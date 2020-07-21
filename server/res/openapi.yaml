@@ -786,9 +786,16 @@ paths:
             schema:
               type: object
               properties:
-                message:
+                description:
                   type: string
                   description: Task description
+                status:
+                  type: string
+                  enum: [TO-DO, IN-PROGRESS, DONE]
+                  description: "Status of the task. OPTIONAL value: by default it's TODO"
+                assignee:
+                  type: string
+                  description: 'Email of the user to which assign the task. OPTIONAL value: it would usually be empty at creation'
         required: true
       responses:
         201:
