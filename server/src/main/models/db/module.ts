@@ -44,10 +44,28 @@ const MessageSchema = new Schema({
     }
 })
 
-export enum KANBAN_STATES {
+/**
+ * States in the system
+ * 
+ * @author Paolo Baldini
+ */
+export enum States {
     TODO = 'TO-DO',
     IN_PROGRESS = 'IN-PROGRESS',
     DONE = 'DONE'
+}
+export namespace States {
+    export function parse(value: string) {
+        switch(value.toUpperCase()) {
+            case 'TODO':
+            case States.TODO:
+                return States.TODO
+            case States.IN_PROGRESS:
+                return States.IN_PROGRESS
+            case States.DONE:
+                return States.DONE
+        }
+    }
 }
 
 /**
@@ -69,12 +87,12 @@ const KanbanItemSchema = new Schema({
     status: {
         type: String,
         enum: [
-            KANBAN_STATES.TODO,
-            KANBAN_STATES.IN_PROGRESS,
-            KANBAN_STATES.DONE
+            States.TODO,
+            States.IN_PROGRESS,
+            States.DONE
         ],
         required: true,
-        default: KANBAN_STATES.TODO
+        default: States.TODO
     },
     assignee: {
         type: Schema.Types.ObjectId,

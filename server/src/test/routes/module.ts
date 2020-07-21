@@ -5,7 +5,7 @@
  */
 import { connect } from "mongoose"
 import { register, Roles, User, Project, newModule, addDeveloper } from "../../main/models"
-import { DBUser, DBProject, KANBAN_STATES } from "../../main/models/db"
+import { DBUser, DBProject, States } from "../../main/models/db"
 import { config as dbConfig } from '../../main/config/db'
 import { sign } from "jsonwebtoken"
 import { secret } from "../../main/config/auth"
@@ -356,8 +356,8 @@ describe('test modules\' operations', function() {
 
         let task1 = module.kanbanItems()[0]
         let task2 = module.kanbanItems()[1]
-        module.updateTaskStatus(task1._id(), KANBAN_STATES.IN_PROGRESS, user._id())
-        module.updateTaskStatus(task2._id(), KANBAN_STATES.DONE, user._id())
+        module.updateTaskStatus(task1._id(), States.IN_PROGRESS, user._id())
+        module.updateTaskStatus(task2._id(), States.DONE, user._id())
 
         // no token
         await request.delete('/projects/' + PROJECTS[3].name + '/modules/' + PROJECTS[3].modules[0].name +
@@ -396,8 +396,8 @@ describe('test modules\' operations', function() {
         if (module.developersIDs().length !== 0) throw 'Wrong number of developers!'
         if (module.kanbanItems().length !== 2) throw 'Wrong number of tasks!'
         if (
-            !module.kanbanItems().some(it => it.status() === KANBAN_STATES.DONE)
-            && !module.kanbanItems().some(it => it.status() === KANBAN_STATES.TODO)
+            !module.kanbanItems().some(it => it.status() === States.DONE)
+            && !module.kanbanItems().some(it => it.status() === States.TODO)
         ) throw 'Wrong tasks states!'
 
         return Promise.resolve()

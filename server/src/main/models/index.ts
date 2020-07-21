@@ -8,7 +8,7 @@ export { login, register } from './utils/users'
 
 export { Role, Roles } from './role'
 
-export { State, States } from './status'
+export { State } from './status'
 
 export { Project } from './project'
 export { newProject, getProjects, getProjectInfo } from './utils/projects'

@@ -23,8 +23,10 @@ module.exports = function (app: any) {
     app.put('/user/:userEmail', [isActive, isUser], changePassword)
 
     // get info of a user TODO limit at the same user? Now is all the users...
-    app.get('/user/:userEmail', [isActive, or(_isUser, _isAdmin)], getUserInfo)
+    app.get('/user/:userEmail', [isActive, or(_isAdmin, _isUser)], getUserInfo)
 
-    // an ADMIN can block a user
+    // TODO lista tutti gli utenti (anche admin)
+
+    // an ADMIN can block a user TODO raffinalo
     app.delete('/user/:userEmail', [isActive, isAdmin], blockUser)
 }

@@ -4,7 +4,7 @@
  * @author Paolo Baldini
  */
 import { Project, User, getTasks as _getTasks } from '../models'
-import { KANBAN_STATES } from '../models/db'
+import { States } from '../models/db'
 import { sendNotification, Topics } from './notifications'
 
 export async function newTask(request: any, result: any) {
@@ -14,8 +14,10 @@ export async function newTask(request: any, result: any) {
         if (!module) return result.status(404).send('Module not found!')
 
         if (!request.body.description) return result.status(409).send('Message body not found!')
+        let status = request.body.status ? States.parse(request.body.status) : null
+        let user = request.body.assignee ? await User.findByEmail(request.body.assignee) : null
 
-        await module.newTask(request.body.description) // TODO parse to avoid code injection or strange things
+        await module.newTask(request.body.description, status, user) // TODO parse to avoid code injection or strange things
 
         result.status(201).send('Task succesfully created!')
     } catch(err) {
@@ -35,13 +37,8 @@ export async function updateStatus(request: any, result: any) {
         if (!module.kanbanItems().some(it => it._id().toString() === request.params.taskID))
             return result.status(404).send('Task not found!')
 
-        let state = null
-        switch (request.body.newState) {
-            case KANBAN_STATES.TODO: state = KANBAN_STATES.TODO; break
-            case KANBAN_STATES.IN_PROGRESS: state = KANBAN_STATES.IN_PROGRESS; break
-            case KANBAN_STATES.DONE: state = KANBAN_STATES.DONE; break
-            default: throw { code: 409, message: 'Invalid state!' }
-        }
+        let state = States.parse(request.body.newState)
+        if (!state) throw { code: 409, message: 'Invalid state!' }
 
         if (request.body.assignee) {
             let user = await User.findByEmail(request.body.assignee)
@@ -54,7 +51,7 @@ export async function updateStatus(request: any, result: any) {
         result.status(200).send('Task succesfully updated!')
 
         try {
-            if (request.body.newState === KANBAN_STATES.DONE) {
+            if (request.body.newState.toLocaleLowerCase() === States.DONE) {
                 await sendNotification(
                     Topics.TASK_COMPLETED,
                     project.name(),

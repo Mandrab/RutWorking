@@ -5,7 +5,7 @@
  */
 import { connect } from "mongoose"
 import { register, Roles, User, Project } from "../../main/models"
-import { DBUser, DBProject, KANBAN_STATES } from "../../main/models/db"
+import { DBUser, DBProject, States } from "../../main/models/db"
 import { config as dbConfig } from '../../main/config/db'
 import { sign } from "jsonwebtoken"
 import { secret } from "../../main/config/auth"
@@ -186,15 +186,15 @@ describe('test kanban\' operations', function() {
         // valid token chief but no body
         await request.put('/projects/' + PROJECT[1].name + '/modules/' + PROJECT[1].modules[0] + '/kanban/' + task1ID)
             .set({ 'Authorization': chiefToken }).expect(409)
-        
+
         // no assignee specified
         await request.put('/projects/' + PROJECT[1].name + '/modules/' + PROJECT[1].modules[0] + '/kanban/' + task1ID)
             .set({ 'Authorization': chiefToken }).send({ newState: 'IN-PROGRESS' }).expect(400)
-        
+
         // TO-DO does not need an assignee
         await request.put('/projects/' + PROJECT[1].name + '/modules/' + PROJECT[1].modules[0] + '/kanban/' + task1ID)
             .set({ 'Authorization': chiefToken }).send({ newState: 'TO-DO' }).expect(200)
-        
+
         // invalid assignee
         await request.put('/projects/' + PROJECT[1].name + '/modules/' + PROJECT[1].modules[0] + '/kanban/' + task1ID)
             .set({ 'Authorization': chiefToken }).send({ newState: 'IN-PROGRESS', assignee: randomUser.email() })
@@ -279,7 +279,7 @@ describe('test kanban\' operations', function() {
             .set({ 'Authorization': developerToken }).expect(200)
         if (res.body.length !== 0) throw 'Wrong number of tasks returned'
 
-        await module.updateTaskStatus(task1ID, KANBAN_STATES.IN_PROGRESS, developer._id())
+        await module.updateTaskStatus(task1ID, States.IN_PROGRESS, developer._id())
 
         // filter user
         res = await request.get('/projects/' + PROJECT[2].name + '/modules/' + PROJECT[2].modules[0] + '/kanban/0/' + developer.email())

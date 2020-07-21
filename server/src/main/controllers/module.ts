@@ -81,6 +81,7 @@ export async function deleteModule(request: any, result: any) {
     try {
         let project = await Project.findByName(request.params.projectName)
         let module = project.modules().find(it => it.name() === request.params.moduleName)
+        if (!module) return result.status(404).send('Module not found')
 
         await module.delete()
         result.status(200).send('Module succesfully removed')
