@@ -104,15 +104,10 @@ export class Module {
      * @param projectID parent project of the module
      */
     async updateTaskStatus(taskID: Schema.Types.ObjectId, newStatus: States, assignee?: Schema.Types.ObjectId) {
-        if (newStatus !== States.TODO && !assignee) throw { code: 400, message: 'No assignee specified!' }
-
         let update: any = { "modules.$[module].kanbanItems.$[kanbanItem].status": newStatus }
-        if (newStatus !== States.TODO) {     // not set assignee in TODO state
+        if (newStatus !== States.TODO) {            // not set assignee in TODO state
             await User.findById(assignee)           // check existence
-            update = {
-                "modules.$[module].kanbanItems.$[kanbanItem].status": newStatus,
-                "modules.$[module].kanbanItems.$[kanbanItem].assignee": assignee
-            }
+            update["modules.$[module].kanbanItems.$[kanbanItem].assignee"] = assignee
         }
 
         await DBProject.updateOne(

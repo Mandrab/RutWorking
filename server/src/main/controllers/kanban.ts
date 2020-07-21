@@ -51,7 +51,7 @@ export async function updateStatus(request: any, result: any) {
         result.status(200).send('Task succesfully updated!')
 
         try {
-            if (request.body.newState.toLocaleLowerCase() === States.DONE) {
+            if (state === States.DONE) {
                 await sendNotification(
                     Topics.TASK_COMPLETED,
                     project.name(),

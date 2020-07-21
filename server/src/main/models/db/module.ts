@@ -51,6 +51,7 @@ const MessageSchema = new Schema({
  */
 export enum States {
     TODO = 'TO-DO',
+    ASSIGNED = 'ASSIGNED',
     IN_PROGRESS = 'IN-PROGRESS',
     DONE = 'DONE'
 }
@@ -60,6 +61,8 @@ export namespace States {
             case 'TODO':
             case States.TODO:
                 return States.TODO
+            case States.ASSIGNED:
+                return States.ASSIGNED
             case States.IN_PROGRESS:
                 return States.IN_PROGRESS
             case States.DONE:
@@ -88,6 +91,7 @@ const KanbanItemSchema = new Schema({
         type: String,
         enum: [
             States.TODO,
+            States.ASSIGNED,
             States.IN_PROGRESS,
             States.DONE
         ],
