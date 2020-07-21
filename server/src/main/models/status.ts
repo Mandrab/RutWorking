@@ -18,13 +18,11 @@ export class State {
      * @param searchStrategy used to find state in DB
      * @returns the state object
      */
-    static find(searchStrategy: () => Promise<IDBState> | IDBState): Promise<State> {
-        return new Promise(async (resolve: any, reject: any) => {
-            let state = await searchStrategy()
-            if (!state) return reject({ code: 404, message: 'State not found!' })
+    static async find(searchStrategy: () => Promise<IDBState> | IDBState): Promise<State> {
+        let state = await searchStrategy()
+        if (!state) throw { code: 404, message: 'State not found!' }
 
-            resolve(new State(state))
-        })
+        return new State(state)
     }
 
     /**

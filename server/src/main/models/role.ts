@@ -35,13 +35,11 @@ export class Role {
      * @param searchStrategy used to find role in DB
      * @returns the role object
      */
-    static find(searchStrategy: () => (Promise<IDBRole>)): Promise<Role> {
-        return new Promise(async (resolve: any, reject: any) => {
-            let role = await searchStrategy()
-            if (!role) return reject({ code: 404, message: 'Role not found!' })
+    static async find(searchStrategy: () => (Promise<IDBRole>)): Promise<Role> {
+        let role = await searchStrategy()
+        if (!role) throw { code: 404, message: 'Role not found!' }
 
-            resolve(new Role(role))
-        })
+        return new Role(role)
     }
 
     /**

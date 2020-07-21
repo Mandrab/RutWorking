@@ -15,9 +15,9 @@ export async function newTask(request: any, result: any) {
 
         if (!request.body.description) return result.status(409).send('Message body not found!')
         let status = request.body.status ? States.parse(request.body.status) : null
-        let user = request.body.assignee ? await User.findByEmail(request.body.assignee) : null
+        let assignee = request.body.assignee ? await User.findByEmail(request.body.assignee) : null
 
-        await module.newTask(request.body.description, status, user) // TODO parse to avoid code injection or strange things
+        await module.newTask(request.body.description, status, assignee) // TODO parse to avoid code injection or strange things
 
         result.status(201).send('Task succesfully created!')
     } catch(err) {
