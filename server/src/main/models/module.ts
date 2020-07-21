@@ -87,10 +87,10 @@ export class Module {
      * @param description tasks description
      * @param projectID parent project of the module
      */
-    async newTask(description: string, status?: States, user?: User) {
+    async newTask(description: string, status?: States, assignee?: User) {
         let task: any = { taskDescription: description }
         if (status) task.status = status
-        if (user) task.user = user
+        if (assignee) task.assignee = assignee
 
         await DBProject.updateOne({_id: this.parentID, "modules._id": this._id() }, {
             $push: { "modules.$.kanbanItems": task }
