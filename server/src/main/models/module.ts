@@ -1,8 +1,6 @@
-import { IDBModule, IDBMessage, IDBKanbanItem, DBProject } from "./db"
+import { IDBModule, IDBMessage, IDBKanbanItem, DBProject, States } from "./db"
 import { Schema } from "mongoose"
 import { User } from "."
-import { KANBAN_STATES } from "./db/module"
-import { States } from "./status"
 
 /**
  * Represent a project module in the system with some utility methods
@@ -52,13 +50,13 @@ export class Module {
         await DBProject.updateMany(
             { _id: this.parentID },
             {
-                $set: { "modules.$[module].kanbanItems.$[kanbanItem].status": KANBAN_STATES.TODO },
+                $set: { "modules.$[module].kanbanItems.$[kanbanItem].status": States.TODO },
                 $unset: { "modules.$[module].kanbanItems.$[kanbanItem].assignee": "" }
             }, {
                 arrayFilters : [
                     { "module._id" : this._id() },
                     {
-                        "kanbanItem.status": { $ne: KANBAN_STATES.DONE },
+                        "kanbanItem.status": { $ne: States.DONE },
                         "kanbanItem.assignee": userID
                     }
                 ] 
@@ -105,11 +103,11 @@ export class Module {
      * @param description tasks description
      * @param projectID parent project of the module
      */
-    async updateTaskStatus(taskID: Schema.Types.ObjectId, newStatus: KANBAN_STATES, assignee?: Schema.Types.ObjectId) {
-        if (newStatus !== KANBAN_STATES.TODO && !assignee) throw { code: 400, message: 'No assignee specified!' }
+    async updateTaskStatus(taskID: Schema.Types.ObjectId, newStatus: States, assignee?: Schema.Types.ObjectId) {
+        if (newStatus !== States.TODO && !assignee) throw { code: 400, message: 'No assignee specified!' }
 
         let update: any = { "modules.$[module].kanbanItems.$[kanbanItem].status": newStatus }
-        if (newStatus !== KANBAN_STATES.TODO) {     // not set assignee in TODO state
+        if (newStatus !== States.TODO) {     // not set assignee in TODO state
             await User.findById(assignee)           // check existence
             update = {
                 "modules.$[module].kanbanItems.$[kanbanItem].status": newStatus,
