@@ -38,33 +38,25 @@ export class User {
      * Change password of the user
      * 
      * @param newPassword the new password to set
-     * @returns true if succesfully changed password
      */
-    changePassword(newPassword: string): Promise<boolean> {
-        return new Promise(async (resolve: Function, _: Function) => {
-            // generate salt and hash the password using it
-            let salt = await genSalt(SALT_WORK_FACTOR)
-            let hashedPwd = await hash(newPassword, salt)
-            
-            // override the cleartext password with the hashed one
-            this.user = await DBUser.findByIdAndUpdate(this._id(), { password: hashedPwd })
-            resolve(true)
-        })
+    async changePassword(newPassword: string) {
+        // generate salt and hash the password using it
+        let salt = await genSalt(SALT_WORK_FACTOR)
+        let hashedPwd = await hash(newPassword, salt)
+        
+        // override the cleartext password with the hashed one
+        this.user = await DBUser.findByIdAndUpdate(this._id(), { password: hashedPwd })
     }
 
     /**
      * Block or unblock the user
      * 
      * @param block if true, block the user; if false, unblock it
-     * @returns true if succesfully changed
      */
-    block(block: boolean = true): Promise<boolean> {
-        return new Promise(async (resolve: Function, reject: Function) => {
-            let user = await DBUser.findByIdAndUpdate(this._id(), { active: !block })
+    async block(block: boolean = true) {
+        let user = await DBUser.findByIdAndUpdate(this._id(), { active: !block })
 
-            this.user = user
-            resolve(true)
-        })
+        this.user = user
     }
 
     /**
@@ -106,18 +98,20 @@ export class User {
      * @param token token binded to the user
      * @returns the user object
      */
-    static findByToken(token: string): Promise<User> {
+    static async findByToken(token: string): Promise<User> {
+        if (token && token.startsWith('Bearer ')) token = token.split(' ')[1]
+        if (!token) throw { code: 500, message: 'Token has not been passed!' }
+
         return new Promise((resolve: any, reject: any) => {
-            try {
-                if (token && token.startsWith('Bearer ')) token = token.split(' ')[1]
-                if (!token) reject({ code: 500, message: 'Token has not been passed!' })
+            verify(token, secret, (err: any, decoded: any) => {
+                if (err) reject({ code: 401, message: 'Invalid token!' })
+                resolve(User.findById(decoded.id))
+            })
+        })//verify(token, secret), (_err: any) => {})
+        /*, (err: any, decoded: any) => {
+            if (err) throw { code: 401, message: 'Invalid token!' }
 
-                verify(token, secret, (err: any, decoded: any) => {
-                    if (err) return reject({ code: 401, message: 'Invalid token!' })
-
-                    resolve(User.findById(decoded.id))
-                })
-            } catch (err) { reject({ code: 500, message: 'Internal error!' }) }
-        })
+            return User.findById(decoded.id)
+        })*/
     }
 }
