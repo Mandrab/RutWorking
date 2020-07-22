@@ -15,7 +15,16 @@
         </swiper>
       </div>
     </div>
+
+
+    <!-- PROVA DI UTILIZZO COMPONENTE TASK -->
+    <div class="row">
+
+    </div>
+
   </div>
+
+  
 
 <!--
   <swiper ref="mySwiper" :options="swiperOptions">
@@ -30,11 +39,16 @@
 </template>
 
 <script>
+import task from './Task.vue';
+
 export default {
     data () {
         return {
           
         }
+    },
+    components: {
+      task
     },
     computed: {
       
@@ -57,6 +71,29 @@ export default {
     methods: {
         init () {
             
+        },
+        getTasks () {
+          var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
+          
+          this.$http.get(localStorage.getItem('path') + '/projects/project/' + this.project.name + '/modules/' + , tokenJson).then(function(response) {
+          console.log(response.body);
+              var res = response.body;
+              try {//è un livello di sicurezza in più, potrebbe non servire tray atch in futuro
+                  res = JSON.parse(res);
+              } catch (error) {console.log(error)}
+              this.projectDetail = res;//lo memorizzo nei data di questa view per poi poterlo passare al componente container (tramite props) che lo userà per creare i componenti tiles
+
+              this.modulesArr = res.modules;
+
+              console.log(this.modulesArr);
+
+              this.projectReady = true;
+          }, (err) => {
+              alert("err");
+              alert(err.body);
+              console.log(err.body);
+              this.projectReady = true;
+          });
         }
     }
 };

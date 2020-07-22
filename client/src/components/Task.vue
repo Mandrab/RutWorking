@@ -2,20 +2,20 @@
     <div>
         <div class="row">
             <div class="col-6 col-sm-6 col-md-6 col-xl-6">
-                {{ username }}
+                {{ item.assignee }}
             </div>
             <div v-if="isModuleChief" class="col-6 col-sm-6 col-md-6 col-xl-6">
                 <button class="btn btn-primary">D</button>
             </div>
         </div>
         <div class="row text-left">
-            {{ description }}
+            {{ item.taskDescription }}
         </div>
         <div class="row">
-            <div v-if="!isLeftArrowDisabled">
+            <div v-if="!isLeftArrowDisabled" class="">
                 <button class="btn btn-primary" @click="moveToPreviousStage">L</button>
             </div>
-            <div v-if="!isRightArrowDisabled">
+            <div v-if="!isRightArrowDisabled" class="">
                 <button class="btn btn-primary" @click="moveToNextStage">R</button>
             </div>
         </div>
@@ -30,14 +30,18 @@ export default {
           isProjectChief,
           isModuleChief,
           isLeftArrowDisabled,
-          isRightArrowDisabled
+          isRightArrowDisabled,
+          status
         }
     },
     created () {
+        console.log(this.item);
         this.init();
     },
     props: {
-
+        item: {
+            type: Object
+        }
     },
     methods: {
         init () {
