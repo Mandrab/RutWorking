@@ -5,7 +5,7 @@
                 {{ item.assignee }}
             </div>
             <div v-if="isModuleChief" class="col-6 col-sm-6 col-md-6 col-xl-6">
-                <button class="btn btn-primary">D</button>
+                <button v-if="isModuleChief" class="btn btn-primary">D</button>
             </div>
         </div>
         <div class="row col-12 col-sm-12 col-md-12 col-xl-12">
@@ -33,7 +33,8 @@ export default {
           isModuleChief: false,
           isLeftArrowDisabled: false,
           isRightArrowDisabled: false,
-          taskReady: false
+          taskReady: false,
+          initialized: false
         }
     },
     created () {
@@ -54,6 +55,10 @@ export default {
             this.isModuleChief = localStorage.getItem('isModuleChief');
 
             console.log("-----");
+            console.log(this.username);
+            console.log(this.projectName);
+            console.log(this.moduleName);
+            console.log(this.isProjectChief);
             console.log(this.isModuleChief);
 
             if (this.item.status == "DONE") {
@@ -64,6 +69,9 @@ export default {
             }
 
             this.taskReady = true;
+            setTimeout(() => {
+                alert(this.isModuleChief);
+            }, 2000);
         },
         moveToNextStage () {
             var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };

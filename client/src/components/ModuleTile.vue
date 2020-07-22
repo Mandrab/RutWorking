@@ -169,6 +169,7 @@ export default {
             this.ready = true;
         },
         openModule () {
+            // PROVARE QUI
             this.$emit('openModule', this.item);
         },
         deleteModule () {

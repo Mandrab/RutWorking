@@ -69,8 +69,7 @@ export default {
             this.isProjectChief = true;
         }
         this.projectInfo = {'projectName': this.project.name, 'isProjectChief': this.isProjectChief }
-        localStorage.setItem('projectName', this.project.name); ////////
-        localStorage.setItem('isProjectChief', this.isProjectChief); ///////
+        
 
     },
     watch: {
@@ -94,10 +93,15 @@ export default {
         },
         getProjectInfo() {
             this.projectReady = false;
-            var vm = this;
+            alert(this.project.name);
+            localStorage.setItem('projectName', this.project.name); ////////
+            alert(localStorage.getItem('projectName'));
+            localStorage.setItem('isProjectChief', this.isProjectChief); ///////
+            
+            
             var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
-            console.log(localStorage.getItem('path') + '/projects/project/'+this.project.name);
-            vm.$http.get(localStorage.getItem('path') + '/projects/project/'+this.project.name, tokenJson).then(function(response) {
+            console.log(localStorage.getItem('path') + '/projects/project/'+localStorage.getItem('projectName'));
+            this.$http.get(localStorage.getItem('path') + '/projects/project/'+localStorage.getItem('projectName'), tokenJson).then(function(response) {
                 console.log(response.body);
                 var res = response.body;
                 try {//è un livello di sicurezza in più, potrebbe non servire tray atch in futuro
@@ -108,6 +112,8 @@ export default {
                 this.modulesArr = res.modules;
 
                 console.log(this.modulesArr);
+
+                
 
                 this.projectReady = true;
             }, (err) => {
@@ -149,7 +155,7 @@ export default {
                 console.log("AAAAAAAA");
                 console.log(JSON.stringify(event));
                 console.log(JSON.parse(localStorage.getItem('user')).email);
-                if (JSON.parse(localStorage.getItem('user')).email == JSON.stringify(event).chief) {
+                if (JSON.parse(localStorage.getItem('user')).email == event.chief) {
                     isModuleChief = true;
                     console.log("XXXXXXXXXX");
                     console.log(isModuleChief);

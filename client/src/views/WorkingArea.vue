@@ -41,7 +41,6 @@
             </div>
         </div>
         
-        {{ module.chiefID }}
     </div>
     <div v-else>
         <!-- inserire img di loading (attraverso componente) -->
