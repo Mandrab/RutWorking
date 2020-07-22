@@ -83,6 +83,7 @@ export default {
             developersReady: false,
             isProjectChief: false,
             isModuleChief: false,
+            moduleInfo: {},
             expanded: false
         }
     },
@@ -117,16 +118,26 @@ export default {
                 } catch (error) {console.log(error)}
                 console.log(res);
                 this.developers = res.developers;
-                this.developersReady = true;
+                
 
                 console.log(this.item);
 
+                console.log("PRIMA DEL CONTROLLO");
+                console.log(this.isModuleChief);
                 if (JSON.parse(localStorage.getItem('user')).email == this.item.chief) {
                     this.isModuleChief = true;
                 }
                 if (JSON.parse(localStorage.getItem('user')).email == this.projectInfo.isProjectChief) {
                     this.isProjectChief = true;
                 }
+                console.log("DOPO IL CONTROLLO");
+                console.log(this.isModuleChief);
+
+                this.moduleInfo = {'moduleName': this.item.name, 'isModuleChief': this.isModuleChief};
+                //localStorage.setItem('isModuleChief', this.isModuleChief); // SBAGLIATO, così sovrascrivo
+                //localStorage.setItem('moduleName', this.item.name); ////////
+
+                this.developersReady = true;
 
             }, (err) => {
                 alert("err");

@@ -3,7 +3,7 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import VueResource from "vue-resource";
-import VueAwesomeSwiper from 'vue-awesome-swiper'
+
 
 import VeeValidate from 'vee-validate';
 Vue.use(VeeValidate);
@@ -12,7 +12,14 @@ Vue.use(VueResource);
 import { DropdownPlugin } from 'bootstrap-vue'
 Vue.use(DropdownPlugin)
 
+import VueAwesomeSwiper from 'vue-awesome-swiper'
+// import style
+import 'swiper/swiper.scss'
+// If you use Swiper 6.0.0 or higher
+import 'swiper/swiper-bundle.css'
 Vue.use(VueAwesomeSwiper)
+
+
 
 Vue.config.productionTip = false;
 

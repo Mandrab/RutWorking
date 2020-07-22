@@ -69,6 +69,8 @@ export default {
             this.isProjectChief = true;
         }
         this.projectInfo = {'projectName': this.project.name, 'isProjectChief': this.isProjectChief }
+        localStorage.setItem('projectName', this.project.name); ////////
+        localStorage.setItem('isProjectChief', this.isProjectChief); ///////
 
     },
     watch: {
@@ -143,6 +145,17 @@ export default {
             //} else {
                 event["project"] = this.project.name;
                 localStorage.setItem('module', JSON.stringify(event));
+                var isModuleChief = false;
+                console.log("AAAAAAAA");
+                console.log(JSON.stringify(event));
+                console.log(JSON.parse(localStorage.getItem('user')).email);
+                if (JSON.parse(localStorage.getItem('user')).email == JSON.stringify(event).chief) {
+                    isModuleChief = true;
+                    console.log("XXXXXXXXXX");
+                    console.log(isModuleChief);
+                }
+                localStorage.setItem('isModuleChief', isModuleChief); ///
+                localStorage.setItem('isProjectChief', this.isProjectChief);
                 this.$router.push('/workingarea');
             //}
             

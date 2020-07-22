@@ -48,10 +48,10 @@
     </div>
 
     <div class="row">
-        <div class="col-sm-8 col-md-8 col-xl-8">
-            <kanban :stages="statuses"></kanban>
+        <div class="col-sm-9 col-md-9 col-xl-9">
+            <kanban :stages="statuses" :module="module"></kanban>
         </div>
-        <div class="col-sm-4 col-md-4 col-xl-4">
+        <div class="col-sm-3 col-md-3 col-xl-3">
             <chat></chat>
         </div>
     </div>
@@ -75,7 +75,7 @@ export default {
             module: {},
             moduleReady: false,
             deadlineColor: 'black',
-            statuses: ['TODO', 'ASSIGNED', 'IN PROGRESS', 'DONE'],
+            statuses: ['TO-DO', 'ASSIGNED', 'IN-PROGRESS', 'DONE'],
             blocks: [] //
         }
     },

@@ -69,7 +69,6 @@ export async function getTasks(projectName: string, moduleName: string, skipFirs
         { $sort: { "modules.kanbanItems._id": 1 } },
         { $skip: skipFirst },
         { $limit: 100 },
-        { $project: { "modules.kanbanItems._id": 0 } }
     ])
 
     let flatTasks = await DBProject.aggregate(query)
