@@ -42,7 +42,7 @@ describe('test kanbans\' operations', function() {
         )
     })
 
-    //after(async function() { return clean() })
+    after(async function() { return clean() })
 
     var clean = async () => {
         await Promise.all(
