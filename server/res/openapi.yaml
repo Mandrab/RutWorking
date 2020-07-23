@@ -953,6 +953,37 @@ paths:
           description: Project, module, task or user-token not found
         409:
           description: No task specified or invalid state / assignee
+    delete:
+      tags: [kanbans]
+      summary: Delete a task from the module kanban
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: projectName
+          description: Name of the project
+          schema:
+            type: string
+          required: true
+        - in: path
+          name: moduleName
+          description: Name of the module
+          schema:
+            type: string
+          required: true
+        - in: path
+          name: taskID
+          description: ID of the task to remove
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: Task removed
+        403:
+          description: Not chief of the module. Otherwise the account is blocked.
+        404:
+          description: Project, module, task or user-token not found
 
   '/firebase/notification':
     put:
