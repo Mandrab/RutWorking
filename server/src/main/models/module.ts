@@ -92,7 +92,7 @@ export class Module {
         if (status) task.status = status
         if (assignee) task.assignee = assignee._id()
 
-        await DBProject.updateOne({_id: this.parentID, "modules._id": this._id() }, {
+        await DBProject.updateOne({ _id: this.parentID, "modules._id": this._id() }, {
             $push: { "modules.$.kanbanItems": task }
         })
     }
@@ -114,6 +114,14 @@ export class Module {
             { _id: this.parentID },
             { $set: update },
             { arrayFilters : [{ "module._id" : this._id() }, { "kanbanItem._id" : taskID }] }
+        )
+    }
+
+    async deleteTask(taskID: string | Schema.Types.ObjectId) {
+        await DBProject.updateOne(
+            { _id: this.parentID },
+            { $pull: { "modules.$[module].kanbanItems": { "_id": taskID } } },
+            { arrayFilters : [{ "module._id" : this._id() }] }
         )
     }
 

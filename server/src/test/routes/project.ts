@@ -7,7 +7,7 @@ import { connect } from "mongoose"
 import { Roles, Project } from "../../main/models"
 import { DBProject } from "../../main/models/db"
 import { config as dbConfig } from '../../main/config/db'
-import { TestUser } from "./utils/testUser"
+import { TestUser } from "./utils/TestUser"
 
 const request = require('supertest')('http://localhost:8080')
 

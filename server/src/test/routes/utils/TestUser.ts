@@ -10,7 +10,7 @@ import { secret } from "../../../main/config/auth"
  * @author Paolo Baldini
  */
 export class TestUser {
-    constructor(private email: string) { }
+    constructor(readonly email: string) { }
 
     async register(role: Roles, name: string = 'x', surname: string = 'y', password: string = 'z') {
         return register(name, surname, this.email, password, role).catch(_ => { })

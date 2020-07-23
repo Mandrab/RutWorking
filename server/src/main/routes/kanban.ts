@@ -4,7 +4,7 @@
  * @author Paolo Baldini
  */
 import { _isDeveloper, _isChief, or, isActive, isChief } from '../auths/jwt'
-import { newTask, getTasks, updateStatus } from '../controllers/kanban'
+import { newTask, getTasks, updateStatus, deleteTask } from '../controllers/kanban'
 
 const isModuleChief = isChief('module')
 const _isProjectChief = _isChief('project')
@@ -22,6 +22,12 @@ module.exports = function (app: any) {
         isActive,
         or(_isModuleChief, _isDeveloper)
     ], updateStatus)
+
+    // chief can delete a task from a kanban
+    app.delete('/projects/:projectName/modules/:moduleName/kanban/:taskID', [
+        isActive,
+        isModuleChief
+    ], deleteTask)
 
     // get first 100 kanban's tasks. user and skipN can be used 
     app.get('/projects/:projectName/modules/:moduleName/kanban/:skipN?/:user?', [
