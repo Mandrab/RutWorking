@@ -13,6 +13,8 @@ export class TestModule {
         readonly chief: TestUser,
         readonly developers: TestUser[] = []
     ) { }
+    
+    users() { return this.developers.concat(this.chief) }
 
     async document() {
         return {

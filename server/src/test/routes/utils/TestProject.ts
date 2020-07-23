@@ -1,6 +1,7 @@
 import { DBProject } from '../../../main/models/db'
 import { TestUser } from './TestUser'
 import { TestModule } from './TestModule'
+import { Roles } from '../../../main/models'
 
 /**
  * Class to simplify projects use on tests.
@@ -21,10 +22,22 @@ export class TestProject {
             name: this.name,
             chief: (await this.chief.getUser())._id(),
             modules: await Promise.all(this.modules.map(async it => it.document()))
-        }).save().catch(_ => {  console.log(_)})
+        }).save().catch(_ => { })
+    }
+    async registerAll() {
+        await this.chief.register(Roles.USER)
+        await Promise.all(this.modules.map(module =>
+            Promise.all(module.users().map(it => it.register(Roles.USER)))))
+        await this.register()
     }
 
     async delete() { return DBProject.deleteOne({ name: this.name }).catch(_ => { }) }
+    async deleteAll() {
+        await this.chief.delete()
+        await Promise.all(this.modules.map(module =>
+            Promise.all(module.users().map(it => it.delete()))))
+        await this.delete()
+    }
 }
 
 /**
@@ -53,13 +66,5 @@ export class TestProjectBuilders {
         if (!(chief instanceof TestUser)) { chief = new TestUser(chief as any as string) }
 
         return new TestProjectBuilders(name, chief as TestUser)
-    }
-
-    static associativeArray(keys: string[], strategy: (idx?: number) => TestProject): { [key: string]: TestProject } {
-        let result: { [key: string]: TestProject } = { }
-        keys.forEach((it, idx) => {
-            result[it] = strategy(idx)
-        })
-        return result
     }
 }

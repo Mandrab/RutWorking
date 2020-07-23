@@ -9,12 +9,13 @@ import { States } from '../../main/models/db'
 import { config as dbConfig } from '../../main/config/db'
 import { TestProjectBuilders } from './utils/TestProject'
 import { TestUser } from './utils/TestUser'
+import { TestClass } from './utils/TestClass'
 
 const request = require('supertest')('http://localhost:8080')
 
 const DEVELOPER = new TestUser('developer@developer.developer')
 const RANDOM_USER = new TestUser('user@user.user')
-const PROJECTS = TestProjectBuilders.associativeArray(
+const PROJECTS = TestClass.associativeArray(
     ['post', 'update', 'delete', 'get'],
     (idx: number) => {
         return TestProjectBuilders.new('project' + idx, 'chief@chief.chief')
@@ -34,25 +35,17 @@ describe('test kanbans\' operations', function() {
 
         await clean()
 
-        await Promise.all(
-            Object.values(PROJECTS).filter(it => it.chief).map(it => it.chief.register(Roles.USER)).concat([
-                DEVELOPER.register(Roles.USER),
-                RANDOM_USER.register(Roles.USER)
-            ])
-        )
+        await Promise.all(Object.values(PROJECTS).map(it => it.registerAll()))
+        await DEVELOPER.register(Roles.USER),         // add an initial developer
+        await RANDOM_USER.register(Roles.USER)        // add an initial user
     })
 
     after(async function() { return clean() })
 
     var clean = async () => {
-        await Promise.all(
-            Object.values(PROJECTS).filter(it => it.chief).map(it => it.chief.delete()).concat([
-                DEVELOPER.delete(),
-                RANDOM_USER.delete()
-            ]).concat(
-                Object.values(PROJECTS).map(it => it.delete())
-            )
-        )
+        await Promise.all(Object.values(PROJECTS).map(it => it.deleteAll()))
+        await DEVELOPER.delete(),
+        await RANDOM_USER.delete()
     }
 
 /**********************************************************************************************************************
@@ -63,8 +56,6 @@ describe('test kanbans\' operations', function() {
         let chiefToken = await PROJECTS['post'].chief.getToken()
         let developerToken = await DEVELOPER.getToken()
         let randomUserToken = await RANDOM_USER.getToken()
-
-        await PROJECTS['post'].register()
 
         // no token
         await request.post('/projects/' + PROJECTS['post'].name + '/modules/' + PROJECTS['post'].modules[0].name
@@ -109,8 +100,6 @@ describe('test kanbans\' operations', function() {
         let chiefToken = await PROJECTS['update'].chief.getToken()
         let developerToken = await DEVELOPER.getToken()
         let randomUserToken = await RANDOM_USER.getToken()
-
-        await PROJECTS['update'].register()
 
         let project = await Project.findByName(PROJECTS['update'].name)
         let module = project.modules().find(it => it.name() === PROJECTS['update'].modules[0].name)
@@ -177,10 +166,7 @@ describe('test kanbans\' operations', function() {
 
     it('delete', async function() {
         let chiefToken = await PROJECTS['delete'].chief.getToken()
-        let developerToken = await DEVELOPER.getToken()
         let randomUserToken = await RANDOM_USER.getToken()
-
-        await PROJECTS['delete'].register()
 
         let module = (await Project.findByName(PROJECTS['delete'].name))
             .modules().find(it => it.name() === PROJECTS['delete'].modules[0].name)
@@ -228,8 +214,6 @@ describe('test kanbans\' operations', function() {
         let chiefToken = await PROJECTS['get'].chief.getToken()
         let developerToken = await DEVELOPER.getToken()
         let randomUserToken = await RANDOM_USER.getToken()
-
-        await PROJECTS['get'].register()
 
         let project = await Project.findByName(PROJECTS['get'].name)
         let module = project.modules().find(it => it.name() === PROJECTS['get'].modules[0].name)

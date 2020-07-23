@@ -66,6 +66,7 @@ describe('test users\' operations', function() {
         try { await DBUser.deleteOne({ email: ADMIN.email }) } catch (_) {}
         try { await DBUser.deleteOne({ email: BLOCKED_USER.email }) } catch (_) { }
         try { await DBUser.deleteOne({ email: USER2DELETE.email }) } catch (_) { }
+        try { await DBUser.deleteOne({ email: USER.email }) } catch (_) { }
         try { await DBUser.deleteOne({ email: NEW_USER.email }) } catch (_) { }
         try { await DBUser.deleteOne({ email: NEW_USER2.email }) } catch (_) { }
         return Promise.resolve()
