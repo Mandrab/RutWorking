@@ -2,31 +2,42 @@
     <div class="container">
         {{ title }}
         <taskTile v-for="(tile, index) in stageTasks" :item="tile" :key="index" @updateTask="updateTask"></taskTile>
-    </div>
+        <div v-if="stageTasks.length == 0"> Empty </div>
+        <button v-if="createButton" @click="addTask()" class="btn btn-primary">+</button>
 
+
+        <!--<createTaskModal v-if="showModalFormTask" :insertUser="userInForm" @closeModal="hideModalTaskForm"></createTaskModal>-->
+    </div>
 </template>
 
 <script>
 import taskTile from '../components/TaskTile.vue';
+//import createTaskModal from '../components/CreateTaskModal.vue';
 
 export default {
     data () {
         return {
-            stageTasks: []
+            stageTasks: [],
+            createButton: false,
+            userInForm: false,
+            //showModalFormTask: false
         }
     },
     components: {
-       taskTile
+       taskTile,
+       //createTaskModal
     },
     computed: {
       
     },
     mounted() {
-      
-    },
-    created () {
+        if(this.title == "TO-DO" || this.title == "ASSIGNED")
+            this.createButton = true;
         console.log(this.tasks);
         this.init();
+    },
+    created () {
+        
     },
     props: {
         title: {
@@ -52,7 +63,32 @@ export default {
         updateTask () {
             console.log("ENTROOOOO")
             this.$emit('updateTask');
-        }
+        },
+        addTask(){
+            
+            this.userInForm = false;
+            //if(this.title == "TO-DO" )
+            //showModalTaskForm();
+            if(this.title == "ASSIGNED")
+            this.userInForm = true;
+
+
+
+            alert("sending "+ this.userInForm)
+             this.$emit('addTask',this.userInForm);
+             alert("sended")
+
+
+
+            
+            //this.showModalTaskForm();
+        },
+        /*showModalTaskForm(){
+            this.showModalFormTask = true;
+        },
+        hideModalTaskForm(){
+            this.showModalFormTask = false;
+        }*/
     }
 };
 </script>

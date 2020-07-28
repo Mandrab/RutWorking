@@ -81,6 +81,8 @@ export default {
             }
             this.checkDeadline();
             this.getProjectInfo();
+            this.projectInfo = {'projectName': this.project.name, 'isProjectChief': this.isProjectChief }
+
             
         }
     },
@@ -91,16 +93,24 @@ export default {
         closeModal () {
             this.showModal = false;
         },
+
         getProjectInfo() {
             this.projectReady = false;
-            alert(this.project.name);
+            //alert(this.project.name);
+            if(localStorage.getItem('projectName')){
+                localStorage.removeItem('projectName');
+            }
+            if(localStorage.getItem('isProjectChief')){
+                localStorage.removeItem('isProjectChief');
+            }
+
             localStorage.setItem('projectName', this.project.name); ////////
-            alert(localStorage.getItem('projectName'));
+            //alert(localStorage.getItem('projectName'));
             localStorage.setItem('isProjectChief', this.isProjectChief); ///////
             
             
             var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
-            console.log(localStorage.getItem('path') + '/projects/project/'+localStorage.getItem('projectName'));
+            console.log(localStorage.getItem('path') + '/projects/project/'+this.project.name);
             this.$http.get(localStorage.getItem('path') + '/projects/project/'+localStorage.getItem('projectName'), tokenJson).then(function(response) {
                 console.log(response.body);
                 var res = response.body;

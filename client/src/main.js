@@ -19,6 +19,9 @@ import 'swiper/swiper.scss'
 import 'swiper/swiper-bundle.css'
 Vue.use(VueAwesomeSwiper)
 
+//import VueWindowSize from 'vue-window-size';
+//Vue.use(VueWindowSize);
+
 
 
 Vue.config.productionTip = false;

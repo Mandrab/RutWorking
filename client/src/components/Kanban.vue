@@ -1,47 +1,30 @@
 <template>
-<div v-if="areTasksReady" class="container">
-    <div class="row d-none d-md-flex">
+  <div v-if="areTasksReady" class="container">
+    <div v-if="isSwiper()" class="row">
       <div class="col-md-3" v-for="(title, index) in stages" :key="index">
-        <kanbanStage :title="title" :tasks="groupedTasks[index + 1]" @updateTask="getTasks"></kanbanStage>
+        <kanbanStage :title="title" :tasks="groupedTasks[index + 1]" @addTask="showModalTaskForm()" @updateTask="getTasks"></kanbanStage>
       </div>
     </div>
-    <div class="row d-md-none">
+    <div v-else class="row">
       <div class="col-12">
         <swiper>
           <swiper-slide v-for="(title, index) in stages" class="px-2 m-0" :key="index">
-            <kanbanStage :title="title" :tasks="groupedTasks[index + 1]" @updateTask="getTasks"></kanbanStage> <!-- passo direttamente i task giusti da visualizzare nella colonna specifica -->
+            <kanbanStage :title="title" :tasks="groupedTasks[index + 1]" @addTask="showModalTaskForm()" @updateTask="getTasks"></kanbanStage> <!-- passo direttamente i task giusti da visualizzare nella colonna specifica -->
           </swiper-slide>
+          <div class="swiper-pagination" slot="pagination"></div>
         </swiper>
       </div>
     </div>
 
-   <swiper ref="mySwiper" :options="swiperOptions">
-    <swiper-slide>Slide 1</swiper-slide>
-    <swiper-slide>Slide 2</swiper-slide>
-    <swiper-slide>Slide 3</swiper-slide>
-    <swiper-slide>Slide 4</swiper-slide>
-    <swiper-slide>Slide 5</swiper-slide>
-    <div class="swiper-pagination" slot="pagination"></div>
-  </swiper>
-
+    <createTaskModal v-if="showModalFormTask" :insertUser="isUserRequired" @closeModal="hideModalTaskForm"></createTaskModal>
   </div>
-
-  
-
-<!--
-  <swiper ref="mySwiper" :options="swiperOptions">
-    <swiper-slide>Slide 1</swiper-slide>
-    <swiper-slide>Slide 2</swiper-slide>
-    <swiper-slide>Slide 3</swiper-slide>
-    <swiper-slide>Slide 4</swiper-slide>
-    <swiper-slide>Slide 5</swiper-slide>
-    <div class="swiper-pagination" slot="pagination"></div>
-  </swiper>
-    -->
 </template>
 
 <script>
 import kanbanStage from '../components/KanbanStage.vue';
+import createTaskModal from '../components/CreateTaskModal.vue';
+import { vueWindowSize } from 'vue-window-size';
+vueWindowSize.init();
 
 export default {
     data () {
@@ -55,11 +38,18 @@ export default {
             module: {},
             tasksArr: [],
             groupedTasks: [this.stages.length],
-            areTasksReady: false
+            areTasksReady: false,
+            window: {
+                width: 0,
+                height: 0
+            },
+            showModalFormTask: false,
+            isUserRequired: false
         }
     },
     components:{
-      kanbanStage
+      kanbanStage,
+      createTaskModal
     },
     computed: {
       
@@ -71,6 +61,14 @@ export default {
         this.init();
         this.getTasks();
     },
+    destroyed() {
+        window.removeEventListener('resize', this.handleResize);
+        //resetto gli elementi del local storage per consistenza
+        localStorage.removeItem('projectName');
+        localStorage.removeItem('moduleName');
+        localStorage.removeItem('isProjectChief');
+        localStorage.removeItem('isModuleChief');
+    },
     props: {
         stages: {
           type: Array,
@@ -78,10 +76,12 @@ export default {
       }
     },
     watch: {
-        
     },
     methods: {
         init () {
+          window.addEventListener('resize', this.handleResize);
+          this.handleResize();
+
           this.module = JSON.parse(localStorage.getItem('module'));
         },
         getTasks () {
@@ -108,7 +108,6 @@ export default {
                 alert("err");
                 alert(err.body);
                 console.log(err.body);
-                
             });
         },
         groupTasksByStage () {
@@ -125,6 +124,23 @@ export default {
           }
           console.log("++++++");
           console.log(this.groupedTasks);
+        },
+        isSwiper(){
+          return this.window.width>=768;
+        },
+        handleResize() {
+          console.log(this.window.width);
+            this.window.width = window.innerWidth;
+            this.window.height = window.innerHeight;
+        },
+        showModalTaskForm(user){
+          alert("recved");
+          this.isUserRequired = user;
+          this.showModalFormTask = true;
+        },
+        hideModalTaskForm(){
+          this.getTasks();
+            this.showModalFormTask = false;
         }
     }
 };

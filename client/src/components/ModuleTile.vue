@@ -3,71 +3,70 @@
         <li class="list-group-item" @click="openModule">
             <div>
                 <div class="row">
-                    <div class="col-12 col-sm-8 col-md-8 col-xl-8 text-left font-weight-bold h5 pb-0 mb-0">
+                     <div v-if="ready" style="position: absolute; top:0px; right:0px; font-size: 12px;" v-bind:style="{ color: deadlineColor }">
+                        {{ new Date(item.deadline).getDate() }}/{{ new Date(item.deadline).getMonth() + 1 }}/{{ new Date(item.deadline).getFullYear() }}
+                    </div>
+
+
+                    <div class="col-12 text-left font-weight-bold h5 pb-0 mb-0">
                         {{ item.name }}
                     </div>
-                    <div v-if="ready" class="col-6 col-sm-2 col-md-2 col-xl-2 text-left float-right small pt-2 pr-0" v-bind:style="{ color: deadlineColor }">
-                        Deadline: {{ new Date(item.deadline).getDate() }}/{{ new Date(item.deadline).getMonth() + 1 }}/{{ new Date(item.deadline).getFullYear() }}
+                   
+                     <div v-if="!isModuleChief" class="col-12 text-left">
+                        <div @click.stop="toggleDesc" v-bind:class="{ 'hide-desc': isDescHide }"> {{ item.description }}</div>  
                     </div>
-                    <div v-if="ready" class="col-6 col-sm-2 col-md-2 col-xl-2 text-right float-right small px-0">
-                        <div>
-                            <div v-if="!isModuleChief">
-                                <button v-if="expanded" @click.stop="reduceModule" class="btn btn-sm btn-outline-info">^</button>
-                                <button v-else @click.stop="expandModule" class="btn btn-sm btn-outline-info">v</button>
-                            </div>
-                            <div v-else>
-                                <b-dropdown size="sm" id="dropdown-options" right class="m-2">
-                                    <template v-slot:button-content>
-                                        ...
-                                    </template>
-                                    <b-dropdown-item v-if="isModuleChief && !expanded" @click.stop="expandModule">Read description</b-dropdown-item>
-                                    <b-dropdown-item v-if="isModuleChief && expanded" @click.stop="reduceModule">Hide description</b-dropdown-item>
-                                    <b-dropdown-item v-if="isModuleChief" @click.stop="">Add user</b-dropdown-item>
-                                    <b-dropdown-divider></b-dropdown-divider>
-                                    <b-dropdown-item v-if="isModuleChief" @click.stop="deleteModule" class="bg-danger">Delete module</b-dropdown-item>
-                                </b-dropdown>
-                            </div>
+
+                    <div v-if="isModuleChief" class="col-9 col-sm-9 col-md-10 col-lg-11 text-left">
+                        <div @click.stop="toggleDesc" v-bind:class="{ 'hide-desc': isDescHide }"> {{ item.description }}</div>  
+                    </div>
+                    <div v-if="ready && isModuleChief" class="col-3 col-sm-3 col-md-2 col-lg-1 text-right float-right small px-0">
+                        <div v-if="isModuleChief">
+                            <b-dropdown size="sm" id="dropdown-options" right class="m-2">
+                                <template v-slot:button-content>
+                                    ...
+                                </template>
+                                <b-dropdown-item v-if="isModuleChief && isUserCreationHide" @click.stop="expandUserCreation">Add user</b-dropdown-item>
+                                <b-dropdown-item v-if="isModuleChief && !isUserCreationHide" @click.stop="reduceUserCreation">Close user</b-dropdown-item>
+                                <b-dropdown-divider></b-dropdown-divider>
+                                <b-dropdown-item v-if="isModuleChief" @click.stop="deleteModule" class="bg-danger">Delete module</b-dropdown-item>
+                            </b-dropdown>
                         </div>
                     </div>
 
-                </div>
-
-                <div class="row">
-                    <div v-if="expanded" class="col-12 col-sm-12 col-md-12 col-xl-12 text-left">
-                        {{ item.description }}
-                    </div>
-                    <!--<div v-if="expanded" class="col-2 col-sm-2 col-md-2 col-xl-2 btns-opts">
-                        <button v-if="isModuleChief" class="btn btn-sm btn-primary" @click.stop="deleteModule">D</button>
-                        <button v-if="isModuleChief" class="btn btn-sm btn-primary" >U</button>
+                    <div v-if="!isUserCreationHide"  @click.stop="" class="col-12" style="background-color:">
+                        <hr/>
                         
-                    </div>
 
-                    <div v-if="!expanded" class="col-10">
-                        <button v-if="expanded" @click.stop="reduceModule" class="btn btn-sm btn-outline-info">Press To Reduce</button>
-                        <button v-else @click.stop="expandModule" class="btn btn-sm btn-outline-info">Reed Description V</button>
-                    </div>
-                    <div v-if="!expanded" class="col-2 col-sm-2 col-md-2 col-xl-2 btns-opts">
-                        <button v-if="isModuleChief" class="btn btn-sm btn-primary" @click.stop="deleteModule">D</button>
-                        <button v-if="isModuleChief" class="btn btn-sm btn-primary" >U</button>
+
+                        <div class="col-sm-4 col-md-4 col-xl-4 offset-sm-4 offset-md-4 offset-xl-4">
+                            <h4>Aggiungi Utente</h4>
+                            <form @submit.prevent="handleSubmit">
+                                <div class="form-group">
+                                    <label for="email">Email Utente</label>
+                                    <input type="email" v-model="email" name="email" class="form-control" :class="{ 'is-invalid': submitted && !email }" />
+                                    <div v-show="submitted && !email" class="invalid-feedback">Email is required</div>
+                                </div>
+
+                                <div class="form-group">
+                                    <button @click="handleSubmit" class="btn btn-primary" :disabled="adding">Add User</button>
+                                    <img v-show="adding" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+                                </div>
+                                
+                                <!--<simpleModal v-if="showModal" :mess="loginResponse" @closeModal="closeModal" ></simpleModal>-->
+                            </form>
+                        </div>
+
                         
-                    </div>-->
 
-                    
-                    
-
-
-
-                </div>
-
-
-
-                <!--<div v-if="!isModuleChief" class="row">
-                    <div class="col-12 col-sm-12 col-md-12 col-xl-12 text-left">
-                        {{ item.description }}
                     </div>
-                </div>-->
+                </div>
             </div>
         </li>
+
+
+
+
+
     </div>
 </template>
 
@@ -84,7 +83,11 @@ export default {
             isProjectChief: false,
             isModuleChief: false,
             moduleInfo: {},
-            expanded: false
+            isDescHide: true,
+            isUserCreationHide: true,
+            email: "",
+            submitted: false,
+            adding: false
         }
     },
     created () {
@@ -146,11 +149,16 @@ export default {
                 this.developersReady = false;
             });
         },
-        reduceModule () {
-            this.expanded = false;
+        toggleDesc() {
+        this.isDescHide = !this.isDescHide;
+        //this.$forceUpdate();
         },
-        expandModule () {
-            this.expanded = true;
+
+        reduceUserCreation () {
+            this.isUserCreationHide = true;
+        },
+        expandUserCreation () {
+            this.isUserCreationHide = false;
         },
         checkDeadline () {
             this.ready = false;
@@ -170,6 +178,8 @@ export default {
         },
         openModule () {
             // PROVARE QUI
+            localStorage.setItem('isModuleChief', this.isModuleChief);
+            localStorage.setItem('moduleName', this.item.name);
             this.$emit('openModule', this.item);
         },
         deleteModule () {
@@ -187,6 +197,42 @@ export default {
                 console.log(err.body);
             });
             
+        },
+        handleSubmit () {
+            this.submitted = true;
+            //this.showModal=false;
+            const { email } = this;
+            if (email) {
+                this.addUser( this.email )
+            }
+        },
+        addUser(email) {
+            alert(email);
+            this.adding = true;
+            var vm = this;
+            var tokenjson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
+            var json = {
+                //"description": this.mod.description,
+                //"deadline": this.deadline.toString()
+            }
+            console.log(localStorage.getItem('path') + '/projects/'+this.projectInfo.projectName+'/modules/' + this.item.name + "/developers/" + email);
+
+            vm.$http.post(localStorage.getItem('path') + '/projects/'+this.projectInfo.projectName+'/modules/' + this.item.name + "/developers/" + email, json, tokenjson).then(function(response) {
+                alert("added")
+                console.log(response.body);
+                console.log(this.adding);
+                this.adding=false;
+                this.reduceUserCreation();
+            }, (err) => {
+                alert(err);
+                console.log(err);
+                console.log(err.body);
+                this.adding = false;
+            });
+
+
+
+            
         }
     }
 };
@@ -201,4 +247,13 @@ export default {
       padding-left: 0px !important;
     }
 }
+
+.hide-desc{
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow-x: hidden;
+  width: 100%;
+  cursor: pointer;
+}
+
 </style>

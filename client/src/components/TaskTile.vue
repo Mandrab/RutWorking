@@ -69,9 +69,9 @@ export default {
             }
 
             this.taskReady = true;
-            setTimeout(() => {
+            /*setTimeout(() => {
                 alert(this.isModuleChief);
-            }, 2000);
+            }, 2000);*/
         },
         moveToNextStage () {
             var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
