@@ -87,8 +87,11 @@ export class Module {
      * @param description tasks description
      * @param projectID parent project of the module
      */
-    async newTask(description: string, status?: States, assignee?: User) {
-        let task: any = { taskDescription: description }
+    async newTask(name: string, description?: string, status?: States, assignee?: User) {
+        let task: any = {
+            name: name,
+            description: description
+        }
         if (status) task.status = status
         if (assignee) task.assignee = assignee._id()
 

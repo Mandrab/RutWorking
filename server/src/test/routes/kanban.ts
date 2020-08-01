@@ -73,21 +73,21 @@ describe('test kanbans\' operations', function() {
         await request.post('/projects/' + PROJECTS['post'].name + '/modules/FAKE' + PROJECTS['post'].modules[0].name
             +'/kanban').set({ 'Authorization': chiefToken }).expect(404)
 
-        // valid token chief but no body
+        // valid token chief but no name
         await request.post('/projects/' + PROJECTS['post'].name + '/modules/' + PROJECTS['post'].modules[0].name
-            + '/kanban').set({ 'Authorization': chiefToken }).expect(409)
+            + '/kanban').set({ 'Authorization': chiefToken }).send({ description: 'qwerty' }).expect(409)
 
         // valid token chief
         await request.post('/projects/' + PROJECTS['post'].name + '/modules/' + PROJECTS['post'].modules[0].name
-            + '/kanban').set({ 'Authorization': chiefToken }).send({ description: 'qwerty' }).expect(201)
-        
+            + '/kanban').set({ 'Authorization': chiefToken }).send({ name: 'qwerty', description: '' }).expect(201)
+
         // valid token but developer
         await request.post('/projects/' + PROJECTS['post'].name + '/modules/' + PROJECTS['post'].modules[0].name
             + '/kanban').set({ 'Authorization': developerToken }).send({ description: 'asd' }).expect(403)
 
         // new task
         await request.post('/projects/' + PROJECTS['post'].name + '/modules/' + PROJECTS['post'].modules[0].name
-            + '/kanban').set({ 'Authorization': chiefToken }).send({ description: 'qwerty' }).expect(201)
+            + '/kanban').set({ 'Authorization': chiefToken }).send({ name: 'qwerty', description: '' }).expect(201)
 
         return Promise.resolve()
     })
@@ -218,8 +218,7 @@ describe('test kanbans\' operations', function() {
         let project = await Project.findByName(PROJECTS['get'].name)
         let module = project.modules().find(it => it.name() === PROJECTS['get'].modules[0].name)
         await module.newTask('qwerty')
-        await module.newTask('asd')
-        await project.refresh()
+        await module.newTask('asd', '')
         await module.refresh()
         let taskID = module.kanbanItems()[0]._id()
 
@@ -243,12 +242,13 @@ describe('test kanbans\' operations', function() {
             + '/kanban').set({ 'Authorization': developerToken }).expect(200)
 
         let initialTasksN = res.body.length
-        if (initialTasksN < 2) throw 'Wrong number of tasks returned'
-        if (!res.body.some((it: { taskDescription: string }) => it.taskDescription === 'qwerty'))
-            throw 'A task not appear in return!'
-        if (!res.body.some((it: { taskDescription: string }) => it.taskDescription === 'asd'))
-            throw 'A task not appear in return!'
-        
+        if (initialTasksN !== 2) throw 'Wrong number of tasks returned'
+
+        if (!res.body.some((it: { name: string }) => it.name === 'qwerty')
+            || !res.body.some((it: { name: string }) => it.name === 'asd')) throw 'A task not appear in return!'
+        if ((res.body[0].description && res.body[0].description !== '')
+            || (res.body[1].description && res.body[1].description !== '')) throw 'A description not match!'
+
         await request.get('/projects/' + PROJECTS['get'].name + '/modules/' + PROJECTS['get'].modules[0].name
             + '/kanban').set({ 'Authorization': chiefToken }).expect(200)
 

@@ -251,8 +251,8 @@ describe('test modules\' operations', function() {
 
         let project = await Project.findByName(PROJECTS['delete developer'].name)
         let module = project.modules().find(it => it.name() === PROJECTS['delete developer'].modules[0].name)
-        await module.newTask('x', States.IN_PROGRESS, developer)
-        await module.newTask('y', States.DONE, developer)
+        await module.newTask('x', 'x', States.IN_PROGRESS, developer)
+        await module.newTask('y', 'y', States.DONE, developer)
 
         // no token
         await request.delete('/projects/' + PROJECTS['delete developer'].name + '/modules/'

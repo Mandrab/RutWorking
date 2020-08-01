@@ -75,7 +75,8 @@ export async function getTasks(projectName: string, moduleName: string, skipFirs
     let tasks = flatTasks.map(it => it.modules.kanbanItems).map(async it => {
         let res: any = {
             id: it._id,
-            taskDescription: it.taskDescription,
+            name: it.name,
+            taskDescription: it.description,
             status: it.status
         }
         if (it.assignee) res.assignee = (await User.findById(it.assignee)).email()
