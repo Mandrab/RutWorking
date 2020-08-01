@@ -786,9 +786,12 @@ paths:
             schema:
               type: object
               properties:
+                name:
+                  type: string
+                  description: Task name
                 description:
                   type: string
-                  description: Task description
+                  description: Task description. OPTIONAL value
                 status:
                   type: string
                   enum: [TO-DO, ASSIGNED, IN-PROGRESS, DONE]
@@ -837,9 +840,12 @@ paths:
                     id:
                       type: string
                       description: ID of the task
+                    name:
+                      type: string
+                      description: Task name
                     taskDescription:
                       type: string
-                      description: Description of the task
+                      description: Description of the task. If no description is specified, this var will not be available
                     status:
                       type: string
                       enum: [TO-DO, ASSIGNED, IN-PROGRESS, DONE]
@@ -890,9 +896,12 @@ paths:
                     id:
                       type: string
                       description: ID of the task
+                    name:
+                      type: string
+                      description: Task name
                     taskDescription:
                       type: string
-                      description: Description of the task
+                      description: Description of the task. If no description is specified, this var will not be available
                     status:
                       type: string
                       enum: [TO-DO, ASSIGNED, IN-PROGRESS, DONE]
