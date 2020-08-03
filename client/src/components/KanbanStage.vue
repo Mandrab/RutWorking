@@ -3,7 +3,7 @@
         {{ title }}
         <taskTile v-for="(tile, index) in stageTasks" :item="tile" :key="index" @updateTask="updateTask"></taskTile>
         <div v-if="stageTasks.length == 0"> Empty </div>
-        <button v-if="createButton" @click="addTask()" class="btn btn-primary">+</button>
+        <button v-if="createButton" @click="addTask" class="btn btn-primary">+</button>
 
 
         <!--<createTaskModal v-if="showModalFormTask" :insertUser="userInForm" @closeModal="hideModalTaskForm"></createTaskModal>-->
@@ -64,19 +64,15 @@ export default {
             console.log("ENTROOOOO")
             this.$emit('updateTask');
         },
-        addTask(){
+        addTask (event){
             
             this.userInForm = false;
             //if(this.title == "TO-DO" )
             //showModalTaskForm();
             if(this.title == "ASSIGNED")
             this.userInForm = true;
-
-
-
-            alert("sending "+ this.userInForm)
-             this.$emit('addTask',this.userInForm);
-             alert("sended")
+            
+            this.$emit('addTask',this.userInForm);
 
 
 
