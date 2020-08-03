@@ -64,7 +64,7 @@ export default {
             console.log("ENTROOOOO")
             this.$emit('updateTask');
         },
-        addTask (event){
+        addTask (/*event*/){
             
             this.userInForm = false;
             //if(this.title == "TO-DO" )
