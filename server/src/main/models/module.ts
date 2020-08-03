@@ -111,11 +111,14 @@ export class Module {
         if (newStatus !== States.TODO) {            // not set assignee in TODO state
             await User.findById(assignee)           // check existence
             update["modules.$[module].kanbanItems.$[kanbanItem].assignee"] = assignee
+            update = { $set: update }
+        } else {
+            update = { $set: update }, { $unset: { "modules.$[module].kanbanItems.$[kanbanItem].assignee": "" } }
         }
 
         await DBProject.updateOne(
             { _id: this.parentID },
-            { $set: update },
+            update,
             { arrayFilters : [{ "module._id" : this._id() }, { "kanbanItem._id" : taskID }] }
         )
     }
