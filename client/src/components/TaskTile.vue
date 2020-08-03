@@ -1,25 +1,48 @@
 <template>
-    <div v-if="taskReady" class="border border-dark p-3 mt-1 mb-1">
-        <div class="row text-left">
-            <div class="col-6 col-sm-6 col-md-6 col-xl-6">
-                {{ this.item.assignee }}
+<div>
+
+    
+
+
+    <div v-if="taskReady" class="row border border-dark p-0 mt-1 mb-1">
+        <div class="col-12">
+            <button v-if="!isLeftArrowDisabled" class="previous" @click="moveToPreviousStage">⯇</button>
+            <button v-if="!isRightArrowDisabled" class="next" @click="moveToNextStage">⯈</button>
+
+
+            <!--<div class="row text-left">-->
+            <div class=" text-left col-6 col-sm-6 col-md-6 col-xl-6">
+                {{ item.assignee }}
             </div>
             <div v-if="isModuleChief" class="col-6 col-sm-6 col-md-6 col-xl-6">
                 <button v-if="isModuleChief" class="btn btn-primary">D</button>
             </div>
-        </div>
-        <div class="row col-12 col-sm-12 col-md-12 col-xl-12">
-            {{ item.taskDescription }}
-        </div>
-        <div class="row col-12 col-sm-12 col-md-12 col-xl-12">
-            <div v-if="!isLeftArrowDisabled" class="">
-                <button class="btn btn-primary" @click="moveToPreviousStage">L</button>
+            <!--</div>-->
+            <div class="col-12 col-sm-12 col-md-12 col-xl-12">
+                {{ item.taskDescription }}
             </div>
-            <div v-if="!isRightArrowDisabled" class="">
-                <button class="btn btn-primary" @click="moveToNextStage">R</button>
-            </div>
+            <!--<div class="col-12 col-sm-12 col-md-12 col-xl-12">
+                
+                <div v-if="!isLeftArrowDisabled" class="">
+                    <button class="btn btn-primary" @click="moveToPreviousStage">L</button>
+                    
+                </div>
+                <div v-if="!isRightArrowDisabled" class="">
+                    <button class="btn btn-primary" @click="moveToNextStage">R</button>
+                    
+                </div>
+            </div>-->
+
+
+
         </div>
+        
+        
+        
     </div>
+
+</div>
+    
 </template>
 
 <script>
@@ -175,4 +198,27 @@ export default {
 .list-group-item:hover {
     background-color: lightgray;
 }
+.next {
+    position: absolute;
+    top:0px;
+    right:0px;
+    height: 100%;
+    width: 10%;
+    padding: 0px;
+    margin: 0px;
+    font-size: 1.2vw;
+}
+.previous {
+    position: absolute;
+    top:0px;
+    left:0px;
+    height: 100%;
+    padding: 0px;
+    margin: 0px;
+    width: 10%;
+    font-size: 1.2vw;
+}
+
+
+
 </style>

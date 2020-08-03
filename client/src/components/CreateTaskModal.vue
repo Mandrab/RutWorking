@@ -71,6 +71,7 @@ export default {
     watch: {
     },
     mounted() {
+        alert(this.insertUser)
         
         this.projectName = localStorage.getItem('projectName');
         this.moduleName = localStorage.getItem('moduleName');
