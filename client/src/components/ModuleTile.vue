@@ -13,11 +13,11 @@
                     </div>
                    
                      <div v-if="!isModuleChief" class="col-12 text-left">
-                        <div @click.stop="toggleDesc" v-bind:class="{ 'hide-desc': isDescHide }"> {{ item.description }}</div>  
+                        <div class="hovered" @click.stop="toggleDesc" v-bind:class="{ 'hide-desc': isDescHide }"> {{ item.description }}</div>  
                     </div>
 
                     <div v-if="isModuleChief" class="col-9 col-sm-9 col-md-10 col-lg-11 text-left">
-                        <div @click.stop="toggleDesc" v-bind:class="{ 'hide-desc': isDescHide }"> {{ item.description }}</div>  
+                        <div class="hovered" @click.stop="toggleDesc" v-bind:class="{ 'hide-desc': isDescHide }"> {{ item.description }}</div>  
                     </div>
                     <div v-if="ready && isModuleChief" class="col-3 col-sm-3 col-md-2 col-lg-1 text-right float-right small px-0">
                         <div v-if="isModuleChief">
@@ -254,6 +254,11 @@ export default {
   overflow-x: hidden;
   width: 100%;
   cursor: pointer;
+}
+
+.hovered:hover {
+    cursor: pointer;
+    text-decoration-line: underline;
 }
 
 </style>
