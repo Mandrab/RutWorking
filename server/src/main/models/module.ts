@@ -108,12 +108,14 @@ export class Module {
      */
     async updateTaskStatus(taskID: Schema.Types.ObjectId, newStatus: States, assignee?: Schema.Types.ObjectId) {
         let update: any = { "modules.$[module].kanbanItems.$[kanbanItem].status": newStatus }
-        if (newStatus !== States.TODO) {            // not set assignee in TODO state
+
+        if (newStatus === States.TODO) {            // not set assignee in TODO state
+            update = { $unset: { "modules.$[module].kanbanItems.$[kanbanItem].assignee": "" },
+                $set: update }
+        } else {
             await User.findById(assignee)           // check existence
             update["modules.$[module].kanbanItems.$[kanbanItem].assignee"] = assignee
             update = { $set: update }
-        } else {
-            update = { $set: update }, { $unset: { "modules.$[module].kanbanItems.$[kanbanItem].assignee": "" } }
         }
 
         await DBProject.updateOne(

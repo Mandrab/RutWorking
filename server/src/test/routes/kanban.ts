@@ -105,7 +105,6 @@ describe('test kanbans\' operations', function() {
         let module = project.modules().find(it => it.name() === PROJECTS['update'].modules[0].name)
         await module.newTask('qwerty')
         await module.newTask('asd')
-        await project.refresh()
         await module.refresh()
         let task1ID = module.kanbanItems()[0]._id()
         let task2ID = module.kanbanItems()[1]._id()
@@ -138,14 +137,14 @@ describe('test kanbans\' operations', function() {
         await request.put('/projects/' + PROJECTS['update'].name + '/modules/' + PROJECTS['update'].modules[0].name
             + '/kanban/' + task1ID).set({ 'Authorization': chiefToken }).send({ newState: 'IN-PROGRESS' }).expect(404)
 
-        // TO-DO does not need an assignee
-        await request.put('/projects/' + PROJECTS['update'].name + '/modules/' + PROJECTS['update'].modules[0].name
-            + '/kanban/' + task1ID).set({ 'Authorization': chiefToken }).send({ newState: 'TO-DO' }).expect(200)
-
         // invalid assignee
         await request.put('/projects/' + PROJECTS['update'].name + '/modules/' + PROJECTS['update'].modules[0].name
             + '/kanban/' + task1ID).set({ 'Authorization': chiefToken })
             .send({ newState: 'IN-PROGRESS', assignee: RANDOM_USER.email }).expect(409)
+
+        await module.refresh()
+        let items = module.kanbanItems().filter(it => it._id().toString() === task1ID.toString())
+        if (items[0].assigneeID()) throw 'Task assignee present!'
 
         // valid token chief
         await request.put('/projects/' + PROJECTS['update'].name + '/modules/' + PROJECTS['update'].modules[0].name
@@ -156,6 +155,16 @@ describe('test kanbans\' operations', function() {
         await request.put('/projects/' + PROJECTS['update'].name + '/modules/' + PROJECTS['update'].modules[0].name
             + '/kanban/' + task2ID).set({ 'Authorization': developerToken })
             .send({ newState: 'DONE', assignee: DEVELOPER.email }).expect(200)
+        await module.refresh()
+        items = module.kanbanItems().filter(it => it._id().toString() === task1ID.toString())
+        if (!items[0].assigneeID()) throw 'Task assignee not present!'
+
+        // TO-DO does not need an assignee
+        await request.put('/projects/' + PROJECTS['update'].name + '/modules/' + PROJECTS['update'].modules[0].name
+            + '/kanban/' + task1ID).set({ 'Authorization': chiefToken }).send({ newState: 'TO-DO' }).expect(200)
+        await module.refresh()
+        items = module.kanbanItems().filter(it => it._id().toString() === task1ID.toString())
+        if (items[0].status() !== States.TODO || items[0].assigneeID()) throw 'Incorrect task!'
 
         return Promise.resolve()
     })
