@@ -87,12 +87,15 @@ export class Module {
      * @param description tasks description
      * @param projectID parent project of the module
      */
-    async newTask(description: string, status?: States, assignee?: User) {
-        let task: any = { taskDescription: description }
+    async newTask(name: string, description?: string, status?: States, assignee?: User) {
+        let task: any = {
+            name: name,
+            description: description
+        }
         if (status) task.status = status
         if (assignee) task.assignee = assignee._id()
 
-        await DBProject.updateOne({_id: this.parentID, "modules._id": this._id() }, {
+        await DBProject.updateOne({ _id: this.parentID, "modules._id": this._id() }, {
             $push: { "modules.$.kanbanItems": task }
         })
     }
@@ -108,12 +111,23 @@ export class Module {
         if (newStatus !== States.TODO) {            // not set assignee in TODO state
             await User.findById(assignee)           // check existence
             update["modules.$[module].kanbanItems.$[kanbanItem].assignee"] = assignee
+            update = { $set: update }
+        } else {
+            update = { $set: update }, { $unset: { "modules.$[module].kanbanItems.$[kanbanItem].assignee": "" } }
         }
 
         await DBProject.updateOne(
             { _id: this.parentID },
-            { $set: update },
+            update,
             { arrayFilters : [{ "module._id" : this._id() }, { "kanbanItem._id" : taskID }] }
+        )
+    }
+
+    async deleteTask(taskID: string | Schema.Types.ObjectId) {
+        await DBProject.updateOne(
+            { _id: this.parentID },
+            { $pull: { "modules.$[module].kanbanItems": { "_id": taskID } } },
+            { arrayFilters : [{ "module._id" : this._id() }] }
         )
     }
 

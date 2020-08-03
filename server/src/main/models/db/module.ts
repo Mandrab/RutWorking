@@ -77,13 +77,18 @@ export namespace States {
  * @author Paolo Baldini
  */
 export interface IDBKanbanItem extends Document {
-    taskDescription: string,
+    name: string,
+    description: string,
     status: string,
     assignee: Schema.Types.ObjectId,
 }
 
 const KanbanItemSchema = new Schema({
-    taskDescription: {
+    name: {
+        type: String,
+        required: true
+    },
+    description: {
         type: String,
         required: true
     },

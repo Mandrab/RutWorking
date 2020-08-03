@@ -786,9 +786,12 @@ paths:
             schema:
               type: object
               properties:
+                name:
+                  type: string
+                  description: Task name
                 description:
                   type: string
-                  description: Task description
+                  description: Task description. OPTIONAL value
                 status:
                   type: string
                   enum: [TO-DO, ASSIGNED, IN-PROGRESS, DONE]
@@ -837,9 +840,12 @@ paths:
                     id:
                       type: string
                       description: ID of the task
+                    name:
+                      type: string
+                      description: Task name
                     taskDescription:
                       type: string
-                      description: Description of the task
+                      description: Description of the task. If no description is specified, this var will not be available
                     status:
                       type: string
                       enum: [TO-DO, ASSIGNED, IN-PROGRESS, DONE]
@@ -890,9 +896,12 @@ paths:
                     id:
                       type: string
                       description: ID of the task
+                    name:
+                      type: string
+                      description: Task name
                     taskDescription:
                       type: string
-                      description: Description of the task
+                      description: Description of the task. If no description is specified, this var will not be available
                     status:
                       type: string
                       enum: [TO-DO, ASSIGNED, IN-PROGRESS, DONE]
@@ -953,6 +962,37 @@ paths:
           description: Project, module, task or user-token not found
         409:
           description: No task specified or invalid state / assignee
+    delete:
+      tags: [kanbans]
+      summary: Delete a task from the module kanban
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: projectName
+          description: Name of the project
+          schema:
+            type: string
+          required: true
+        - in: path
+          name: moduleName
+          description: Name of the module
+          schema:
+            type: string
+          required: true
+        - in: path
+          name: taskID
+          description: ID of the task to remove
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: Task removed
+        403:
+          description: Not chief of the module. Otherwise the account is blocked.
+        404:
+          description: Project, module, task or user-token not found
 
   '/firebase/notification':
     put:

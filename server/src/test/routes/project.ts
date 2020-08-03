@@ -3,30 +3,24 @@
  * 
  * @author Paolo Baldini
  */
-import { connect } from "mongoose"
-import { Roles, Project } from "../../main/models"
-import { DBProject } from "../../main/models/db"
+import { connect } from 'mongoose'
+import { Roles, Project } from '../../main/models'
 import { config as dbConfig } from '../../main/config/db'
-import { TestUser } from "./utils/testUser"
+import { TestUser } from './utils/TestUser'
+import { TestProjectBuilders } from './utils/TestProject'
+import { TestClass } from './utils/TestClass'
+import { DBProject } from '../../main/models/db'
 
 const request = require('supertest')('http://localhost:8080')
 
 const ADMIN = new TestUser('admin@admin.admin')
-const USERS: TestUser[] = [
-    new TestUser('user@user.user'),
-    new TestUser('user2@user.user'),
-    new TestUser('user3@user.user')
-]
-const PROJECTS = [
-    { name: 'tcejorp' },
-    { name: '2tcejorp' },
-    { name: '3tcejorp' },
-    { name: '4tcejorp' },
-    { name: '5tcejorp' },
-    { name: '6tcejorp' },
-    { name: '7tcejorp' },
-    { name: '8tcejorp' }
-]
+const USER = new TestUser(`user@user.user`)
+const USER2 = new TestUser(`user2@user.user`)
+const NEW_PROJECT = TestProjectBuilders.new('newproject', 'newprojectchief@mail.mail').build()
+const PROJECTS = TestClass.associativeArray(
+    ['delete', 'get multiple', 'get single'],
+    idx => TestProjectBuilders.new(`project${idx}`, `p${idx}chief@user.user`).build()
+)
 
 describe('test projects\' operations', function() {
     before(async function () {
@@ -38,29 +32,23 @@ describe('test projects\' operations', function() {
 
         await clean()
 
-        // add initial users
-        await Promise.all(USERS.map(async user => user.register(Roles.USER)).concat(
-            // add an initial admin
-            ADMIN.register(Roles.ADMIN)
-        ))
+        await Promise.all(Object.values(PROJECTS).map(it => it.registerAll()))
+
+        await NEW_PROJECT.chief.register(Roles.USER)
+        await ADMIN.register(Roles.ADMIN)           // add an initial admin
+        await USER.register(Roles.USER)             // add initial user
+        await USER2.register(Roles.USER)             // add initial user
     })
 
     after(async function() { return clean() })
 
     var clean = async () => {
-        // delete initial users
-        await Promise.all(USERS.map(async user => user.delete()).concat(
-            // delete an initial admin
-            ADMIN.delete()
-        ))
-        try { await DBProject.deleteOne({ name: PROJECTS[0].name }) } catch (_) { }
-        try { await DBProject.deleteOne({ name: PROJECTS[1].name }) } catch (_) { }
-        try { await DBProject.deleteOne({ name: PROJECTS[2].name }) } catch (_) { }
-        try { await DBProject.deleteOne({ name: PROJECTS[3].name }) } catch (_) { }
-        try { await DBProject.deleteOne({ name: PROJECTS[4].name }) } catch (_) { }
-        try { await DBProject.deleteOne({ name: PROJECTS[5].name }) } catch (_) { }
-        try { await DBProject.deleteOne({ name: PROJECTS[6].name }) } catch (_) { }
-        try { await DBProject.deleteOne({ name: PROJECTS[7].name }) } catch (_) { }
+        await NEW_PROJECT.deleteAll()
+        await Promise.all(Object.values(PROJECTS).map(it => it.deleteAll()))
+
+        await ADMIN.delete()                        // delete an initial admin
+        await USER.delete()                         // delete initial user
+        await USER2.delete()                         // delete initial user
     }
 
 /**********************************************************************************************************************
@@ -69,30 +57,34 @@ describe('test projects\' operations', function() {
 
     it('create', async function() {
         let adminToken = await ADMIN.getToken()
-        let userToken = await USERS[0].getToken()
+        let newChiefToken = await NEW_PROJECT.chief.getToken()
 
         // no token passed
-        await request.post('/projects/project/' + PROJECTS[0].name).expect(500).expect('Token has not been passed!')
+        await request.post('/projects/project/' + NEW_PROJECT.name).expect(500).expect('Token has not been passed!')
 
         // invalid token
-        await request.post('/projects/project/' + PROJECTS[0].name).set({ 'Authorization': 'john' }).expect(401)
+        await request.post('/projects/project/' + NEW_PROJECT.name).set({ 'Authorization': 'john' }).expect(401)
 
         // valid token but admin
-        await request.post('/projects/project/' + PROJECTS[0].name).set({ 'Authorization': adminToken }).expect(403)
+        await request.post('/projects/project/' + NEW_PROJECT.name).set({ 'Authorization': adminToken }).expect(403)
 
         // valid token
-        await request.post('/projects/project/' + PROJECTS[0].name).set({ 'Authorization': userToken }).expect(201)
+        await request.post('/projects/project/' + NEW_PROJECT.name).set({ 'Authorization': newChiefToken }).expect(201)
 
         // post with description
-        await request.post('/projects/project/' + PROJECTS[4].name).set({ 'Authorization': userToken })
+        await NEW_PROJECT.delete()
+        await request.post('/projects/project/' + NEW_PROJECT.name).set({ 'Authorization': newChiefToken })
             .send({ description: 'qwerty' }).expect(201)
 
         // post with deadline
-        await request.post('/projects/project/' + PROJECTS[5].name).set({ 'Authorization': userToken })
+        await NEW_PROJECT.delete()
+        newChiefToken = await USER.getToken()
+        await request.post('/projects/project/' + NEW_PROJECT.name).set({ 'Authorization': newChiefToken })
             .send({ deadline: new Date().toString() }).expect(201)
 
         // post with description and deadline
-        await request.post('/projects/project/' + PROJECTS[6].name).set({ 'Authorization': userToken })
+        await NEW_PROJECT.delete()
+        await request.post('/projects/project/' + NEW_PROJECT.name).set({ 'Authorization': newChiefToken })
             .send({ description: 'qwerty', deadline: new Date().toString() }).expect(201)
 
         return Promise.resolve()
@@ -104,37 +96,32 @@ describe('test projects\' operations', function() {
 
     it('delete', async function() {
         let adminToken = await ADMIN.getToken()
-        let user = await USERS[0].getUser()
-        let userToken = await USERS[0].getToken()
-        let user2Token = await USERS[1].getToken()
-        try { await new DBProject({ name: PROJECTS[1].name, chief: user._id(), modules: [] }).save() } catch (_) {}
+        let chiefToken = await PROJECTS['delete'].chief.getToken()
+        let userToken = await USER.getToken()
 
         // no token passed
-        await request.delete('/projects/project/' + PROJECTS[1].name).expect(500)
+        await request.delete('/projects/project/' + PROJECTS['delete'].name).expect(500)
             .expect('Token has not been passed!')
 
         // invalid token
-        await request.delete('/projects/project/' + PROJECTS[1].name).set({ 'Authorization': 'john' })
+        await request.delete('/projects/project/' + PROJECTS['delete'].name).set({ 'Authorization': 'john' })
             .expect(401)
 
+        // valid token but admin
+        await request.delete('/projects/project/' + PROJECTS['delete'].name).set({ 'Authorization': adminToken })
+            .expect(403)
+
         // valid token but not chief
-        await request.delete('/projects/project/' + PROJECTS[1].name).set({ 'Authorization': user2Token })
+        await request.delete('/projects/project/' + PROJECTS['delete'].name).set({ 'Authorization': userToken })
             .expect(403)
 
         // no project with this name (user cannot be chief of undefined)
-        await request.delete('/projects/project/X' + PROJECTS[1].name).set({ 'Authorization': userToken })
+        await request.delete('/projects/project/X' + PROJECTS['delete'].name).set({ 'Authorization': chiefToken })
             .expect(404)
 
         // valid token and chief
-        await request.delete('/projects/project/' + PROJECTS[1].name).set({ 'Authorization': userToken })
+        await request.delete('/projects/project/' + PROJECTS['delete'].name).set({ 'Authorization': chiefToken })
             .expect(200)
-
-        // create a project to delete
-        await new DBProject({ name: PROJECTS[2].name, chief: user._id(), modules: [] }).save()
-
-        // valid token but admin
-        await request.delete('/projects/project/' + PROJECTS[2].name).set({ 'Authorization': adminToken })
-            .expect(403)
 
         return Promise.resolve()
     })
@@ -143,14 +130,13 @@ describe('test projects\' operations', function() {
     PROJECT GET
 **********************************************************************************************************************/
 
-    it('get block', async function() {
-        let chief = await USERS[0].getUser()
-        let chiefToken = await USERS[0].getToken()
-        let user = await USERS[1].getUser()
-        let userToken = await USERS[1].getToken()
-        let user2 = await USERS[2].getUser()
-        let user2Token = await USERS[2].getToken()
-        try { await new DBProject({ name: PROJECTS[2].name, chief: chief._id(), modules: [] }).save() } catch (_) { }
+    it('get multiple', async function() {
+        let chief = await PROJECTS['get multiple'].chief.getUser()
+        let chiefToken = await PROJECTS['get multiple'].chief.getToken()
+        let user = await USER.getUser()
+        let userToken = await USER.getToken()
+        let user2 = await USER2.getUser()
+        let user2Token = await USER2.getToken()
 
         // no token
         await request.get('/projects').expect(500).expect('Token has not been passed!')
@@ -160,24 +146,28 @@ describe('test projects\' operations', function() {
 
         // valid token
         const ERR = 'Response does not contains project! DISCLAIMER: this test is intendeed to work on develop;\
-            if the DB contains more than 100 project it could eventually fail'
+            if the DB contains more than 100 project it could fail'
         let response = await request.get('/projects').set({ 'Authorization': chiefToken }).expect(200)
             .expect('Content-Type', /json/)
-        if (!response.body.some((it: { name: string }) => it.name === PROJECTS[2].name)) throw ERR
+        if (!response.body.some((it: { name: string }) => it.name === PROJECTS['get multiple'].name)) throw ERR
 
         let previousSize = response.body.length
-        try { await new DBProject({ name: PROJECTS[3].name, chief: chief._id(), modules: [] }).save() } catch (_) {}
+        PROJECTS['get multiple 2'] = TestProjectBuilders.new(
+            PROJECTS['get multiple'].name + ' 2', PROJECTS['get multiple'].chief
+        ).build()
+        await PROJECTS['get multiple 2'].register()
 
         // project addition
         response = await request.get('/projects').set({ 'Authorization': userToken }).expect(200)
             .expect('Content-Type', /json/)
-        if (!response.body.some((it: { name: string }) => it.name === PROJECTS[3].name)) throw ERR
-        if (response.body.length !== previousSize +1 && response.body.length < 100) throw 'Error in return projects size!'
+        if (!response.body.some((it: { name: string }) => it.name === PROJECTS['get multiple 2'].name)) throw ERR
+        if (response.body.length !== previousSize +1 && response.body.length < 100)
+            throw 'Error in return projects size!'
 
         // skip
         response = await request.get('/projects/1').set({ 'Authorization': userToken }).expect(200)
             .expect('Content-Type', /json/)
-        if (!response.body.some((it: { name: string }) => it.name === PROJECTS[3].name)) throw ERR
+        if (!response.body.some((it: { name: string }) => it.name === PROJECTS['get multiple 2'].name)) throw ERR
         if (response.body.length !== previousSize && response.body.length < 100) throw 'Error in return projects size!'
 
         // invalid mail
@@ -193,7 +183,7 @@ describe('test projects\' operations', function() {
             .expect(200).expect('Content-Type', /json/)
         if (response.body.length < 2) throw 'Error in return projects size!'
 
-        let project = await Project.findByName(PROJECTS[3].name)
+        let project = await Project.findByName(PROJECTS['get multiple'].name)
         await project.newModule('module', user2._id())
         await project.refresh()
         project.modules().find(it => it.name() === 'module').addDeveloper(user._id())
@@ -209,8 +199,11 @@ describe('test projects\' operations', function() {
         if (response.body.length < 1) throw 'Error in return projects size!'
 
         let nowDate = new Date()
+        PROJECTS['get multiple 3'] = TestProjectBuilders.new(
+            PROJECTS['get multiple'].name + ' 3', PROJECTS['get multiple'].chief
+        ).build()
         try { await new DBProject({
-            name: PROJECTS[7].name,
+            name: PROJECTS['get multiple 3'].name,
             description: 'qwerty',
             deadline: nowDate,
             chief: chief._id(),
@@ -220,7 +213,7 @@ describe('test projects\' operations', function() {
         // valid mail and module chief
         response = await request.get('/projects').set({ 'Authorization': userToken }).expect(200)
             .expect('Content-Type', /json/)
-        let module = response.body.find((it: { name: string }) => it.name === PROJECTS[7].name)
+        let module = response.body.find((it: { name: string }) => it.name === PROJECTS['get multiple 3'].name)
         if (!module) throw 'Project has not been saved or returned correctly!'
 
         if (module.description !== 'qwerty') throw 'Description is missing or wrong in returned project!'
@@ -230,32 +223,26 @@ describe('test projects\' operations', function() {
     })
 
     it('get single', async function() {
-        let chief = await USERS[0].getUser()
-        let user2 = await USERS[2].getUser()
-        let chiefToken = await USERS[0].getToken()
-        let userToken = await USERS[1].getToken()
-
-        try { await new DBProject({ name: PROJECTS[2].name, chief: chief._id(), modules: [] }).save() } catch (_) { }
+        let chiefToken = await PROJECTS['get single'].chief.getToken()
+        let userToken = await USER.getToken()
 
         // no token
-        await request.get('/projects/project/' + PROJECTS[2].name).expect(500).expect('Token has not been passed!')
+        await request.get('/projects/project/' + PROJECTS['get single'].name).expect(500)
+            .expect('Token has not been passed!')
 
         // invalid token
-        await request.get('/projects/project/' + PROJECTS[2].name).set({ 'Authorization': 'john' }).expect(401)
+        await request.get('/projects/project/' + PROJECTS['get single'].name).set({ 'Authorization': 'john' })
+            .expect(401)
 
         // valid token
-        let response = await request.get('/projects/project/' + PROJECTS[2].name).set({ 'Authorization': chiefToken })
-            .expect(200).expect('Content-Type', /json/)
-        if (response.body.name !== PROJECTS[2].name) throw 'Response does not contains project!'
+        let response = await request.get('/projects/project/' + PROJECTS['get single'].name)
+            .set({ 'Authorization': chiefToken }).expect(200).expect('Content-Type', /json/)
+        if (response.body.name !== PROJECTS['get single'].name) throw 'Response does not contains project!'
 
-        let project = await Project.findByName(PROJECTS[3].name)
-        await project.newModule('module', user2._id())
-        await project.refresh()
-
-        // valid mail and developer
-        response = await request.get('/projects/project/' + PROJECTS[2].name).set({ 'Authorization': userToken })
-            .expect(200).expect('Content-Type', /json/)
-        if (response.body.name !== PROJECTS[2].name) throw 'Response does not contains project!'
+        // valid mail and user
+        response = await request.get('/projects/project/' + PROJECTS['get single'].name)
+            .set({ 'Authorization': userToken }).expect(200).expect('Content-Type', /json/)
+        if (response.body.name !== PROJECTS['get single'].name) throw 'Response does not contains project!'
 
         return Promise.resolve()
     })

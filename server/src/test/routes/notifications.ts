@@ -1,9 +1,10 @@
-import { User, register, Roles } from "../../main/models"
-import { secret } from "../../main/config/auth"
-import { config as dbConfig } from "../../main/config/db"
-import { connect } from "mongoose"
-import { DBUser } from "../../main/models/db"
-import { sign } from "jsonwebtoken"
+import { User, register, Roles } from '../../main/models'
+import { secret } from '../../main/config/auth'
+import { config as dbConfig } from '../../main/config/db'
+import { connect } from 'mongoose'
+import { DBUser } from '../../main/models/db'
+import { sign } from 'jsonwebtoken'
+import { _admin } from '../../main/config/firebase'
 
 
 const request = require('supertest')('http://localhost:8080')

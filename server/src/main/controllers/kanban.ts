@@ -13,11 +13,11 @@ export async function newTask(request: any, result: any) {
         let module = project.modules().find(it => it.name() === request.params.moduleName)
         if (!module) return result.status(404).send('Module not found!')
 
-        if (!request.body.description) return result.status(409).send('Message body not found!')
+        if (!request.body.name) return result.status(409).send('Task name not found!')
         let status = request.body.status ? States.parse(request.body.status) : null
         let assignee = request.body.assignee ? await User.findByEmail(request.body.assignee) : null
 
-        await module.newTask(request.body.description, status, assignee) // TODO parse to avoid code injection or strange things
+        await module.newTask(request.body.name, request.body.description, status, assignee) // TODO parse to avoid code injection or strange things
 
         result.status(201).send('Task succesfully created!')
     } catch(err) {
@@ -62,6 +62,21 @@ export async function updateStatus(request: any, result: any) {
             }
         } catch (err) { console.log(err) }
     } catch(err) {
+        if (err.code && err.message) result.status(err.code).send(err.message)
+        else result.status(500).send('Internal error')
+    }
+}
+
+export async function deleteTask(request: any, result: any) {
+    try {
+        let project = await Project.findByName(request.params.projectName)
+        let module = project.modules().find(it => it.name() === request.params.moduleName)
+        if (!module) return result.status(404).send('Module not found!')
+
+        await module.deleteTask(request.params.taskID)
+
+        result.status(200).send('Task succesfully deleted!')
+    } catch(err) {console.log(err)
         if (err.code && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
