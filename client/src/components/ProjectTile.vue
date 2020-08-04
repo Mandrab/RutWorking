@@ -1,7 +1,12 @@
 <template>
     <li class="list-group-item" @click="open"> 
-        <div class="row font-weight-bold h5">
-            {{ item.name }}
+        <div class="row">
+            <div class="font-weight-bold h5">
+                {{ item.name }}
+            </div>
+            <div>
+                <button v-if="isProjectChief" @click="deleteProject">x</button>
+            </div>
         </div>
         <div v-if="ready" class="row float-right small" v-bind:style="{ color: deadlineColor }">
             {{ new Date(item.deadline).getDate() }}/{{ new Date(item.deadline).getMonth() + 1 }}/{{ new Date(item.deadline).getFullYear() }}
@@ -19,11 +24,17 @@ export default {
     data () {
         return {
             ready: false,
-            deadlineColor: 'black'
+            deadlineColor: 'black',
+            isProjectChief: false
         }
     },
     created () {
         console.log(this.item);
+        if (JSON.parse(localStorage.getItem('user')).email == this.item.chief) {
+            this.isProjectChief = true;
+        } else {
+            this.isProjectChief = false;
+        }
         this.checkDeadline();
     },
     props: {
@@ -55,6 +66,24 @@ export default {
         },
         open () {
             this.$emit('openDetail', this.item);
+        },
+        deleteProject () {
+            var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
+
+            this.$http.delete(localStorage.getItem('path') + '/projects/project/' + this.item.name, tokenJson).then(function(response) {
+                console.log(response.body);
+                var res = response.body;
+                try {//è un livello di sicurezza in più, potrebbe non servire tray atch in futuro
+                    res = JSON.parse(res);
+                } catch (error) {console.log(error)}
+                console.log(res);
+
+                this.$emit('projectDeleted');
+            }, (err) => {
+                alert("err");
+                alert(err.body);
+                console.log(err.body);
+            }); 
         }
     }
 };

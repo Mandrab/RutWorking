@@ -12,7 +12,7 @@
 		</li>
         <div>
             <ul class="list-group">
-            <projectTile v-for="(tile, index) in display" :item="tile" :key="index" @openDetail="openDetail"></projectTile>
+            <projectTile v-for="(tile, index) in display" :item="tile" :key="index" @openDetail="openDetail" @projectDeleted="updateProjectsList"></projectTile>
 		</ul>
         <pagination v-if="ready" :array="projectsArr" limit="6" @displayChanged="dispatchedPagination($event)" shown="8" :bottom="true"></pagination>
         </div>
@@ -61,6 +61,9 @@ export default {
         },
         dispatchedPagination: function (toDisplay) {
             this.display = toDisplay;
+        },
+        updateProjectsList () {
+            this.$emit('projectDeleted');
         }
     }
 };
