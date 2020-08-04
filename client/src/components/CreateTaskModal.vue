@@ -90,6 +90,7 @@ export default {
             });
         },
         addTask () {
+            alert("addingTask")
             this.creating = true;
             var vm = this;
             var tokenjson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };

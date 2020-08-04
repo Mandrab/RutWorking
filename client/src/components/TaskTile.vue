@@ -115,7 +115,7 @@ export default {
                 default:
                     nextStage = this.item.status;
             }
-            alert(this.item.assignee);
+            //alert(this.item.assignee);
             // se il task non e' assegnato a nessuno, l'assegnatario diventa colui che preme il pulsante "right" (passando da TO-DO a ASSIGNED)
             if (this.item.assignee == null) {
                 this.item.assignee = this.username;
@@ -124,7 +124,7 @@ export default {
                 "newState": nextStage,
                 "assignee": this.item.assignee
             }
-            alert(this.item.assignee);
+            //alert(this.item.assignee);
             this.$http.put(localStorage.getItem('path') + '/projects/' + this.projectName + '/modules/' + this.moduleName + '/kanban/' + this.item.id, json, tokenJson).then(function(response) {
                 console.log(response.body);
                 var res = response.body;
@@ -160,9 +160,9 @@ export default {
                     nextStage = this.item.status;
             }
             if (nextStage == "TO-DO") {
-                alert(this.item.assignee);
+                //alert(this.item.assignee);
                 this.item.assignee = "";
-                alert(this.item.assignee);
+                //alert(this.item.assignee);
                 console.log("oooooooooo")
                 console.log(this.item.assignee);
             }
@@ -170,7 +170,7 @@ export default {
                 "newState": nextStage,
                 "assignee": this.item.assignee
             }
-            alert(this.item.assignee);
+            //alert(this.item.assignee);
             this.$http.put(localStorage.getItem('path') + '/projects/' + this.projectName + '/modules/' + this.moduleName + '/kanban/' + this.item.id, json, tokenJson).then(function(response) {
                 console.log(response.body);
                 var res = response.body;
