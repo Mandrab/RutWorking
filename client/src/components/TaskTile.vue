@@ -15,7 +15,7 @@
                 {{ item.assignee }}
             </div>
             <div v-if="isModuleChief" class="col-6 col-sm-6 col-md-6 col-xl-6">
-                <button v-if="isModuleChief" class="btn btn-primary">D</button>
+                <button v-if="isModuleChief" class="btn btn-primary" @click="deleteTask">D</button>
             </div>
             <!--</div>-->
             <div class="col-12 col-sm-12 col-md-12 col-xl-12">
@@ -161,7 +161,7 @@ export default {
             }
             if (nextStage == "TO-DO") {
                 //alert(this.item.assignee);
-                this.item.assignee = "";
+                this.item.assignee = null;
                 //alert(this.item.assignee);
                 console.log("oooooooooo")
                 console.log(this.item.assignee);
@@ -190,6 +190,24 @@ export default {
             });
 
         },
+        deleteTask() {
+            var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
+
+            this.$http.delete(localStorage.getItem('path') + '/projects/' + this.projectName + '/modules/' + this.moduleName + '/kanban/' + this.item.id, tokenJson).then(function(response) {
+                console.log(response.body);
+                var res = response.body;
+                try {//è un livello di sicurezza in più, potrebbe non servire tray atch in futuro
+                    res = JSON.parse(res);
+                } catch (error) {console.log(error)}
+                console.log(res);
+
+                this.$emit('updateTask');
+            }, (err) => {
+                alert("err");
+                alert(err.body);
+                console.log(err.body);
+            }); 
+        }
     }
 };
 </script>
