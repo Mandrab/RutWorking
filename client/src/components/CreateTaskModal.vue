@@ -98,7 +98,7 @@ export default {
             if(this.insertUser){stat = "ASSIGNED"}else{stat = "TO-DO"}
             
             var json = {
-                "name": this.taskName,
+                "name": this.t.taskName,
                 "description": this.t.description,
                 "status": stat,
                 "assignee": this.t.assignee
@@ -106,6 +106,7 @@ export default {
             console.log(localStorage.getItem('path') + '/projects/'+this.projectName+'/modules/' + this.moduleName + "/kanban" );
 
             vm.$http.post(localStorage.getItem('path') + '/projects/'+this.projectName+'/modules/' + this.moduleName + "/kanban" , json, tokenjson).then(function(response) {
+                alert(response.body)
                 console.log(response.body);
                 console.log(this.creating);
                 this.$emit('taskAdded');
