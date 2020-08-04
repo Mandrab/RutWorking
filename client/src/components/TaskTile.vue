@@ -5,37 +5,25 @@
 
 
     <div v-if="taskReady" class="row border border-dark p-0 mt-1 mb-1">
-        <div class="col-12">
-            <button v-if="!isLeftArrowDisabled" class="previous" @click="moveToPreviousStage">⯇</button>
-            <button v-if="!isRightArrowDisabled" class="next" @click="moveToNextStage">⯈</button>
-
-
-            <!--<div class="row text-left">-->
-            <div class=" text-left col-6 col-sm-6 col-md-6 col-xl-6">
-                {{ item.assignee }}
-            </div>
-            <div v-if="isModuleChief" class="col-6 col-sm-6 col-md-6 col-xl-6">
-                <button v-if="isModuleChief" class="btn btn-primary">D</button>
-            </div>
-            <!--</div>-->
-            <div class="col-12 col-sm-12 col-md-12 col-xl-12">
-                {{ item.taskDescription }}
-            </div>
-            <!--<div class="col-12 col-sm-12 col-md-12 col-xl-12">
+        <button v-if="!isLeftArrowDisabled" style="font-size: auto; border-left: 0px; border-top: 0px; border-bottom: 0px; border-right: solid 1px;"  class="col-1 p-0 m-0"  @click="moveToPreviousStage">⯇</button>
+        <div v-if="isLeftArrowDisabled"  class="col-1 p-0"></div>
+        <div class="col-10">
+            <div class="row">
                 
-                <div v-if="!isLeftArrowDisabled" class="">
-                    <button class="btn btn-primary" @click="moveToPreviousStage">L</button>
-                    
+                <div style="font-size: 18px; font-weight: bold; " class="cropTitle text-left col-12">
+                    {{ item.name }}
                 </div>
-                <div v-if="!isRightArrowDisabled" class="">
-                    <button class="btn btn-primary" @click="moveToNextStage">R</button>
-                    
+                <div style="font-size:9px;" class=" crop text-left col-12">
+                    {{ item.assignee }}
                 </div>
-            </div>-->
-
-
-
+                <div style="font-size: 14px; line-height:normal;"  class="col-12 col-sm-12 col-md-12 col-xl-12">
+                    {{ item.taskDescription }}
+                </div>
+                <button v-if="isModuleChief" @click="alert('delete')" class="deletebtn">x</button>
+            </div>
         </div>
+        <div v-if="isRightArrowDisabled" class="col-1 p-0"></div>
+        <button v-if="!isRightArrowDisabled" style="font-size: auto; border-right: 0px; border-top: 0px; border-bottom: 0px; border-left: solid 1px;" class="col-1 p-0 m-0" @click="moveToNextStage">⯈</button>
         
         
         
@@ -203,10 +191,10 @@ export default {
     top:0px;
     right:0px;
     height: 100%;
-    width: 10%;
+    width: 15%;
     padding: 0px;
     margin: 0px;
-    font-size: 1.2vw;
+    font-size: auto;
 }
 .previous {
     position: absolute;
@@ -215,8 +203,33 @@ export default {
     height: 100%;
     padding: 0px;
     margin: 0px;
-    width: 10%;
-    font-size: 1.2vw;
+    width: 15%;
+    font-size: auto;
+}
+.deletebtn{
+    position: absolute;
+    top:0px;
+    right:0px;
+    height: 15px;
+    width: 15px;
+    padding: 0px;
+    margin: 0px;
+    font-size: auto;
+    background-color: darkred;
+}
+
+.crop{
+     text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow-x: hidden;
+    width: 100%;
+}
+
+.cropTitle{
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow-x: hidden;
+    width: 93%;
 }
 
 
