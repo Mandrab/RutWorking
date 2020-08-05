@@ -1,10 +1,10 @@
 <template>
     <li class="list-group-item" @click="open"> 
         <div class="row">
-            <div class="font-weight-bold h5">
+            <div class="col-9 col-sm-9 col-md-9 col-xl-9 font-weight-bold h5 text-left">
                 {{ item.name }}
             </div>
-            <div>
+            <div class="col-3 col-sm-3 col-md-3 col-xl-3 text-right">
                 <button v-if="isProjectChief" @click="deleteProject">x</button>
             </div>
         </div>
