@@ -179,6 +179,7 @@ export default {
         openModule () {
             // PROVARE QUI
             localStorage.setItem('isModuleChief', this.isModuleChief);
+            //alert(this.isModuleChief);
             localStorage.setItem('moduleName', this.item.name);
             this.$emit('openModule', this.item);
         },

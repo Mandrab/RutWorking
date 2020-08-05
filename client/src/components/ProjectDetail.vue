@@ -171,6 +171,8 @@ export default {
                     console.log(isModuleChief);
                 }
                 localStorage.setItem('isModuleChief', isModuleChief); ///
+                //alert(isModuleChief);
+                
                 localStorage.setItem('isProjectChief', this.isProjectChief);
                 this.$router.push('/workingarea');
             //}

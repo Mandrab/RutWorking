@@ -3,8 +3,7 @@
         {{ title }}
         <taskTile v-for="(tile, index) in stageTasks" :item="tile" :key="index" @updateTask="updateTask"></taskTile>
         <div v-if="stageTasks.length == 0"> Empty </div>
-        <button v-if="createButton" @click="addTask" class="btn btn-primary">+</button>
-
+        <button v-if="createButton && isModuleChief" @click="addTask" class="btn btn-primary">+</button>
 
         <!--<createTaskModal v-if="showModalFormTask" :insertUser="userInForm" @closeModal="hideModalTaskForm"></createTaskModal>-->
     </div>
@@ -20,6 +19,7 @@ export default {
             stageTasks: [],
             createButton: false,
             userInForm: false,
+            isModuleChief: false
             //showModalFormTask: false
         }
     },
@@ -59,6 +59,8 @@ export default {
             });
             console.log("stageTasks");
             console.log(this.stageTasks);
+
+            this.isModuleChief = localStorage.getItem('isModuleChief');
         },
         updateTask () {
             console.log("ENTROOOOO")
