@@ -39,7 +39,7 @@
 
     <div class="row mt-5">
 			<div class="col-12 col-sm-12 col-md-3 col-xl-3 mb-5">
-                <projectsList v-if="projectsReady" @showCreationForm="showProjectCreationForm" @detail="showProjectDetail" @projectDeleted="deleteProject" :projects="projectsArr"></projectsList>
+                <projectsList v-if="projectsReady" @showCreationForm="showProjectCreationForm" @detail="showProjectDetail" @projectDeleted="deleteProject" :projects="projectsArr" :isMember="isMember"></projectsList>
                 <img v-show="!projectsReady" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
 			</div>
 			<div class="col-12 col-sm-12 col-md-9 col-xl-9">
@@ -47,7 +47,7 @@
                     <createProjectForm v-if="creating" @projectAdded="addProject" @hide="hideProjectCreationForm"></createProjectForm>
 				</div>
                 <div class="detail bg-light p-4 rounded" v-if="showDetail">
-                    <projectDetail v-if="showDetail" :project="projectDetail"></projectDetail>
+                    <projectDetail v-if="showDetail" :project="projectDetail" :isMember="memberDetail"></projectDetail>
 				</div>
                 <div class="default-msg" v-if="!creating && !showDetail">
                     <h2>Select a project</h2>
@@ -74,7 +74,10 @@ export default {
             showDetail: false,
             projectsReady: false,
             projectsArr: [],
+            isMember: [],
+            isModulesMember: [],
             projectDetail: {},
+            memberDetail: [],
             showDropdownMenu: false,
         }
     },
@@ -113,6 +116,18 @@ export default {
                 } catch (error) {console.log(error)}
                 this.projectsArr = res;//lo memorizzo nei data di questa view per poi poterlo passare al componente container (tramite props) che lo userà per creare i componenti tiles
                 //alert("prova");//l'ho messo per farti vedere che viene mostrata l'iconcina di cariacmento(in futuro metteremo una iconcina più bella, ovviamente sarà un componente )
+                console.log(",,,,,,,");
+                console.log(this.projectsArr);
+                
+                for (var i = 0; i < this.projectsArr.length; i++) {
+                    if (this.projectsArr[i].modules.length != 0) {
+                        for (var j = 0; j < this.projectsArr[i].modules.length; j++) {
+                            this.isModulesMember.push(this.projectsArr[i].modules[j].member);
+                        }
+                        this.isMember[i] = this.isModulesMember;
+                    }
+                }
+                console.log(this.isMember);
                 this.projectsReady = true;
             }, (err) => {
                 alert(err);
@@ -120,6 +135,8 @@ export default {
                 //mostrare errore nel componente contenitore dei tile magari con una scritta rossa
                 this.projectsReady = true;//?????? gestiamo bene la logica
             });
+
+            
         },
         showProjectCreationForm () {
             this.creating = true;
@@ -128,8 +145,9 @@ export default {
         hideProjectCreationForm () {
             this.creating = false;
         },
-        showProjectDetail (event) {
-            this.projectDetail = event;
+        showProjectDetail (event1, event2) {
+            this.projectDetail = event1;
+            this.memberDetail = event2;
             this.showDetail = true;
             this.hideProjectCreationForm()
         },

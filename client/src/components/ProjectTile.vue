@@ -1,5 +1,5 @@
 <template>
-    <li class="list-group-item" @click="open"> 
+    <li class="list-group-item" @click="open" :isMember="isModulesMember"> 
         <div class="row">
             <div class="col-9 col-sm-9 col-md-9 col-xl-9 font-weight-bold h5 text-left">
                 {{ item.name }}
@@ -25,7 +25,8 @@ export default {
         return {
             ready: false,
             deadlineColor: 'black',
-            isProjectChief: false
+            isProjectChief: false,
+            isModulesMember: []
         }
     },
     created () {
@@ -36,10 +37,15 @@ export default {
             this.isProjectChief = false;
         }
         this.checkDeadline();
+
+        this.isModulesMember = this.isMember;
     },
     props: {
         item: {
             type: Object
+        },
+        isMember: {
+            typer: Array
         }
     },
     methods: {
@@ -65,7 +71,7 @@ export default {
             this.ready = true;
         },
         open () {
-            this.$emit('openDetail', this.item);
+            this.$emit('openDetail', this.item, this.isModulesMember);
         },
         deleteProject () {
             var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };

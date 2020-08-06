@@ -29,7 +29,7 @@
             </div>
         </div>
 
-        <modulesList v-if="projectReady" @clickModule="openModule" @refreshModulesList="getProjectInfo" :modules="modulesArr" :projectInfo="projectInfo"></modulesList>
+        <modulesList v-if="projectReady" @clickModule="openModule" @refreshModulesList="getProjectInfo" :modules="modulesArr" :projectInfo="projectInfo" :isModulesMember="isModulesMember"></modulesList>
 
         <createModuleFormModal v-if="showModal" :project="project" @closeModal="closeModal" @moduleAdded="getProjectInfo"></createModuleFormModal>
     </div>
@@ -48,6 +48,7 @@ export default {
             isProjectChief: false,
             showModal: false,
             modulesArr: [],
+            isModulesMember: [],
             projectReady: false,
             deadlineColor: 'black',
             projectInfo: {}
@@ -60,6 +61,9 @@ export default {
     props: {
         project: {
             type: Object
+        },
+        isMember: {
+            type: Array
         }
     },
     created () {
@@ -68,7 +72,9 @@ export default {
         if (JSON.parse(localStorage.getItem('user')).email == this.project.chief) {
             this.isProjectChief = true;
         }
-        this.projectInfo = {'projectName': this.project.name, 'isProjectChief': this.isProjectChief }
+        this.projectInfo = {'projectName': this.project.name, 'isProjectChief': this.isProjectChief };
+
+        this.isModulesMember = this.isMember;
         
 
     },
@@ -111,6 +117,8 @@ export default {
             
             var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
             console.log(localStorage.getItem('path') + '/projects/project/'+this.project.name);
+
+
             this.$http.get(localStorage.getItem('path') + '/projects/project/'+localStorage.getItem('projectName'), tokenJson).then(function(response) {
                 console.log(response.body);
                 var res = response.body;

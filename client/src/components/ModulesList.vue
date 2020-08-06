@@ -1,7 +1,7 @@
 <template>
     <div class="modules">
         <ul class="list-group">
-            <moduleTile v-for="(tile, index) in modulesArr" :projectInfo="projectInfo" :item="tile" :key="index" @openModule="openModule" @refreshModulesList="refreshModulesList"></moduleTile>
+            <moduleTile v-for="(tile, index) in modulesArr" :projectInfo="projectInfo" :isMember="isMember[index]" :item="tile" :key="index" @openModule="openModule" @refreshModulesList="refreshModulesList"></moduleTile>
 		</ul>
     </div>
 </template>
@@ -12,7 +12,8 @@ import moduleTile from '../components/ModuleTile.vue'
 export default {
     data () {
         return {
-            modulesArr: []
+            modulesArr: [],
+            isMember: []
         }
     },
     props: {
@@ -21,11 +22,16 @@ export default {
         },
         projectInfo: {
             type: Object
+        },
+        isModulesMember: {
+            type: Array
         }
     },
     created () {
         console.log(this.modules);
         this.showModule();
+
+        this.isMember = this.isModulesMember;
     },
     components: {
         moduleTile

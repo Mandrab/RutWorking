@@ -1,17 +1,14 @@
 <template>
     <div class="mt-2 mb-2">
-        <li class="list-group-item" @click="openModule">
+        <li v-if="isModuleMember" class="list-group-item" id="member" @click="openModule">
             <div>
                 <div class="row">
                      <div v-if="ready" style="position: absolute; top:0px; right:0px; font-size: 12px;" v-bind:style="{ color: deadlineColor }">
                         {{ new Date(item.deadline).getDate() }}/{{ new Date(item.deadline).getMonth() + 1 }}/{{ new Date(item.deadline).getFullYear() }}
                     </div>
-
-
                     <div class="col-12 text-left font-weight-bold h5 pb-0 mb-0">
                         {{ item.name }}
                     </div>
-                   
                      <div v-if="!isModuleChief" class="col-12 text-left">
                         <div class="hovered" @click.stop="toggleDesc" v-bind:class="{ 'hide-desc': isDescHide }"> {{ item.description }}</div>  
                     </div>
@@ -35,9 +32,6 @@
 
                     <div v-if="!isUserCreationHide"  @click.stop="" class="col-12" style="background-color:">
                         <hr/>
-                        
-
-
                         <div class="col-sm-4 col-md-4 col-xl-4 offset-sm-4 offset-md-4 offset-xl-4">
                             <h4>Add a developer</h4>
                             <form @submit.prevent="handleSubmit">
@@ -55,18 +49,26 @@
                                 <!--<simpleModal v-if="showModal" :mess="loginResponse" @closeModal="closeModal" ></simpleModal>-->
                             </form>
                         </div>
-
-                        
-
                     </div>
                 </div>
             </div>
         </li>
 
-
-
-
-
+        <li v-if="!isModuleMember" class="list-group-item">
+            <div>
+                <div class="row">
+                    <div v-if="ready" class="text-secondary" style="position: absolute; top:0px; right:0px; font-size: 12px;">
+                        {{ new Date(item.deadline).getDate() }}/{{ new Date(item.deadline).getMonth() + 1 }}/{{ new Date(item.deadline).getFullYear() }}
+                    </div>
+                    <div class="col-12 text-left font-weight-bold h5 pb-0 mb-0 text-secondary">
+                        {{ item.name }}
+                    </div>
+                     <div class="col-12 text-left text-secondary">
+                        <div> {{ item.description }}</div>  
+                    </div>
+                </div>
+            </div>  
+        </li>
     </div>
 </template>
 
@@ -82,6 +84,7 @@ export default {
             developersReady: false,
             isProjectChief: false,
             isModuleChief: false,
+            isModuleMember: false,
             moduleInfo: {},
             isDescHide: true,
             isUserCreationHide: true,
@@ -94,6 +97,8 @@ export default {
         console.log(this.item);
         this.init();
         this.checkDeadline();
+
+        this.isModuleMember = this.isMember;
     },
     props: {
         item: {
@@ -101,6 +106,9 @@ export default {
         },
         projectInfo: {
             type: Object
+        },
+        isMember: {
+            type: Boolean
         }
     },
     watch: {
@@ -113,6 +121,8 @@ export default {
             this.developersReady = false;
             var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
             console.log(localStorage.getItem('path') + '/projects/' + this.projectInfo.projectName + '/modules/' + this.item.name);
+            console.log("OBJECT");
+            console.log(this.item);
             this.$http.get(localStorage.getItem('path') + '/projects/' + this.projectInfo.projectName + '/modules/' + this.item.name, tokenJson).then(function(response) {
                 console.log(response.body);
                 var res = response.body;
@@ -143,8 +153,8 @@ export default {
                 this.developersReady = true;
 
             }, (err) => {
-                alert("err");
-                alert(err.body);
+                //alert("err");
+                //alert(err.body);
                 console.log(err.body);
                 this.developersReady = false;
             });
@@ -240,7 +250,7 @@ export default {
 </script>
 
 <style scoped>
-.list-group-item:hover {
+#member:hover {
     background-color: lightgray;
 }
 @media (max-width: 576px) {

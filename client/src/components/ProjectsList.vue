@@ -12,7 +12,7 @@
 		</li>
         <div>
             <ul class="list-group">
-            <projectTile v-for="(tile, index) in display" :item="tile" :key="index" @openDetail="openDetail" @projectDeleted="updateProjectsList"></projectTile>
+            <projectTile v-for="(tile, index) in display" :item="tile" :key="index" @openDetail="openDetail" @projectDeleted="updateProjectsList" :isMember="isModulesMember[index]"></projectTile>
 		</ul>
         <pagination v-if="ready" :array="projectsArr" limit="6" @displayChanged="dispatchedPagination($event)" shown="8" :bottom="true"></pagination>
         </div>
@@ -29,12 +29,16 @@ export default {
     data () {
         return {
             projectsArr: [],
+            isModulesMember: [],
             readu: false,
             display: []
         }
     },
     props: {
         projects: {
+            type: Array
+        },
+        isMember: {
             type: Array
         }
     },
@@ -55,9 +59,12 @@ export default {
             this.projects.forEach(p => {
                 this.projectsArr.push(p);
             });
+            this.isMember.forEach(m => {
+                this.isModulesMember.push(m);
+            });
         },
-        openDetail (event) {
-            this.$emit('detail', event);
+        openDetail (event1, event2) {
+            this.$emit('detail', event1, event2);
         },
         dispatchedPagination: function (toDisplay) {
             this.display = toDisplay;
