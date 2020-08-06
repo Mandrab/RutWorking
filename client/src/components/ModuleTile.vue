@@ -99,6 +99,8 @@ export default {
         this.checkDeadline();
 
         this.isModuleMember = this.isMember;
+        console.log("...---...");
+        console.log(this.isModuleMember);
     },
     props: {
         item: {

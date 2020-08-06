@@ -39,6 +39,8 @@ export default {
         this.checkDeadline();
 
         this.isModulesMember = this.isMember;
+        console.log("PT");
+        console.log(this.isModulesMember);
     },
     props: {
         item: {

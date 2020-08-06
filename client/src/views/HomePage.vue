@@ -75,7 +75,7 @@ export default {
             projectsReady: false,
             projectsArr: [],
             isMember: [],
-            isModulesMember: [],
+            //isModulesMember: [],
             projectDetail: {},
             memberDetail: [],
             showDropdownMenu: false,
@@ -121,10 +121,13 @@ export default {
                 
                 for (var i = 0; i < this.projectsArr.length; i++) {
                     if (this.projectsArr[i].modules.length != 0) {
+                        var isModulesMember = [];
                         for (var j = 0; j < this.projectsArr[i].modules.length; j++) {
-                            this.isModulesMember.push(this.projectsArr[i].modules[j].member);
+                            isModulesMember.push(this.projectsArr[i].modules[j].member);
                         }
-                        this.isMember[i] = this.isModulesMember;
+                        console.log("èèèèèèèè");
+                        console.log(isModulesMember);
+                        this.isMember[i] = isModulesMember;
                     }
                 }
                 console.log(this.isMember);
@@ -148,6 +151,8 @@ export default {
         showProjectDetail (event1, event2) {
             this.projectDetail = event1;
             this.memberDetail = event2;
+            console.log("EVENT2");
+            console.log(this.memberDetail);
             this.showDetail = true;
             this.hideProjectCreationForm()
         },

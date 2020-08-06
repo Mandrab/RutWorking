@@ -75,6 +75,9 @@ export default {
         this.projectInfo = {'projectName': this.project.name, 'isProjectChief': this.isProjectChief };
 
         this.isModulesMember = this.isMember;
+
+        console.log("PD");
+        console.log(this.isMember);
         
 
     },

@@ -45,6 +45,9 @@ export default {
     created () {
         this.showProjectList();
         this.ready = true;
+
+        console.log("PL");
+        console.log(this.isMember);
     },
     components: {
         projectTile,

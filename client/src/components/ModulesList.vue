@@ -32,6 +32,8 @@ export default {
         this.showModule();
 
         this.isMember = this.isModulesMember;
+        console.log("LIST");
+        console.log(this.isMember);
     },
     components: {
         moduleTile
