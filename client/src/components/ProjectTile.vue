@@ -26,7 +26,8 @@ export default {
             ready: false,
             deadlineColor: 'black',
             isProjectChief: false,
-            isModulesMember: []
+            isModulesMember: [],
+            projectIndexInList: 0
         }
     },
     created () {
@@ -37,8 +38,11 @@ export default {
             this.isProjectChief = false;
         }
         this.checkDeadline();
-
+        
+        //alert(this.isMember);
+        console.log(this.isMember)
         this.isModulesMember = this.isMember;
+        this.projectIndexInList = this.index;
         console.log("PT");
         console.log(this.isModulesMember);
     },
@@ -47,7 +51,10 @@ export default {
             type: Object
         },
         isMember: {
-            typer: Array
+            type: Array
+        },
+        index: {
+            type: Number
         }
     },
     methods: {
@@ -73,7 +80,7 @@ export default {
             this.ready = true;
         },
         open () {
-            this.$emit('openDetail', this.item, this.isModulesMember);
+            this.$emit('openDetail', this.item, this.projectIndexInList);
         },
         deleteProject () {
             var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };

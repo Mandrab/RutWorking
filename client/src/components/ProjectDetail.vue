@@ -29,9 +29,9 @@
             </div>
         </div>
 
-        <modulesList v-if="projectReady" @clickModule="openModule" @refreshModulesList="getProjectInfo" :modules="modulesArr" :projectInfo="projectInfo" :isModulesMember="isModulesMember"></modulesList>
+        <modulesList v-if="projectReady" @clickModule="openModule" @refreshModulesList="updateList" :modules="modulesArr" :projectInfo="projectInfo" :isModulesMember="isModulesMember"></modulesList>
 
-        <createModuleFormModal v-if="showModal" :project="project" @closeModal="closeModal" @moduleAdded="getProjectInfo"></createModuleFormModal>
+        <createModuleFormModal v-if="showModal" :project="project" @closeModal="closeModal" @moduleAdded="updateList"></createModuleFormModal>
     </div>
 </template>
 
@@ -88,6 +88,8 @@ export default {
             } else {
                 this.isProjectChief = false;
             }
+
+            alert("prog: "+ this.project+" mem: "+this.isMember)
             this.checkDeadline();
             this.getProjectInfo();
             this.projectInfo = {'projectName': this.project.name, 'isProjectChief': this.isProjectChief }
@@ -101,6 +103,11 @@ export default {
         },
         closeModal () {
             this.showModal = false;
+        },
+
+        updateList(){
+            alert("update from detail")
+            this.$emit('getModulesInfo');
         },
 
         getProjectInfo() {
@@ -134,6 +141,7 @@ export default {
 
                 console.log(this.modulesArr);
 
+                
                 
 
                 this.projectReady = true;

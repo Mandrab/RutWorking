@@ -47,7 +47,7 @@
                     <createProjectForm v-if="creating" @projectAdded="addProject" @hide="hideProjectCreationForm"></createProjectForm>
 				</div>
                 <div class="detail bg-light p-4 rounded" v-if="showDetail">
-                    <projectDetail v-if="showDetail" :project="projectDetail" :isMember="memberDetail"></projectDetail>
+                    <projectDetail v-if="showDetail && projectsReady" :project="projectDetail" :isMember="isMember[ProjectIndex]" @getModulesInfo="getProjectList"></projectDetail>
 				</div>
                 <div class="default-msg" v-if="!creating && !showDetail">
                     <h2>Select a project</h2>
@@ -77,7 +77,7 @@ export default {
             isMember: [],
             //isModulesMember: [],
             projectDetail: {},
-            memberDetail: [],
+            ProjectIndex: [],
             showDropdownMenu: false,
         }
     },
@@ -103,6 +103,7 @@ export default {
             this.username = JSON.parse(localStorage.getItem('user')).email;
         },
         getProjectList() {
+            alert("update from home")
             this.projectsReady = false;
             var vm = this;
             var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
@@ -128,6 +129,7 @@ export default {
                         console.log("èèèèèèèè");
                         console.log(isModulesMember);
                         this.isMember[i] = isModulesMember;
+                        console.log(this.isMember)
                     }
                 }
                 console.log(this.isMember);
@@ -148,11 +150,14 @@ export default {
         hideProjectCreationForm () {
             this.creating = false;
         },
-        showProjectDetail (event1, event2) {
+        showProjectDetail (event1, event2) {//event2 dovrebbe essere l'indice di isMember così da passarlo correttamente al detail
+            alert("aggiornamento project and member detail"+ event1 +" "+ event2+ "  e is member con indice giusto: "+ this.isMember[event2])
+            
             this.projectDetail = event1;
-            this.memberDetail = event2;
+            alert("incomingError")
+            this.ProjectIndex = event2;
             console.log("EVENT2");
-            console.log(this.memberDetail);
+            console.log(this.ProjectIndex);
             this.showDetail = true;
             this.hideProjectCreationForm()
         },
