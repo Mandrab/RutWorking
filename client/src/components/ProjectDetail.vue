@@ -106,7 +106,6 @@ export default {
         },
 
         updateList(){
-            alert("update from detail")
             this.$emit('getModulesInfo');
         },
 
