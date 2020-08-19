@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div v-if="ready" class="container">
         {{ title }}
         <taskTile v-for="(tile, index) in stageTasks" :item="tile" :key="index" @updateTask="updateTask"></taskTile>
         <div v-if="stageTasks.length == 0"> Empty </div>
@@ -59,13 +59,20 @@ export default {
     methods: {
         init () {
             this.ready = false;
-            this.tasks.forEach(t => {
+            /*this.tasks.forEach(t => {
                 this.stageTasks.push(t);
-            });
+            });*/
+            this.stageTasks = this.tasks.slice();
             console.log("stageTasks");
             console.log(this.stageTasks);
 
-            this.isModuleChief = localStorage.getItem('isModuleChief');
+
+            var value = localStorage.getItem('isModuleChief');
+            if (value == "true"){
+                
+            this.isModuleChief = true;
+            }
+            this.isModuleChief = false;
             this.ready = true;
         },
         updateTask () {

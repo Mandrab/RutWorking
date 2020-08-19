@@ -62,8 +62,19 @@ export default {
             this.username = JSON.parse(localStorage.getItem('user')).email;
             this.projectName = localStorage.getItem('projectName');
             this.moduleName = localStorage.getItem('moduleName');
-            this.isProjectChief = localStorage.getItem('isProjectChief');
-            this.isModuleChief = localStorage.getItem('isModuleChief');
+            
+            
+            var value = localStorage.getItem('isModuleChief');
+            if (value == "true"){
+            this.isModuleChief = true;
+            }
+            this.isModuleChief = false;
+
+            value = localStorage.getItem('isProjectChief');
+            if (value == "true"){
+            this.isProjectChief = true;
+            }
+            this.isProjectChief = false;
 
             console.log("-----");
             console.log(this.username);

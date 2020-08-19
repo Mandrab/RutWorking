@@ -75,6 +75,7 @@ export default {
         
         this.projectName = localStorage.getItem('projectName');
         this.moduleName = localStorage.getItem('moduleName');
+        //qui sotto usa il metodo sbagliato per settarli 
         //this.isProjectChief = localStorage.getItem('isProjectChief');
         //this.isModuleChief = localStorage.getItem('isModuleChief');
 
@@ -195,5 +196,4 @@ export default {
 .modal-footer {
     padding: 10px 16px 0px 0px
 }
-
 </style>
