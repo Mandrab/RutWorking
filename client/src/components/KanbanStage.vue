@@ -3,7 +3,7 @@
         {{ title }}
         <taskTile v-for="(tile, index) in stageTasks" :item="tile" :key="index" @updateTask="updateTask"></taskTile>
         <div v-if="stageTasks.length == 0"> Empty </div>
-        <button v-if="createButton && isModuleChief" @click="addTask" class="btn btn-primary">+</button>
+        <button v-if="showButton()" @click="addTask" class="btn btn-primary">+</button>
         {{ isModuleChief }}
         <!--<createTaskModal v-if="showModalFormTask" :insertUser="userInForm" @closeModal="hideModalTaskForm"></createTaskModal>-->
     </div>
@@ -19,7 +19,8 @@ export default {
             stageTasks: [],
             createButton: false,
             userInForm: false,
-            isModuleChief: false
+            isModuleChief: false,
+            ready: false
             //showModalFormTask: false
         }
     },
@@ -50,10 +51,14 @@ export default {
         }
     },
     watch: {
+        /*isModuleChief: function () {
+            alert(this.isModuleChief);
+        }*/
         
     },
     methods: {
         init () {
+            this.ready = false;
             this.tasks.forEach(t => {
                 this.stageTasks.push(t);
             });
@@ -61,6 +66,7 @@ export default {
             console.log(this.stageTasks);
 
             this.isModuleChief = localStorage.getItem('isModuleChief');
+            this.ready = true;
         },
         updateTask () {
             console.log("ENTROOOOO")
@@ -77,10 +83,17 @@ export default {
             this.$emit('addTask',this.userInForm);
 
 
-
-            
             //this.showModalTaskForm();
         },
+        showButton(){
+            alert("ready - createbutton - ischief: "+this.ready +" " +this.createButton +" "+ this.isModuleChief  +"   title:"+ this.title)
+            if( this.ready && this.createButton && this.isModuleChief )
+                return true;
+            else
+                return false;
+
+            
+        }
         /*showModalTaskForm(){
             this.showModalFormTask = true;
         },
