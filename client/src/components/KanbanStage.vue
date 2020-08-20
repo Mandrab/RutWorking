@@ -94,7 +94,7 @@ export default {
             //this.showModalTaskForm();
         },
         showButton(){
-            alert("ready - createbutton - ischief: "+this.ready +" " +this.createButton +" "+ this.isModuleChief  +"   title:"+ this.title)
+            //alert("ready - createbutton - ischief: "+this.ready +" " +this.createButton +" "+ this.isModuleChief  +"   title:"+ this.title)
             if( this.ready && this.createButton && this.isModuleChief )
                 return true;
             else
