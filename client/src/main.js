@@ -22,7 +22,8 @@ Vue.use(VueAwesomeSwiper)
 //import VueWindowSize from 'vue-window-size';
 //Vue.use(VueWindowSize);
 
-
+import Chat from 'vue-beautiful-chat'
+Vue.use(Chat)
 
 Vue.config.productionTip = false;
 

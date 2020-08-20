@@ -8,7 +8,7 @@
                 <template v-slot:button-content>
                     {{ username }}
                 </template>
-                <b-dropdown-item @click="openPersonalArea">Home Page</b-dropdown-item>
+                <b-dropdown-item @click="openHomePage">Home Page</b-dropdown-item>
                 <b-dropdown-item @click="logout">Logout</b-dropdown-item>
             </b-dropdown>
 
