@@ -55,6 +55,9 @@ export default {
         },
         index: {
             type: Number
+        },
+        page: {
+            type: Number
         }
     },
     methods: {
@@ -80,7 +83,8 @@ export default {
             this.ready = true;
         },
         open () {
-            this.$emit('openDetail', this.item, this.projectIndexInList);
+            alert("indice premuto globale: "+ this.projectIndexInList+this.page)
+            this.$emit('openDetail', this.item, this.projectIndexInList+this.page);
         },
         deleteProject () {
             var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };

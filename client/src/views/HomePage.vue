@@ -77,7 +77,7 @@ export default {
             isMember: [],
             //isModulesMember: [],
             projectDetail: {},
-            projectIndex: [],
+            projectIndex: 0,
             showDropdownMenu: false,
         }
     },
@@ -133,7 +133,8 @@ export default {
                         this.isMember[i] = [];
                     }
                 }
-                console.log(this.isMember);
+
+                
                 this.projectsReady = true;
             }, (err) => {
                 alert(err);
@@ -158,6 +159,13 @@ export default {
             this.projectIndex = event2;
             console.log("EVENT2");
             console.log(this.projectIndex);
+
+            console.log("____________________________")
+            console.log(this.projectIndex)
+            console.log(this.isMember);
+            console.log(this.isMember[this.projectIndex])
+
+
             this.showDetail = true;
             this.hideProjectCreationForm()
         },

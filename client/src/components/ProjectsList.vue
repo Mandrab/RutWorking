@@ -12,7 +12,7 @@
 		</li>
         <div>
             <ul v-if="dispReady" class="list-group">
-                <projectTile v-for="(tile, index) in display" :item="tile" :key="index" @openDetail="openDetail" @projectDeleted="updateProjectsList" :isMember="isModulesMember[page+index]" :index="page+index"></projectTile>
+                <projectTile v-for="(tile, index) in display" :item="tile" :key="index" @openDetail="openDetail" @projectDeleted="updateProjectsList" :isMember="isModulesMember[page+index]" :index="index" :page="page"></projectTile>
 		    </ul>
         <pagination v-if="ready" :array="projectsArr" limit="6" @displayChanged="dispatchedPagination($event)" shown="8" :bottom="true"></pagination>
         </div>
@@ -69,6 +69,7 @@ export default {
             });
         },
         openDetail (event1, event2) {
+            alert("indice che passa da project list verso la home: "+event2)
             this.$emit('detail', event1, event2);
         },
         dispatchedPagination: function (toDisplay) {
