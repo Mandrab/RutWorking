@@ -69,10 +69,11 @@ export default {
 
             var value = localStorage.getItem('isModuleChief');
             if (value == "true"){
-                
             this.isModuleChief = true;
             }
-            this.isModuleChief = false;
+            else{
+                this.isModuleChief = false;
+            }
             this.ready = true;
         },
         updateTask () {

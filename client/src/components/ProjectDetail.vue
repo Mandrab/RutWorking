@@ -89,12 +89,17 @@ export default {
                 this.isProjectChief = false;
             }
 
+            
             alert("prog: "+ this.project+" mem: "+this.isMember)
             this.checkDeadline();
             this.getProjectInfo();
             this.projectInfo = {'projectName': this.project.name, 'isProjectChief': this.isProjectChief }
 
             
+        },
+        isMember: function () {
+            //aggiornamento is member
+            this.isModulesMember = this.isMember;
         }
     },
     methods: {
