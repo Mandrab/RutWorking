@@ -11,9 +11,9 @@
             </div>
 		</li>
         <div>
-            <ul class="list-group">
-            <projectTile v-for="(tile, index) in display" :item="tile" :key="index" @openDetail="openDetail" @projectDeleted="updateProjectsList" :isMember="isModulesMember[index]" :index="index"></projectTile>
-		</ul>
+            <ul v-if="dispReady" class="list-group">
+                <projectTile v-for="(tile, index) in display" :item="tile" :key="index" @openDetail="openDetail" @projectDeleted="updateProjectsList" :isMember="isModulesMember[page+index]" :index="page+index"></projectTile>
+		    </ul>
         <pagination v-if="ready" :array="projectsArr" limit="6" @displayChanged="dispatchedPagination($event)" shown="8" :bottom="true"></pagination>
         </div>
 		
@@ -31,7 +31,9 @@ export default {
             projectsArr: [],
             isModulesMember: [],
             readu: false,
-            display: []
+            display: [],
+            page: 0,
+            dispReady: true
         }
     },
     props: {
@@ -70,7 +72,23 @@ export default {
             this.$emit('detail', event1, event2);
         },
         dispatchedPagination: function (toDisplay) {
+            this.dispReady = false;
+            //finding actual page
+            //alert(this.projectsArr.indexOf(toDisplay[0]))
+            var tmp = this.projectsArr.indexOf(toDisplay[0]);
+            this.page = tmp;
+
+
+            //console.log(this.isModulesMember);
+            //console.log(tmp+2)
+            //console.log(this.isModulesMember[tmp+2])
+            //alert(this.isModulesMember[2+tmp])
+            console.log("çççççççççççççççççççççççççç")
+
+
             this.display = toDisplay;
+
+            this.dispReady = true;
         },
         updateProjectsList () {
             this.$emit('projectDeleted');

@@ -129,6 +129,8 @@ export default {
                         console.log(isModulesMember);
                         this.isMember[i] = isModulesMember;
                         console.log(this.isMember)
+                    }else{
+                        this.isMember[i] = [];
                     }
                 }
                 console.log(this.isMember);
