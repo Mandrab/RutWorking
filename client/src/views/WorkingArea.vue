@@ -51,7 +51,7 @@
             <kanban :stages="statuses" :module="module"></kanban>
         </div>
         <div class="col-sm-3 col-md-3 col-xl-3">
-            <chat></chat>
+            <chat :module="module"></chat>
         </div>
     </div>
 
