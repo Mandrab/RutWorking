@@ -1,8 +1,9 @@
 <template>
-  <div v-if="areTasksReady" class="container">
+  <div class="container">
     <div v-if="isSwiper()" class="row">
       <div class="col-md-3 p-1" v-for="(title, index) in stages" :key="index">
-        <kanbanStage :title="title" :tasks="groupedTasks[index + 1]" @addTask="showModalTaskForm" @updateTask="getTasks"></kanbanStage>
+        {{ title }}
+        <kanbanStage v-if="areTasksReady" :title="title" :tasks="groupedTasks[index + 1]" @addTask="showModalTaskForm" @updateTask="getTasks"></kanbanStage>
       </div>
     </div>
     <div v-else class="row">
