@@ -45,21 +45,19 @@
 
 <script>
 
-import messageHistory from './messageHistory'
+//import messageHistory from './messageHistory'
 import chatParticipants from './chatProfiles'
 import availableColors from './colors'
 
 export default {
-  name: 'app',
   components: {
   },
   data() {
     return {
       module: {},
       participants: chatParticipants,
-      titleImageUrl:
-        'https://a.slack-edge.com/66f9/img/avatars-teams/ava_0001-34.png',
-      messageList: messageHistory,
+      titleImageUrl: 'https://a.slack-edge.com/66f9/img/avatars-teams/ava_0001-34.png',
+      messageList: [],
       newMessagesCount: 0,
       isChatOpen: false,
       showTypingIndicator: '',
@@ -73,6 +71,7 @@ export default {
   },
   created() {
     this.init();
+    this.sendMessageTest();
     this.loadMessages();
   },
   methods: {
@@ -157,7 +156,33 @@ export default {
             } catch (error) {
                 console.log(error);
             }
+            this.messageList = res;
             console.log("(((((())))))");
+            console.log(res);
+        }, (err) => {
+            alert(err);
+            console.log(err.body);
+            //mostrare errore nel componente contenitore dei tile magari con una scritta rossa
+        });
+    },
+    sendMessageTest() {
+        this.username = JSON.parse(localStorage.getItem('user')).email;
+
+        var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
+        console.log("TOKEN");
+        console.log(tokenJson);
+        var json = {
+              "message": "Messaggio di prova"
+        }
+        this.$http.post(localStorage.getItem('path') + '/projects/' + this.module.project + '/modules/' + this.module.name + '/messages', json, tokenJson).then(function(response) {
+            console.log(response.body);
+            var res = response.body;
+            try {//è un livello di sicurezza in più, potrebbe non servire try catch in futuro
+                res = JSON.parse(res);
+            } catch (error) {
+                console.log(error);
+            }
+            console.log("SEND MSG");
             console.log(res);
         }, (err) => {
             alert(err);
