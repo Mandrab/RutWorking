@@ -29,7 +29,7 @@ export async function newModule(request: any, result: any) {
             request.body.deadline
         )
 
-        result.status(201).send('Project succesfully created!')
+        result.status(201).send('Module succesfully created!')
     } catch(err) {
         if (err.code && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
