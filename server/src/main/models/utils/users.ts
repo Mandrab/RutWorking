@@ -58,3 +58,14 @@ export async function register(name: string, surname: string, userEmail: string,
         }).save()
     } catch (err) { throw { code: 406, message: 'User already existent!' } }
 }
+
+export async function getUsers(skipN: number) {
+    let users = await DBUser.find().limit(100).skip(skipN)
+    return users.map(it => {
+        return {
+            email: it.email,
+            name: it.name,
+            surname: it.surname
+        }
+    })
+}

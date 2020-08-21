@@ -7,6 +7,7 @@ import {
     User, Roles,
     login as _login,
     register as _register,
+    getUsers as _getUsers
 } from '../models'
 import { sendEmail } from './communication'
 
@@ -73,6 +74,19 @@ export async function getUserInfo(request: any, result: any) {
             blocked: !user.isActive()
         })
     } catch(err) {
+        if (err.code && err.message) result.status(err.code).send(err.message)
+        else result.status(500).send('Internal error')
+    }
+}
+
+export async function getUsers(request: any, result: any) {
+    try {
+        let skipUsers = request.params.skipN ? parseInt(request.params.skipN, 10) : 0
+
+        let users = await _getUsers(skipUsers)
+
+        result.status(200).send(users)
+    } catch (err) {
         if (err.code && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
