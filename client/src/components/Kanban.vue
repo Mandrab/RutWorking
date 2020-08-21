@@ -3,14 +3,14 @@
     <div v-if="isSwiper()" class="row">
       <div class="col-md-3 p-1" v-for="(title, index) in stages" :key="index">
         {{ title }}
-        <kanbanStage v-if="areTasksReady" :title="title" :tasks="groupedTasks[index + 1]" @addTask="showModalTaskForm" @updateTask="getTasks"></kanbanStage>
+        <kanbanStage v-if="areTasksReady" :title="title" :tasks="groupedTasks[index]" @addTask="showModalTaskForm" @updateTask="getTasks"></kanbanStage>
       </div>
     </div>
     <div v-else class="row">
       <div class="col-12">
         <swiper>
           <swiper-slide v-for="(title, index) in stages" class="px-2 m-0" :key="index">
-            <kanbanStage :title="title" :tasks="groupedTasks[index + 1]" @addTask="showModalTaskForm" @updateTask="getTasks"></kanbanStage> <!-- passo direttamente i task giusti da visualizzare nella colonna specifica -->
+            <kanbanStage :title="title" :tasks="groupedTasks[index]" @addTask="showModalTaskForm" @updateTask="getTasks"></kanbanStage> <!-- passo direttamente i task giusti da visualizzare nella colonna specifica -->
           </swiper-slide>
           <div class="swiper-pagination" slot="pagination"></div>
         </swiper>
