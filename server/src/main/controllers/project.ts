@@ -20,7 +20,7 @@ export async function newProject(request: any, result: any) {
         )
         result.status(201).send('Project succesfully created!')
     } catch (err) {
-        if (err.code && err.message) result.status(err.code).send(err.message)
+        if (err.code && err.code < 1000 && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
 }
