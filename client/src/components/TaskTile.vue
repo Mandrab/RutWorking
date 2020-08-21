@@ -66,15 +66,17 @@ export default {
             
             var value = localStorage.getItem('isModuleChief');
             if (value == "true"){
-            this.isModuleChief = true;
-            }
+                this.isModuleChief = true;
+            }else{
             this.isModuleChief = false;
+            }
 
             value = localStorage.getItem('isProjectChief');
             if (value == "true"){
-            this.isProjectChief = true;
+                this.isProjectChief = true;
+            }else{
+                this.isProjectChief = false;
             }
-            this.isProjectChief = false;
 
             console.log("-----");
             console.log(this.username);
