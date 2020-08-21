@@ -83,10 +83,10 @@ export default {
             console.log(this.isProjectChief);
             console.log(this.isModuleChief);
 
-            if (this.item.status == "DONE") {
+            if (this.item.status == "DONE" || (this.item.assignee != this.username && this.item.status != "TO-DO")) {
                 this.isRightArrowDisabled = true;
             }
-            if (this.item.status == "TO-DO") {
+            if (this.item.status == "TO-DO" || this.item.assignee != this.username) {
                 this.isLeftArrowDisabled = true;
             }
 
