@@ -1,6 +1,6 @@
 <template>
   <div :style="{background: backgroundColor}">
-    <beautiful-chat 
+    <beautiful-chat v-if="messageHistoryReady"
       :alwaysScrollToBottom="alwaysScrollToBottom"
       :close="closeChat"
       :colors="colors"
@@ -14,7 +14,7 @@
       :showCloseButton="true"
       :showLauncher="true"
       :showEmoji="true"
-      :showFile="true"
+      :showFile="false"
       :showTypingIndicator="showTypingIndicator"
       :showEdition="true"
       :showDeletion="true"
@@ -58,6 +58,7 @@ export default {
       participants: chatParticipants,
       titleImageUrl: 'https://a.slack-edge.com/66f9/img/avatars-teams/ava_0001-34.png',
       messageList: [],
+      messageHistoryReady: false,
       newMessagesCount: 0,
       isChatOpen: false,
       showTypingIndicator: '',
@@ -71,35 +72,44 @@ export default {
   },
   created() {
     this.init();
-    this.sendMessageTest();
-    this.loadMessages();
   },
   methods: {
     init() {
         this.module = JSON.parse(localStorage.getItem('module'));
         this.setColor('blue');
     },
-    sendMessage(text) {
-      if (text.length > 0) {
-        this.newMessagesCount = this.isChatOpen
-          ? this.newMessagesCount
-          : this.newMessagesCount + 1
-        this.onMessageWasSent({
-          author: 'support',
-          type: 'text',
-          id: Math.random(),
-          data: { text }
-        })
-      }
-    },
     handleTyping(text) {
-      this.showTypingIndicator =
-        text.length > 0
-          ? this.participants[this.participants.length - 1].id
-          : ''
+      this.showTypingIndicator = text.length > 0 ? this.participants[this.participants.length - 1].id : ''
     },
     onMessageWasSent(message) {
-      this.messageList = [...this.messageList, Object.assign({}, message, {id: Math.random()})]
+      if (message.data.text.length > 0) {
+        this.newMessagesCount = this.isChatOpen ? this.newMessagesCount : this.newMessagesCount + 1
+
+        this.username = JSON.parse(localStorage.getItem('user')).email;
+        var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
+        console.log("TOKEN");
+        console.log(tokenJson);
+        var json = {
+            "message": message.data.text
+        }
+        this.$http.post(localStorage.getItem('path') + '/projects/' + this.module.project + '/modules/' + this.module.name + '/messages', json, tokenJson).then(function(response) {
+            console.log(response.body);
+            var res = response.body;
+            try {//è un livello di sicurezza in più, potrebbe non servire try catch in futuro
+                res = JSON.parse(res);
+            } catch (error) {
+                console.log(error);
+            }
+            console.log("SEND MSG");
+            console.log(res);
+
+            this.messageList = [...this.messageList, Object.assign({}, message, {id: Math.random()})]
+        }, (err) => {
+            alert(err);
+            console.log(err.body);
+            //mostrare errore nel componente contenitore dei tile magari con una scritta rossa
+        });
+      }
     },
     openChat() {
       this.isChatOpen = true
@@ -145,6 +155,7 @@ export default {
       this.$set(this.messageList, m, msg);
     },
     loadMessages() {
+        this.messageHistoryReady = false;
         this.username = JSON.parse(localStorage.getItem('user')).email;
 
         var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
@@ -157,8 +168,10 @@ export default {
                 console.log(error);
             }
             this.messageList = res;
-            console.log("(((((())))))");
-            console.log(res);
+            console.log("MESSAGE LIST");
+            console.log(this.messageList);
+
+            this.messageHistoryReady = true;
         }, (err) => {
             alert(err);
             console.log(err.body);
@@ -172,7 +185,7 @@ export default {
         console.log("TOKEN");
         console.log(tokenJson);
         var json = {
-              "message": "Messaggio di prova"
+            "message": "Messaggio di prova"
         }
         this.$http.post(localStorage.getItem('path') + '/projects/' + this.module.project + '/modules/' + this.module.name + '/messages', json, tokenJson).then(function(response) {
             console.log(response.body);
@@ -202,6 +215,7 @@ export default {
     }
   },
   mounted(){
+    this.loadMessages();
     this.messageList.forEach(x=>x.liked = false);
   }
 }
