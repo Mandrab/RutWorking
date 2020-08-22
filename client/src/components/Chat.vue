@@ -167,7 +167,35 @@ export default {
             } catch (error) {
                 console.log(error);
             }
-            this.messageList = res;
+            
+
+
+            var i = 0;
+            var messagesFormatted = [];
+
+            res.forEach(el => {
+              var m = {}
+              if(el.sender == this.username){
+                m.author = "me";
+              }else {
+                m.author = el.sender;
+              }
+              m.data = {
+                text: el.message
+              }
+              m.id = i;
+              m.type = "text";
+              // dovrebbe essere nel formato giusto adesso
+              console.log("___:::::::::_________:::::::_____")
+              console.log(m);
+              messagesFormatted[i] = m;
+              i++;
+            });
+
+
+
+            this.messageList = messagesFormatted;
+            //this.messageList = res;
             console.log("MESSAGE LIST");
             console.log(this.messageList);
 
