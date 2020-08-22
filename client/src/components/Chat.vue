@@ -29,8 +29,9 @@
         </button>
       </template>-->
       <template v-slot:text-message-body="scopedProps"> 
-        <p v-if="scopedProps.message.author != 'me'">{{scopedProps.message.author}}</p>
-        <p class="sc-message--text-content" v-html="scopedProps.messageText"></p>
+        <p class="p-0 m-0 text-info" v-if="scopedProps.message.author != 'me'">{{scopedProps.message.author}}:</p>
+        
+        <p class="sc-message--text-content p-1 m-0" style="float: left;" v-html="scopedProps.messageText"></p>
         <p v-if="scopedProps.message.data.meta" class='sc-message--meta' :style="{color: scopedProps.messageColors.color}">{{scopedProps.message.data.meta}}</p>
         <!--<p v-if="scopedProps.message.isEdited || scopedProps.message.liked" class='sc-message--edited'>
           <template v-if="scopedProps.message.isEdited">✎</template>
@@ -315,5 +316,9 @@ body {
 
 .messageStyling {
   font-size: small;
+}
+
+.sc-chat-window {
+  z-index: 2;
 }
 </style>
