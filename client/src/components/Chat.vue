@@ -13,7 +13,7 @@
       :participants="participants"
       :showCloseButton="true"
       :showLauncher="true"
-      :showEmoji="true"
+      :showEmoji="false"
       :showFile="false"
       :showTypingIndicator="showTypingIndicator"
       :showEdition="true"
