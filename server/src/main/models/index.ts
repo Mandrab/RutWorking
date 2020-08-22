@@ -24,5 +24,6 @@ export {
 } from './utils/modules'
 
 export {
+    resetContest,
     getStatus
 } from './utils/contest'

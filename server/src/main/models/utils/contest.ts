@@ -1,13 +1,16 @@
 /**
- * Contains utilities to work on users
+ * Contains utilities to work on contests
  * 
  * @author Paolo Baldini
  */
-
 import { set as mongooseSet } from 'mongoose'
 import { DBUser } from '../db'
 
 mongooseSet('useFindAndModify', false)
+
+export async function resetContest() {
+    await DBUser.updateMany({}, { $unset: { "score": "" } })
+}
 
 export async function getStatus(skipN: number) {
     let users = await DBUser.aggregate([

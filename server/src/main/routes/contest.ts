@@ -4,7 +4,7 @@
  * @author Paolo Baldini
  */
 import { _isDeveloper, _isChief, or, isActive, isRole, _isRole } from '../auths/jwt'
-import { /*startContest, endContest,*/ getStatus } from '../controllers/contest'
+import { resetContest, getStatus } from '../controllers/contest'
 import { Roles } from '../models'
 
 const isAdmin = isRole(Roles.ADMIN)
@@ -12,17 +12,11 @@ const _isAdmin = _isRole(Roles.ADMIN)
 const _isUser = _isRole(Roles.USER)
 
 module.exports = function (app: any) {
-    /*// admin can start/reset a contest to find the gooddest employee
-    app.put('/contest/start', [
+    // admin can start/reset a contest to find the gooddest employee
+    app.put('/contest/reset', [
         isActive,
         isAdmin
-    ], startContest)
-
-    // admin can end/stop a contest
-    app.put('/contest/stop', [
-        isActive,
-        isAdmin
-    ], endContest)*/
+    ], resetContest)
 
     // users can get the contest status (point of each user)
     app.get('/contest/ranking/:skipN?', [
