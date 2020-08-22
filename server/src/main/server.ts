@@ -38,6 +38,7 @@ const setup = async () => {
     require('./routes/module')(app)
     require('./routes/project')(app)
     require('./routes/user')(app)
+    require('./routes/contest')(app)
 
     app.use((_, result) => { result.status(404).end() })
 

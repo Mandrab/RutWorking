@@ -22,3 +22,7 @@ export {
     getTasks,
     getMessages
 } from './utils/modules'
+
+export {
+    getStatus
+} from './utils/contest'
