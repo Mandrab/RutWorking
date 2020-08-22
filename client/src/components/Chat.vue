@@ -18,7 +18,6 @@
       :showTypingIndicator="showTypingIndicator"
       :showEdition="false"
       :showDeletion="false"
-      :titleImageUrl="titleImageUrl"
       @onType="handleOnType"
       @edit="editMessage"
       @remove="removeMessage"
@@ -62,7 +61,6 @@ export default {
       module: {},
       participants: [],
       participantsReady: false,
-      titleImageUrl: 'https://a.slack-edge.com/66f9/img/avatars-teams/ava_0001-34.png',
       messageList: [],
       messageHistoryReady: false,
       newMessagesCount: 0,
