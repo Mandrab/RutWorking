@@ -88,8 +88,16 @@ export default {
             if (this.item.status == "DONE" || (this.item.assignee != this.username && this.item.status != "TO-DO")) {
                 this.isRightArrowDisabled = true;
             }
+            if(this.isModuleChief && (this.item.status != "DONE" )){
+                //ABILITO
+                this.isRightArrowDisabled = false;
+            }
             if (this.item.status == "TO-DO" || this.item.assignee != this.username) {
                 this.isLeftArrowDisabled = true;
+            }
+            if(this.isModuleChief && (this.item.status != "TO-DO" )){
+                //ABILITO
+                this.isLeftArrowDisabled = false;
             }
 
             this.taskReady = true;
