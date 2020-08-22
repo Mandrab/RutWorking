@@ -8,7 +8,7 @@
                 <template v-slot:button-content>
                     {{ username }}
                 </template>
-                <b-dropdown-item @click="openHomePage">Home Page</b-dropdown-item>
+                <b-dropdown-item @click="openHomePage">Home page</b-dropdown-item>
                 <b-dropdown-item @click="logout">Logout</b-dropdown-item>
             </b-dropdown>
 
@@ -18,7 +18,7 @@
                 </template>
                 <b-dropdown-header disabled> {{ username }} </b-dropdown-header>
                 <b-dropdown-divider></b-dropdown-divider>
-                <b-dropdown-item @click="openHomePage">Home Page</b-dropdown-item>
+                <b-dropdown-item @click="openHomePage">Home page</b-dropdown-item>
                 
                 <b-dropdown-item @click="logout">Logout</b-dropdown-item>
             </b-dropdown>
@@ -27,7 +27,7 @@
 
         <div class="row mt-5">
             <div class="col-sm bg-light rounded p-5 mx-5 mb-5">
-                <h2>User Info</h2>
+                <h2>User info</h2>
                 <div class="text-left p-2">
                     <a> <b>Name</b>: {{ name }} </a>
                 </div>
@@ -42,7 +42,7 @@
                 </div>
             </div>
             <div class="col-sm bg-light rounded p-5 mx-5 mb-5">
-                <h2>Access Management</h2>
+                <h2>Access management</h2>
                 <button @click.prevent="changePassword" class="btn btn-primary">Change password</button>
             </div>
         </div>

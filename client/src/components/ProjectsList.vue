@@ -3,7 +3,7 @@
         <li class="list-group-item">
             <div class="row">
                 <div class="col-10 col-sm-10 col-md-9 col-xl-9 p-0 h3">
-                    My Projects
+                    My projects
                 </div>
                 <div class="col-2 col-sm-2 col-md-3 col-xl-3 p-0">
                     <button @click="showProjectCreation" class="btn btn-primary">+</button>

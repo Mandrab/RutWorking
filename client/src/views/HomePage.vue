@@ -8,7 +8,7 @@
                 <template v-slot:button-content>
                     {{ username }}
                 </template>
-                <b-dropdown-item @click="openPersonalArea">Personal Area</b-dropdown-item>
+                <b-dropdown-item @click="openPersonalArea">Personal area</b-dropdown-item>
                 <b-dropdown-item @click="logout">Logout</b-dropdown-item>
             </b-dropdown>
 
@@ -18,7 +18,7 @@
                 </template>
                 <b-dropdown-header disabled> {{ username }} </b-dropdown-header>
                 <b-dropdown-divider></b-dropdown-divider>
-                <b-dropdown-item @click="openPersonalArea">Personal Area</b-dropdown-item>
+                <b-dropdown-item @click="openPersonalArea">Personal area</b-dropdown-item>
                 
                 <b-dropdown-item @click="logout">Logout</b-dropdown-item>
             </b-dropdown>
