@@ -123,6 +123,8 @@ export default {
             this.developersReady = false;
             var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
             console.log(localStorage.getItem('path') + '/projects/' + this.projectInfo.projectName + '/modules/' + this.item.name);
+            console.log("PROJECTINFO");
+            console.log(this.projectInfo);
             console.log("OBJECT");
             console.log(this.item);
             this.$http.get(localStorage.getItem('path') + '/projects/' + this.projectInfo.projectName + '/modules/' + this.item.name, tokenJson).then(function(response) {
@@ -193,6 +195,10 @@ export default {
             localStorage.setItem('isModuleChief', this.isModuleChief);
             //alert(this.isModuleChief);
             localStorage.setItem('moduleName', this.item.name);
+            // passo i developers
+            localStorage.removeItem('developers');
+            localStorage.setItem('developers', this.developers);
+
             this.$emit('openModule', this.item);
         },
         deleteModule () {

@@ -1,6 +1,6 @@
 <template>
   <div :style="{background: backgroundColor}">
-    <beautiful-chat v-if="messageHistoryReady"
+    <beautiful-chat v-if="messageHistoryReady && participantsReady"
       :alwaysScrollToBottom="alwaysScrollToBottom"
       :close="closeChat"
       :colors="colors"
@@ -46,17 +46,21 @@
 
 <script>
 
-//import messageHistory from './messageHistory'
-import chatParticipants from './chatProfiles'
 import availableColors from './colors'
 
 export default {
   components: {
   },
+  props: {
+    moduleDevelopers: {
+      type: Object
+    }
+  },
   data() {
     return {
       module: {},
-      participants: chatParticipants,
+      participants: [],
+      participantsReady: false,
       titleImageUrl: 'https://a.slack-edge.com/66f9/img/avatars-teams/ava_0001-34.png',
       messageList: [],
       messageHistoryReady: false,
@@ -78,6 +82,23 @@ export default {
     init() {
         this.module = JSON.parse(localStorage.getItem('module'));
         this.setColor('blue');
+        this.participantsReady = false;
+        var moduleDevelopers = localStorage.getItem('developers').split(",");
+
+        var i = 0;
+        var chatPartecipants = [];
+        moduleDevelopers.forEach(el => {
+              var m = {}
+              
+              m.id = el;
+              m.name = el;
+              m.imageUrl = '';
+              
+              chatPartecipants[i] = m;
+              i++;
+        });
+        this.participants = chatPartecipants;
+        this.participantsReady = true;
     },
     handleTyping(text) {
       this.showTypingIndicator = text.length > 0 ? this.participants[this.participants.length - 1].id : ''
@@ -201,31 +222,6 @@ export default {
             console.log(this.messageList);
 
             this.messageHistoryReady = true;
-        }, (err) => {
-            alert(err);
-            console.log(err.body);
-            //mostrare errore nel componente contenitore dei tile magari con una scritta rossa
-        });
-    },
-    sendMessageTest() {
-        this.username = JSON.parse(localStorage.getItem('user')).email;
-
-        var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
-        console.log("TOKEN");
-        console.log(tokenJson);
-        var json = {
-            "message": "Messaggio di prova"
-        }
-        this.$http.post(localStorage.getItem('path') + '/projects/' + this.module.project + '/modules/' + this.module.name + '/messages', json, tokenJson).then(function(response) {
-            console.log(response.body);
-            var res = response.body;
-            try {//è un livello di sicurezza in più, potrebbe non servire try catch in futuro
-                res = JSON.parse(res);
-            } catch (error) {
-                console.log(error);
-            }
-            console.log("SEND MSG");
-            console.log(res);
         }, (err) => {
             alert(err);
             console.log(err.body);

@@ -60,6 +60,7 @@ export default {
             this.$emit('showCreationForm');
         },
         showProjectList () {
+            console.log("PROJS")
             console.log(this.projects);
             this.projects.forEach(p => {
                 this.projectsArr.push(p);
