@@ -10,6 +10,7 @@
       <div class="col-12">
         <swiper>
           <swiper-slide v-for="(title, index) in stages" class="px-2 m-0" :key="index">
+            {{ title }}
             <kanbanStage :title="title" :tasks="groupedTasks[index + 1]" @addTask="showModalTaskForm" @updateTask="getTasks"></kanbanStage> <!-- passo direttamente i task giusti da visualizzare nella colonna specifica -->
           </swiper-slide>
           <div class="swiper-pagination" slot="pagination"></div>

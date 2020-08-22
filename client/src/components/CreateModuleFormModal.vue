@@ -6,7 +6,7 @@
             
               <div class="modal-header text-secondary">
                 <slot name="header">
-                  Create Module
+                  Create module
                 </slot>
               </div>
 
@@ -15,9 +15,9 @@
                     
                     <form @submit.prevent="handleSubmit">
                     <div class="form-group">
-                        <label for="module-name">Module Name</label>
-                        <input type="text" v-model="mod.moduleName" v-validate="'required'" name="module-name" class="form-control" :class="{ 'is-invalid': submitted && errors.has('module-name') }" />
-                        <div v-if="submitted && errors.has('module-name')" class="invalid-feedback">{{ errors.first('mod-name') }}</div>
+                        <label for="name">Module Name</label>
+                        <input type="text" v-model="mod.moduleName" v-validate="'required'" name="name" class="form-control" :class="{ 'is-invalid': submitted && errors.has('name') }" />
+                        <div v-if="submitted && errors.has('name')" class="invalid-feedback">{{ errors.first('name') }}</div>
                     </div>
                     <div class="form-group">
                         <label for="description">Description</label>

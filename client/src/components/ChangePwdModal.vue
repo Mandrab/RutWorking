@@ -6,7 +6,7 @@
             
               <div class="modal-header text-secondary">
                 <slot name="header">
-                  Change Password
+                  Change password
                 </slot>
               </div>
 
@@ -15,19 +15,19 @@
                     
                     <form @submit.prevent="handleSubmit">
                     <div class="form-group">
-                        <label for="module-name">Old Password</label>
-                        <input  type="password" v-model="oldPassword" v-validate="'required'" name="module-name" class="form-control" :class="{ 'is-invalid': submitted && errors.has('module-name') }" />
-                        <div v-if="submitted && errors.has('module-name')" class="invalid-feedback">{{ errors.first('mod-name') }}</div>
+                        <label for="old-password">Old password</label>
+                        <input  type="password" v-model="oldPassword" v-validate="'required'" name="old-password" class="form-control" :class="{ 'is-invalid': submitted && errors.has('old-password') }" />
+                        <div v-if="submitted && errors.has('old-password')" class="invalid-feedback">{{ errors.first('old-password') }}</div>
                     </div>
                    <div class="form-group">
-                        <label for="module-name">New Password</label>
-                        <input  type="password" v-model="newPassword" v-validate="'required'" name="module-name" class="form-control" :class="{ 'is-invalid': submitted && errors.has('module-name') }" />
-                        <div v-if="submitted && errors.has('module-name')" class="invalid-feedback">{{ errors.first('mod-name') }}</div>
+                        <label for="new-password">New password</label>
+                        <input  type="password" v-model="newPassword" v-validate="'required'" name="new-password" class="form-control" :class="{ 'is-invalid': submitted && errors.has('new-password') }" />
+                        <div v-if="submitted && errors.has('new-password')" class="invalid-feedback">{{ errors.first('new-password') }}</div>
                     </div>
                     <div class="form-group">
-                        <label for="module-name">Confirm New Password</label>
-                        <input  type="password" v-model="newPassword2" v-validate="'required'" name="module-name" class="form-control" :class="{ 'is-invalid': submitted && errors.has('module-name') }" />
-                        <div v-if="submitted && errors.has('module-name')" class="invalid-feedback">{{ errors.first('mod-name') }}</div>
+                        <label for="confirm-new-password">Confirm new password</label>
+                        <input  type="password" v-model="newPassword2" v-validate="'required'" name="confirm-new-password" class="form-control" :class="{ 'is-invalid': submitted && errors.has('confirm-new-password') }" />
+                        <div v-if="submitted && errors.has('confirm-new-password')" class="invalid-feedback">{{ errors.first('confirm-new-password') }}</div>
                     </div>
                     <div class="form-group">
                         <button @click.prevent="handleSubmit" class="btn btn-primary" :disabled="changingPWD">Confirm</button>
@@ -56,9 +56,9 @@ export default {
     },
     methods: {
         handleSubmit() {
-            if (this.newPassword != this.newPassword2){
-                    alert("The new Passwords does not match")
-                }
+            if (this.newPassword != this.newPassword2) {
+                alert("The new passwords do not match!")
+            }
             this.submitted = true;
             this.$validator.validate().then(valid => {
                 if (valid && (this.newPassword == this.newPassword2)) {
@@ -82,7 +82,7 @@ export default {
             vm.$http.put(localStorage.getItem('path') + '/user/'+mail, json, tokenjson).then(function(response) {
                 console.log(response.body);
                 console.log(this.changingPWD);
-                alert("password changed!")
+                alert("Password changed!")
                 this.closeForm();
             }, (err) => {
                 alert(err);

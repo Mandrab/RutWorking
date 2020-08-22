@@ -6,7 +6,7 @@
             
               <div class="modal-header text-secondary">
                 <slot name="header">
-                  Create Task
+                  Create task
                 </slot>
               </div>
 
@@ -15,9 +15,9 @@
                     
                     <form @submit.prevent="handleSubmit">
                     <div class="form-group">
-                        <label for="task-name">Task Name</label>
-                        <input type="text" v-model="t.taskName" v-validate="'required'" name="task-name" class="form-control" :class="{ 'is-invalid': submitted && errors.has('task-name') }" />
-                        <div v-if="submitted && errors.has('task-name')" class="invalid-feedback">{{ errors.first('task-name') }}</div>
+                        <label for="name">Name</label>
+                        <input type="text" v-model="t.taskName" v-validate="'required'" name="name" class="form-control" :class="{ 'is-invalid': submitted && errors.has('name') }" />
+                        <div v-if="submitted && errors.has('name')" class="invalid-feedback">{{ errors.first('name') }}</div>
                     </div>
                     <div class="form-group">
                         <label for="description">Description</label>
@@ -25,9 +25,9 @@
                         <div v-if="submitted && errors.has('description')" class="invalid-feedback">{{ errors.first('description') }}</div>
                     </div>
                     <div v-if="insertUser" class="form-group">
-                        <label for="t-assignee">Assignee</label>
-                        <input type="text" v-model="t.assignee" v-validate="'required'" name="t-assignee" class="form-control" :class="{ 'is-invalid': submitted && errors.has('t-assignee') }" />
-                        <div v-if="submitted && errors.has('t-assignee')" class="invalid-feedback">{{ errors.first('t-assignee') }}</div>
+                        <label for="assignee">Assignee</label>
+                        <input type="text" v-model="t.assignee" v-validate="'required'" name="assignee" class="form-control" :class="{ 'is-invalid': submitted && errors.has('assignee') }" />
+                        <div v-if="submitted && errors.has('assignee')" class="invalid-feedback">{{ errors.first('assignee') }}</div>
                     </div>
                     <!--<div class="form-group">
                         <label for="deadline">Deadline</label>

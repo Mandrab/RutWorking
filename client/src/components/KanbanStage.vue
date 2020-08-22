@@ -3,7 +3,6 @@
         <taskTile v-for="(tile, index) in stageTasks" :item="tile" :key="index" @updateTask="updateTask"></taskTile>
         <div v-if="stageTasks.length == 0"> Empty </div>
         <button v-if="showButton()" @click="addTask" class="btn btn-primary">+</button>
-        {{ isModuleChief }}
         <!--<createTaskModal v-if="showModalFormTask" :insertUser="userInForm" @closeModal="hideModalTaskForm"></createTaskModal>-->
     </div>
 </template>

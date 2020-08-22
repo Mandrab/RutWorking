@@ -1,11 +1,11 @@
 <template>
     <div class="col-sm-6 offset-sm-3">
-        <h2>Create Project</h2>
+        <h2>Create project</h2>
         <form @submit.prevent="handleSubmit">
             <div class="form-group">
-                <label for="project-name">Project Name</label>
-                <input type="text" v-model="project.projectName" v-validate="'required'" name="project-name" class="form-control" :class="{ 'is-invalid': submitted && errors.has('project-name') }" />
-                <div v-if="submitted && errors.has('project-name')" class="invalid-feedback">{{ errors.first('project-name') }}</div>
+                <label for="name">Name</label>
+                <input type="text" v-model="project.projectName" v-validate="'required'" name="name" class="form-control" :class="{ 'is-invalid': submitted && errors.has('name') }" />
+                <div v-if="submitted && errors.has('name')" class="invalid-feedback">{{ errors.first('name') }}</div>
             </div>
             <div class="form-group">
                 <label for="description">Description</label>
