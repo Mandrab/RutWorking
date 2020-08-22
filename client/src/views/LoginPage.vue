@@ -73,8 +73,10 @@ export default {
                 console.log(response.body);
                 console.log(response.body.accessToken); //
                 var obj = { email: username, token: response.body.accessToken };
+                localStorage.removeItem('user');
                 localStorage.setItem('user', JSON.stringify(obj));
                 var user = JSON.parse(localStorage.getItem('user')); //
+                console.log("USER LOGGED-IN");
                 console.log(user); //
                 this.$router.push('/');
             },(err) => {
