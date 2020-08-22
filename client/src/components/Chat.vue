@@ -23,19 +23,19 @@
       @edit="editMessage"
       @remove="removeMessage"
     >
-      <template v-slot:text-message-toolbox="scopedProps">
+      <!--<template v-slot:text-message-toolbox="scopedProps">
         <button v-if="!scopedProps.me && scopedProps.message.type==='text'" @click.prevent="like(scopedProps.message.id)">
           👍
         </button>
-      </template>
+      </template>-->
       <template v-slot:text-message-body="scopedProps"> 
         <p v-if="scopedProps.message.author != 'me'">{{scopedProps.message.author}}</p>
         <p class="sc-message--text-content" v-html="scopedProps.messageText"></p>
         <p v-if="scopedProps.message.data.meta" class='sc-message--meta' :style="{color: scopedProps.messageColors.color}">{{scopedProps.message.data.meta}}</p>
-        <p v-if="scopedProps.message.isEdited || scopedProps.message.liked" class='sc-message--edited'>
+        <!--<p v-if="scopedProps.message.isEdited || scopedProps.message.liked" class='sc-message--edited'>
           <template v-if="scopedProps.message.isEdited">✎</template>
           <template v-if="scopedProps.message.liked">👍</template>
-        </p>
+        </p>-->
       </template>
       <template v-slot:system-message-body="{ message }">
         [System]: {{message.text}}
@@ -149,12 +149,12 @@ export default {
         m.data.text = 'This message has been removed';
       }
     },
-    like(id){
+    /*like(id){
       const m = this.messageList.findIndex(m => m.id === id);
       var msg = this.messageList[m];
       msg.liked = !msg.liked;
       this.$set(this.messageList, m, msg);
-    },
+    },*/
     loadMessages() {
         this.messageHistoryReady = false;
         this.username = JSON.parse(localStorage.getItem('user')).email;
@@ -245,7 +245,7 @@ export default {
   },
   mounted(){
     this.loadMessages();
-    this.messageList.forEach(x=>x.liked = false);
+    //this.messageList.forEach(x=>x.liked = false);
   }
 }
 </script>
