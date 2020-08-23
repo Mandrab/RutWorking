@@ -54,7 +54,6 @@ export default {
         
     },
     methods: {
-        
         handleSubmit() {
             this.submitted = true;
             this.$validator.validate().then(valid => {
@@ -87,9 +86,7 @@ export default {
                 this.$emit('projectAdded');
                 this.closeForm();
             }, (err) => {
-                alert(err);
-                console.log(err);
-                console.log(err.body);
+                alert(err.body);
                 this.creating = false;
             });
         },

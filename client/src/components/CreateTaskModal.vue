@@ -14,32 +14,32 @@
                 <slot name="body">
                     
                     <form @submit.prevent="handleSubmit">
-                    <div class="form-group">
-                        <label for="name">Name</label>
-                        <input type="text" v-model="t.taskName" v-validate="'required'" name="name" class="form-control" :class="{ 'is-invalid': submitted && errors.has('name') }" />
-                        <div v-if="submitted && errors.has('name')" class="invalid-feedback">{{ errors.first('name') }}</div>
-                    </div>
-                    <div class="form-group">
-                        <label for="description">Description</label>
-                        <textarea rows=5 columns=10 v-model="t.description" v-validate="'required'" name="description" class="form-control" :class="{ 'is-invalid': submitted && errors.has('description') }" />
-                        <div v-if="submitted && errors.has('description')" class="invalid-feedback">{{ errors.first('description') }}</div>
-                    </div>
-                    <div v-if="insertUser" class="form-group">
-                        <label for="assignee">Assignee</label>
-                        <input type="text" v-model="t.assignee" v-validate="'required'" name="assignee" class="form-control" :class="{ 'is-invalid': submitted && errors.has('assignee') }" />
-                        <div v-if="submitted && errors.has('assignee')" class="invalid-feedback">{{ errors.first('assignee') }}</div>
-                    </div>
-                    <!--<div class="form-group">
-                        <label for="deadline">Deadline</label>
-                        <input type="date" v-model="deadline" v-validate="'required'" name="deadline" class="form-control" :class="{ 'is-invalid': submitted && errors.has('deadline') }" />
-                        <div v-if="submitted && errors.has('deadline')" class="invalid-feedback">{{ errors.first('deadline') }}</div>
-                    </div>-->
-                    <div class="form-group">
-                        <button @click.prevent="handleSubmit" class="btn btn-primary" :disabled="creating">Confirm</button>
-                        <img v-show="creating" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
-                        <button @click.prevent="closeForm" class="btn btn-link">Cancel</button>
-                    </div>
-                </form>
+                      <div class="form-group">
+                          <label for="name">Name</label>
+                          <input type="text" v-model="t.taskName" v-validate="'required'" name="name" class="form-control" :class="{ 'is-invalid': submitted && errors.has('name') }" />
+                          <div v-if="submitted && errors.has('name')" class="invalid-feedback">{{ errors.first('name') }}</div>
+                      </div>
+                      <div class="form-group">
+                          <label for="description">Description</label>
+                          <textarea rows=5 columns=10 v-model="t.description" v-validate="'required'" name="description" class="form-control" :class="{ 'is-invalid': submitted && errors.has('description') }" />
+                          <div v-if="submitted && errors.has('description')" class="invalid-feedback">{{ errors.first('description') }}</div>
+                      </div>
+                      <div v-if="insertUser" class="form-group">
+                          <label for="assignee">Assignee</label>
+                          <input type="text" v-model="t.assignee" v-validate="'required'" name="assignee" class="form-control" :class="{ 'is-invalid': submitted && errors.has('assignee') }" />
+                          <div v-if="submitted && errors.has('assignee')" class="invalid-feedback">{{ errors.first('assignee') }}</div>
+                      </div>
+                      <!--<div class="form-group">
+                          <label for="deadline">Deadline</label>
+                          <input type="date" v-model="deadline" v-validate="'required'" name="deadline" class="form-control" :class="{ 'is-invalid': submitted && errors.has('deadline') }" />
+                          <div v-if="submitted && errors.has('deadline')" class="invalid-feedback">{{ errors.first('deadline') }}</div>
+                      </div>-->
+                      <div class="form-group">
+                          <button @click.prevent="handleSubmit" class="btn btn-primary" :disabled="creating">Confirm</button>
+                          <img v-show="creating" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+                          <button @click.prevent="closeForm" class="btn btn-link">Cancel</button>
+                      </div>
+                    </form>
                 </slot>
               </div>
             </div>
@@ -90,8 +90,7 @@ export default {
                 }
             });
         },
-        addTask () {
-            alert("addingTask")
+        addTask() {
             this.creating = true;
             var vm = this;
             var tokenjson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
@@ -113,9 +112,7 @@ export default {
                 this.$emit('taskAdded');
                 this.closeForm();
             }, (err) => {
-                alert(err);
-                console.log(err);
-                console.log(err.body);
+                alert(err.body);
                 this.creating = false;
             });
         },

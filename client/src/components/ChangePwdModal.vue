@@ -3,39 +3,36 @@
         <div class="modal-mask">
           <div class="modal-wrapper">
             <div class="modal-container">
-            
               <div class="modal-header text-secondary">
                 <slot name="header">
                   Change password
                 </slot>
               </div>
-
               <div class="modal-body">
                 <slot name="body">
-                    
                     <form @submit.prevent="handleSubmit">
-                    <div class="form-group">
-                        <label for="old-password">Old password</label>
-                        <input  type="password" v-model="oldPassword" v-validate="'required'" name="old-password" class="form-control" :class="{ 'is-invalid': submitted && errors.has('old-password') }" />
-                        <div v-if="submitted && errors.has('old-password')" class="invalid-feedback">{{ errors.first('old-password') }}</div>
-                    </div>
-                   <div class="form-group">
-                        <label for="new-password">New password</label>
-                        <input  type="password" v-model="newPassword" v-validate="'required'" name="new-password" class="form-control" :class="{ 'is-invalid': submitted && errors.has('new-password') }" />
-                        <div v-if="submitted && errors.has('new-password')" class="invalid-feedback">{{ errors.first('new-password') }}</div>
-                    </div>
-                    <div class="form-group">
-                        <label for="confirm-new-password">Confirm new password</label>
-                        <input  type="password" v-model="newPassword2" v-validate="'required'" name="confirm-new-password" class="form-control" :class="{ 'is-invalid': submitted && errors.has('confirm-new-password') }" />
-                        <div v-if="submitted && errors.has('confirm-new-password')" class="invalid-feedback">{{ errors.first('confirm-new-password') }}</div>
-                    </div>
-                    <div class="form-group">
-                        <button @click.prevent="handleSubmit" class="btn btn-primary" :disabled="changingPWD">Confirm</button>
-                        <img v-show="changingPWD" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
-                        <button @click.prevent="closeForm" class="btn btn-link">Cancel</button>
-                    </div>
-                </form>
-                </slot>
+                      <div class="form-group">
+                          <label for="old-password">Old password</label>
+                          <input  type="password" v-model="oldPassword" v-validate="'required'" name="old-password" class="form-control" :class="{ 'is-invalid': submitted && errors.has('old-password') }" />
+                          <div v-if="submitted && errors.has('old-password')" class="invalid-feedback">{{ errors.first('old-password') }}</div>
+                      </div>
+                      <div class="form-group">
+                          <label for="new-password">New password</label>
+                          <input  type="password" v-model="newPassword" v-validate="'required'" name="new-password" class="form-control" :class="{ 'is-invalid': submitted && errors.has('new-password') }" />
+                          <div v-if="submitted && errors.has('new-password')" class="invalid-feedback">{{ errors.first('new-password') }}</div>
+                      </div>
+                      <div class="form-group">
+                          <label for="confirm-new-password">Confirm new password</label>
+                          <input  type="password" v-model="newPassword2" v-validate="'required'" name="confirm-new-password" class="form-control" :class="{ 'is-invalid': submitted && errors.has('confirm-new-password') }" />
+                          <div v-if="submitted && errors.has('confirm-new-password')" class="invalid-feedback">{{ errors.first('confirm-new-password') }}</div>
+                      </div>
+                      <div class="form-group">
+                          <button @click.prevent="handleSubmit" class="btn btn-primary" :disabled="changingPWD">Confirm</button>
+                          <img v-show="changingPWD" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+                          <button @click.prevent="closeForm" class="btn btn-link">Cancel</button>
+                      </div>
+                    </form>
+                  </slot>
               </div>
             </div>
           </div>
@@ -66,7 +63,7 @@ export default {
                 }
             });
         },
-        changePWD () {
+        changePWD() {
             this.changingPWD = true;
             var vm = this;
             var tokenjson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
@@ -76,25 +73,21 @@ export default {
             }
             var mail = JSON.parse(localStorage.getItem('user')).email ;//ottieni mail dallo storage
             
-            console.log(localStorage.getItem('path') + '/user/'+ mail);
+            console.log(localStorage.getItem('path') + '/user/' + mail);
             
-
-            vm.$http.put(localStorage.getItem('path') + '/user/'+mail, json, tokenjson).then(function(response) {
+            vm.$http.put(localStorage.getItem('path') + '/user/' + mail, json, tokenjson).then(function(response) {
                 console.log(response.body);
                 console.log(this.changingPWD);
-                alert("Password changed!")
+                alert("Password changed successfully!")
                 this.closeForm();
             }, (err) => {
-                alert(err);
-                console.log(err);
-                console.log(err.body);
+                alert(err.body);
                 this.changingPWD = false;
             });
         },
         closeForm () {
             this.changingPWD = false;
             this.$emit('closeModal'); // notifico il padre
-
         }
     }
 }
