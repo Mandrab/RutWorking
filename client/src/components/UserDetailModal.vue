@@ -3,30 +3,33 @@
         <div class="modal-mask">
           <div class="modal-wrapper">
             <div class="modal-container">
-
+            
               <div class="modal-header text-secondary">
                 <slot name="header">
-                  Login failed
+                  User info
                 </slot>
               </div>
 
-              <div class="modal-body text-danger">
+              <div class="modal-body">
                 <slot name="body">
-                    <strong>
-                        {{mess}}
-                    </strong>
-                    <br/> 
-                        <div class="text-secondary">
-                            Pease try again 
-                        </div> 
-                </slot>
-              </div>
-
-              <div class="modal-footer">
-                <slot name="footer">
-                  <button class="modal-default-button btn btn-primary" @click="$emit('closeModal')">
-                    OK
-                  </button>
+                    <div class="text-left p-2">
+                        <a> <b>Name</b>: {{ item.name }} </a>
+                    </div>
+                    <div class="text-left p-2">
+                        <a> <b>Surname</b>: {{ item.surname }} </a>
+                    </div>
+                    <div class="text-left p-2">
+                        <a> <b>E-mail</b>: {{ item.username }} </a>
+                    </div>
+                    <div class="text-left p-2">
+                        <a> <b>Role</b>: {{ item.role }} </a>
+                    </div>
+                    <div class="text-left p-2">
+                        <a> <b>Blocked</b>: {{ item.blocked }} </a>
+                    </div>
+                    <div class="form-group">
+                        <button @click.prevent="closeForm" class="btn btn-link">Close</button>
+                    </div>
                 </slot>
               </div>
             </div>
@@ -37,19 +40,23 @@
 
 <script>
 export default {
-    data () {
+    data() {
         return {
-            showModal: false
         }
     },
     props: {
-        mess: {
-            type: String
+        item: {
+            type: Object
         }
     },
+    mounted() {
+    },
     methods: {
+        closeForm () {
+            this.$emit('closeModal'); // notifico il padre
+        }
     }
-};
+}
 </script>
 
 <style scoped>
@@ -71,7 +78,7 @@ export default {
 }
 
 .modal-container {
-  width: 300px;
+  width: 80%;
   margin: 0px auto;
   padding: 20px 30px;
   background-color: #fff;
@@ -120,5 +127,4 @@ export default {
 .modal-footer {
     padding: 10px 16px 0px 0px
 }
-
 </style>

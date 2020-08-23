@@ -30,7 +30,7 @@ export default {
         return {
             projectsArr: [],
             isModulesMember: [],
-            readu: false,
+            readu: false, //
             display: [],
             page: 0,
             dispReady: true

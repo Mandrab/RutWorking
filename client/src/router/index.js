@@ -3,7 +3,6 @@ import VueRouter from "vue-router";
 import LoginPage from "../views/LoginPage.vue";
 import HomePage from "../views/HomePage.vue";
 
-
 Vue.use(VueRouter);
 
 const routes = [
@@ -18,12 +17,6 @@ const routes = [
     component: LoginPage
   },
   {
-    path: "/register",
-    name: "RegisterPage",
-    component: () =>
-      import(/* webpackChunkName: "register" */ "../views/RegisterPage.vue") // lazy loading
-  },
-  {
     path: "/personalarea",
     name: "PersonalArea",
     component: () =>
@@ -36,12 +29,18 @@ const routes = [
       import(/* webpackChunkName: "register" */ "../views/WorkingArea.vue") // lazy loading
   },
   {
+    path: "/adminpage",
+    name: "AdminPage",
+    component: () =>
+      import(/* webpackChunkName: "register" */ "../views/AdminPage.vue") // lazy loading
+  },
+  {
     path: "/404",
     name: "PageNotFound",
     component: () =>
       import(/* webpackChunkName: "register" */ "../views/PageNotFound.vue") // lazy loading
   },
-  // otherwise redirect to home
+  // otherwise redirect to error page
   { path: '*', redirect: '/404' }
 ];
 
