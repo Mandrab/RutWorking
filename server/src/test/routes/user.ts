@@ -224,4 +224,47 @@ describe('test users\' operations', function() {
 
         return Promise.resolve()
     })
+
+/**********************************************************************************************************************
+    GET MULTIPLE USERS INFO
+**********************************************************************************************************************/
+
+    it('get multiple users info', async function() {
+        let admin = await User.findByEmail(ADMIN.email)
+        let adminToken = sign({ id: admin._id() }, secret, { expiresIn: 86400 })
+        let user = await User.findByEmail(USER.email)
+        let userToken = sign({ id: user._id() }, secret, { expiresIn: 86400 })
+
+        // no token passed
+        await request.get('/users').expect(500)
+
+        // no binded token
+        await request.get('/users').set({ 'Authorization': 'john' }).expect(401)
+
+        // correct user token
+        let result = await request.get('/users').set({ 'Authorization': userToken }).expect(200)
+
+        if (result.body.lenght < 2) throw 'impossible quantity of users returned'
+        if (!result.body[0].email) throw 'returned info should contains email'
+        if (!result.body[0].name) throw 'returned info should contains name'
+        if (!result.body[0].surname) throw 'returned info should contains surname'
+
+        // correct admin token
+        result = await request.get('/users').set({ 'Authorization': adminToken }).expect(200)
+
+        if (result.body.lenght < 2) throw 'impossible quantity of users returned'
+        if (!result.body[0].email) throw 'returned info should contains email'
+        if (!result.body[0].name) throw 'returned info should contains name'
+        if (!result.body[0].surname) throw 'returned info should contains surname'
+
+        let usersN = result.body.length
+
+        // skipN
+        result = await request.get('/users/1').set({ 'Authorization': adminToken }).expect(200)
+
+        if (result.body.lenght === usersN -1 || result.body.lenght > 100)
+            throw 'with skip some users should not be returned'
+
+        return Promise.resolve()
+    })
 })

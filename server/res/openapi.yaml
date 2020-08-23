@@ -21,6 +21,8 @@ tags:
     description: Operations on chat messages. Push, get, etc..
   - name: kanbans
     description: Operations on kanban tasks. Push, obtainment, get, etc..
+  - name: contest
+    description: Gamification of the platform. Allow to get contest status and reset it
   - name: notifications
     description: Operation to set the new firebase token to which send notifications
 
@@ -196,6 +198,83 @@ paths:
           description: Only an admin can block an user
         404:
           description: User not found
+
+  '/users':
+    get:
+      tags: [users]
+      security: 
+        - bearerAuth: []
+      summary: Get list first 100 of users
+      responses:
+        200:
+          description: List of first 100 (the ones with highest score) users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    email:
+                      type: string
+                      description: Email of the user
+                    name:
+                      type: string
+                      description: Name of the user
+                    surname:
+                      type: string
+                      description: Surname of the user
+                    role:
+                      type: string
+                      enum: [admin, user]
+                      description: Role of the user in the system
+                    blocked:
+                      type: boolean
+                      description: Specify if the user has been blocked
+        403:
+          description: Only an user or an admin can retrieve informations
+
+  '/users/{skipN}':
+    get:
+      tags: [users]
+      security: 
+        - bearerAuth: []
+      summary: Get list of 100 users
+      parameters:
+        - in: path
+          name: skipN
+          description: Skip first N users while getting 100 users by score
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    email:
+                      type: string
+                      description: Email of the user
+                    name:
+                      type: string
+                      description: Name of the user
+                    surname:
+                      type: string
+                      description: Surname of the user
+                    role:
+                      type: string
+                      enum: [admin, user]
+                      description: Role of the user in the system
+                    blocked:
+                      type: boolean
+                      description: Specify if the user has been blocked
+        403:
+          description: Only an user or an admin can retrieve informations
 
   '/projects':
     get:
@@ -993,6 +1072,99 @@ paths:
           description: Not chief of the module. Otherwise the account is blocked.
         404:
           description: Project, module, task or user-token not found
+  
+  '/contest/reset':
+    put:
+      tags: [contest]
+      summary: Reset the actual score in the contest
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Succesfully reset
+        403:
+          description: Account is blocked
+        404:
+          description: User not found
+        409:
+          description: Token not passed
+  
+  '/contest/ranking':
+    get:
+      tags: [contest]
+      summary: List 100 users with scores from higher to lower
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: List of 100 users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    email:
+                      type: string
+                      description: email of the user
+                    name:
+                      type: string
+                      description: name of the user
+                    surname:
+                      type: string
+                      description: surname of the user
+                    score:
+                      type: number
+                      description: score in the system. It could also be negative if user does not properly complete works
+        403:
+          description: Account is blocked
+        404:
+          description: User not found
+        409:
+          description: Token not passed
+  
+  '/contest/ranking/{skipN}':
+    get:
+      tags: [contest]
+      summary: List 100 users with scores from higher to lower skipping first N
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: skipN
+          description: Skip first N users and return 100 of them
+          schema:
+            type: number
+          required: true
+      responses:
+        200:
+          description: List of 100 users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    email:
+                      type: string
+                      description: email of the user
+                    name:
+                      type: string
+                      description: name of the user
+                    surname:
+                      type: string
+                      description: surname of the user
+                    score:
+                      type: number
+                      description: score in the system. It could also be negative if user does not properly complete works
+        403:
+          description: Account is blocked
+        404:
+          description: User not found
+        409:
+          description: Token not passed
 
   '/firebase/notification':
     put:

@@ -34,8 +34,8 @@ export async function updateStatus(request: any, result: any) {
 
         if (!request.body.newState) return result.status(409).send('Message body not found!')
 
-        if (!module.kanbanItems().some(it => it._id().toString() === request.params.taskID))
-            return result.status(404).send('Task not found!')
+        let tasks = module.kanbanItems().filter(it => it._id().toString() === request.params.taskID)
+        if (tasks.length === 0) return result.status(404).send('Task not found!')
 
         let state = States.parse(request.body.newState)
         if (!state) throw { code: 409, message: 'Invalid state!' }
@@ -45,8 +45,8 @@ export async function updateStatus(request: any, result: any) {
             if (!module.developersIDs().concat(module.chiefID()).some(it => it.toString() === user._id().toString()))
                 throw { code: 409, message: 'Invalid assignee!' }
 
-            await module.updateTaskStatus(request.params.taskID, state, user._id())
-        } else await module.updateTaskStatus(request.params.taskID, state)
+            await module.updateTaskStatus(request.params.taskID, States.parse(tasks[0].status()), state, tasks[0].assigneeID(), user._id())
+        } else await module.updateTaskStatus(request.params.taskID, States.parse(tasks[0].status()), state, tasks[0].assigneeID())
 
         result.status(200).send('Task succesfully updated!')
 

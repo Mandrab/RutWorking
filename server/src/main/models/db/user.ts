@@ -48,6 +48,10 @@ const userSchema = new Schema({
         type: Boolean,
         default: true
     },
+    score: {
+        type: Number,
+        default: 0
+    },
     firebaseToken: String
 })
 

@@ -93,7 +93,7 @@ export async function getMessages(projectName: string, moduleName: string, skipF
         { $match: { "modules.name": moduleName } },
         { $project: { "modules.chatMessages": 1 } }, // get only kanban items
         { $unwind: "$modules.chatMessages" },
-        { $sort: { "modules.chatMessages._id": 1 } },
+        { $sort: { "modules.chatMessages._id": -1 } },
         { $skip: skipFirst },
         { $limit: 100 },
         { $project: { "modules.chatMessages._id": 0 } }
