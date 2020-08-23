@@ -1,4 +1,4 @@
-import { IDBModule, IDBMessage, IDBKanbanItem, DBProject, States } from "./db"
+import { IDBModule, IDBMessage, IDBKanbanItem, DBProject, States, DBUser } from "./db"
 import { Schema } from "mongoose"
 import { User } from "."
 
@@ -106,23 +106,37 @@ export class Module {
      * @param description tasks description
      * @param projectID parent project of the module
      */
-    async updateTaskStatus(taskID: Schema.Types.ObjectId, newStatus: States, assignee?: Schema.Types.ObjectId) {
+    async updateTaskStatus(
+        taskID: Schema.Types.ObjectId,
+        oldStatus: States,
+        newStatus: States,
+        oldAssignee: Schema.Types.ObjectId,
+        assignee?: Schema.Types.ObjectId
+    ) {
+        let user = await DBUser.findById(assignee)
+        if (!user && newStatus !== States.TODO) throw { code: 404, message: 'User not found!' }
+
         let update: any = { "modules.$[module].kanbanItems.$[kanbanItem].status": newStatus }
 
         if (newStatus === States.TODO) {            // not set assignee in TODO state
-            update = { $unset: { "modules.$[module].kanbanItems.$[kanbanItem].assignee": "" },
-                $set: update }
+            update = {
+                $unset: { "modules.$[module].kanbanItems.$[kanbanItem].assignee": "" },
+                $set: update
+            }
         } else {
-            await User.findById(assignee)           // check existence
             update["modules.$[module].kanbanItems.$[kanbanItem].assignee"] = assignee
             update = { $set: update }
         }
 
-        await DBProject.updateOne(
-            { _id: this.parentID },
-            update,
-            { arrayFilters : [{ "module._id" : this._id() }, { "kanbanItem._id" : taskID }] }
-        )
+        await DBProject.updateOne({ _id: this.parentID }, update,
+            { arrayFilters : [{ "module._id" : this._id() }, { "kanbanItem._id" : taskID }] })
+
+        // if an user has not properly completed his task his score is decreased
+        // if it has completed his task, his score is incremented
+        if (newStatus === States.DONE && oldStatus !== States.DONE)
+            await DBUser.updateOne({ _id: assignee }, { $inc: { score: 1 } })
+        else if (oldStatus === States.DONE)
+            await DBUser.updateOne({ _id: oldAssignee }, { $inc: { score: -2 } })
     }
 
     async deleteTask(taskID: string | Schema.Types.ObjectId) {

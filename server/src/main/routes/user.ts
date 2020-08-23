@@ -4,7 +4,7 @@
  * @author Paolo Baldini
  */
 import { isActive, isRole, or, _isRole } from '../auths/jwt'
-import { login, register, blockUser, changePassword, getUserInfo } from '../controllers/user'
+import { login, register, blockUser, changePassword, getUserInfo, getUsers } from '../controllers/user'
 import { Roles } from '../models'
 
 const isAdmin = isRole(Roles.ADMIN)
@@ -25,8 +25,9 @@ module.exports = function (app: any) {
     // get info of a user TODO limit at the same user? Now is all the users...
     app.get('/user/:userEmail', [isActive, or(_isAdmin, _isUser)], getUserInfo)
 
-    // TODO lista tutti gli utenti (anche admin)
-
     // an ADMIN can block a user TODO raffinalo
     app.delete('/user/:userEmail', [isActive, isAdmin], blockUser)
+
+    // list the first 100 user (use skip to move forward)
+    app.get('/users/:skipN?', [isActive, or(_isAdmin, _isUser)], getUsers)
 }
