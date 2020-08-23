@@ -9,7 +9,7 @@ import { DBUser } from '../db'
 mongooseSet('useFindAndModify', false)
 
 export async function resetContest() {
-    await DBUser.updateMany({}, { $unset: { "score": "" } })
+    await DBUser.updateMany({}, { $unset: { score: "" } })
 }
 
 export async function getStatus(skipN: number) {
