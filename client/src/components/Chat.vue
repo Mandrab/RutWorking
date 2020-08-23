@@ -28,7 +28,7 @@
         </button>
       </template>-->
       <template v-slot:text-message-body="scopedProps"> 
-        <p class="p-0 m-0" style="color: #3a3a44;" v-if="scopedProps.message.author != 'me'">{{scopedProps.message.author}}:</p>
+        <p class="p-0 m-0" style="color: #2e57ff;" v-if="scopedProps.message.author != 'me'">{{scopedProps.message.author}}:</p>
         
         <p class="sc-message--text-content p-1 m-0" style="float: left;" v-html="scopedProps.messageText"></p>
         <p v-if="scopedProps.message.data.meta" class='sc-message--meta' :style="{color: scopedProps.messageColors.color}">{{scopedProps.message.data.meta}}</p>
