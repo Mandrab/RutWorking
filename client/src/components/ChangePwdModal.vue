@@ -65,7 +65,6 @@ export default {
         },
         changePWD() {
             this.changingPWD = true;
-            var vm = this;
             var tokenjson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
             var json = {
                 "oldPassword": this.oldPassword,
@@ -75,7 +74,7 @@ export default {
             
             console.log(localStorage.getItem('path') + '/user/' + mail);
             
-            vm.$http.put(localStorage.getItem('path') + '/user/' + mail, json, tokenjson).then(function(response) {
+            this.$http.put(localStorage.getItem('path') + '/user/' + mail, json, tokenjson).then(function(response) {
                 console.log(response.body);
                 console.log(this.changingPWD);
                 alert("Password changed successfully!")

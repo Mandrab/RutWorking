@@ -6,7 +6,7 @@
             
               <div class="modal-header text-secondary">
                 <slot name="header">
-                  Create module
+                  Register a new user
                 </slot>
               </div>
 
@@ -25,7 +25,7 @@
                       </div>
                       <div class="form-group">
                           <label for="email">E-mail</label>
-                          <input type="date" v-model="user.email" v-validate="'required'" name="email" class="form-control" :class="{ 'is-invalid': submitted && errors.has('email') }" />
+                          <input type="email" v-model="user.email" v-validate="'required'" name="email" class="form-control" :class="{ 'is-invalid': submitted && errors.has('email') }" />
                           <div v-if="submitted && errors.has('email')" class="invalid-feedback">{{ errors.first('email') }}</div>
                       </div>
                       <div class="form-group">

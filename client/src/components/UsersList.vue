@@ -2,19 +2,19 @@
     <div>
         <li class="list-group-item">
             <div class="row">
-                <div class="col-10 col-sm-10 col-md-9 col-xl-9 p-0 h3">
+                <div class="col-10 col-sm-10 col-md-10 col-xl-10 h3 text-left">
                     Users list
                 </div>
-                <div class="col-2 col-sm-2 col-md-3 col-xl-3 p-0">
+                <div class="col-2 col-sm-2 col-md-2 col-xl-2 p-0">
                     <button @click="openUserRegistration" class="btn btn-primary">+</button>
                 </div>
             </div>
 		</li>
         <div>
             <ul v-if="isUsersListReady" class="list-group">
-                <userTile v-for="(tile, index) in usersArr" :item="tile" :key="index" :index="index" :page="page"></userTile>
+                <userTile v-for="(tile, index) in usersArr" :item="tile" :key="index" :index="index" :page="page" @userBlocked="showUsersList"></userTile>
 		    </ul>
-        <pagination v-if="ready" limit="100" @displayChanged="dispatchedPagination($event)" shown="8" :bottom="true"></pagination>
+            <pagination v-if="ready" limit="100" @displayChanged="dispatchedPagination($event)" shown="8" :bottom="true"></pagination>
         </div>
 
         <registerUserFormModal v-if="registerUser" @userAdded="showUsersList" @closeModal="closeUserRegistration"></registerUserFormModal>
@@ -23,6 +23,7 @@
 
 <script>
 import userTile from '../components/UserTile.vue'
+import registerUserFormModal from '../components/RegisterUserFormModal.vue'
 import pagination from '../components/Pagination.vue'
 
 export default {
@@ -44,6 +45,7 @@ export default {
     },
     components: {
         userTile,
+        registerUserFormModal,
         pagination
     },
     methods: {

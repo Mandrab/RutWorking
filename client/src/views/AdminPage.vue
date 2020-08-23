@@ -23,8 +23,10 @@
             </b-dropdown>
         </div>
     </nav>
-    <div>
-        <usersList></usersList>
+    <div class="row mt-5">
+        <div class="col-sm-6 offset-sm-3 rounded mb-5">
+            <usersList></usersList>
+        </div>
     </div>
   </div>
 </template>

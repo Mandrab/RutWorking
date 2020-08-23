@@ -19,10 +19,10 @@
                         <a> <b>Surname</b>: {{ item.surname }} </a>
                     </div>
                     <div class="text-left p-2">
-                        <a> <b>E-mail</b>: {{ item.username }} </a>
+                        <a> <b>E-mail</b>: {{ item.email }} </a>
                     </div>
                     <div class="text-left p-2">
-                        <a> <b>Role</b>: {{ item.role }} </a>
+                        <a> <b>Role</b>: {{ item.role.role.name }} </a>
                     </div>
                     <div class="text-left p-2">
                         <a> <b>Blocked</b>: {{ item.blocked }} </a>

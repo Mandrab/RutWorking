@@ -55,11 +55,19 @@
 
         <div class="row mt-5">
             <div class="col-sm-6 offset-sm-3 bg-light rounded">
-                <h2>Gamification</h2>
+                <div class="row">
+                    <div class="col-6 col-sm-6 col-md-6 col-xl-6 justify-content-center p-3">
+                        <h2>Gamification</h2>
+                    </div>
+                    <div v-if="role == 'admin'" class="col-6 col-sm-6 col-md-6 col-xl-6 text-right p-3">
+                        <button @click.prevent="resetRanking" class="btn btn-primary">Reset</button>
+                    </div>
+                </div>
+                
                 <div class="row" v-if="scoreReady">
                     <div class="col-md-12 m-0 p-0" v-for="(score, index) in scores" :key="index">
                         <div v-if="indexInScoreArray == index" class=" row scoreTile  m-1 p-0">
-                            <div class="col-sm-6 text-left text-primary"> <b>{{index+1}})  ME</b> </div>
+                            <div class="col-sm-6 text-left text-primary"> <b>{{index+1}}) ME</b> </div>
                             <div class="col-sm-6  text-right">Score: {{score.score}}</div>
                         </div>
                         <div v-else class=" row scoreTile  m-1 p-0">
@@ -121,8 +129,11 @@ export default {
                 //mostrare errore nel componente contenitore dei tile magari con una scritta rossa
             });
 
+            this.getContestRanking();
 
-            //var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
+        },
+        getContestRanking() {
+            var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
             this.$http.get(localStorage.getItem('path') + '/contest/ranking', tokenJson).then(function(response) {
                 this.scoreReady= false;
                 console.log(response.body);
@@ -153,19 +164,30 @@ export default {
                 console.log(err.body);
                 //mostrare errore nel componente contenitore dei tile magari con una scritta rossa
             });
-
-
-
-            
         },
-        changePassword () {
+        changePassword() {
             this.showModalPasswordChange = true;
         },
-        closeModalPwd () {
+        closeModalPwd() {
             this.showModalPasswordChange = false;
         },
+        resetRanking() {
+            var tokenjson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
+
+            this.$http.put(localStorage.getItem('path') + '/contest/reset', {}, tokenjson).then(function(response) {
+                console.log(response.body);
+                alert("General ranking of users successfully reset!");
+                this.getContestRanking();
+            }, (err) => {
+                alert(err.body);
+            });
+        },
         openHomePage () {
-            this.$router.push('/');
+            if (this.role == "user") {
+                this.$router.push('/');
+            } else {
+                this.$router.push('/adminpage');
+            }
         },
         logout () {
             this.$router.push('/login');

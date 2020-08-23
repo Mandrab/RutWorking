@@ -6,7 +6,7 @@
                 {{ item.email }}
             </div>
             <div class="col-3 col-sm-3 col-md-3 col-xl-3 text-right">
-                <button @click="blockUser">B</button>
+                <button @click.stop="blockUser">B</button>
             </div>
         </div>
         <div v-if="isBlocked" class="row">
@@ -19,12 +19,14 @@
         </div>
     </li>
 
-    <userDetailModal v-if="showUserDetail" @closeModal="closeDetail"></userDetailModal>
+    <userDetailModal v-if="showUserDetail" :item="item" @closeModal="closeDetail"></userDetailModal>
 
     </div>
 </template>
 
 <script>
+import userDetailModal from '../components/UserDetailModal.vue'
+
 export default {
     data() {
         return {
@@ -42,6 +44,9 @@ export default {
         this.isBlocked = this.item.blocked;
         this.userIndexInList = this.index;
         this.ready = true;
+    },
+    components: {
+        userDetailModal
     },
     props: {
         item: {
@@ -62,8 +67,9 @@ export default {
         blockUser() {
             var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
             
-            this.$http.delete(localStorage.getItem('path') + '/user/' + this.username, tokenJson).then(function(response) {
+            this.$http.delete(localStorage.getItem('path') + '/user/' + this.item.email, tokenJson).then(function(response) {
                 alert(response.body);
+                this.$emit('userBlocked');
             }, (err) => {
                 alert(err.body);
             });

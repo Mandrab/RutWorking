@@ -70,9 +70,8 @@ export default {
             var path = 'http://localhost:8080';
             localStorage.setItem('path', path);
             this.loggingIn = true;
-            var vm = this;
             var json = { 'userEmail': username, 'password': password };
-            vm.$http.post(localStorage.getItem('path') + '/login', json).then(function(response) {
+            this.$http.post(localStorage.getItem('path') + '/login', json).then(function(response) {
                 console.log(response.body);
                 console.log(response.body.accessToken); //
                 var obj = { email: username, token: response.body.accessToken };
@@ -81,7 +80,15 @@ export default {
                 var user = JSON.parse(localStorage.getItem('user')); //
                 console.log("USER LOGGED-IN");
                 console.log(user); //
-                this.$router.push('/');
+
+                // DEBUG, da sistemare
+                if (this.username == "ADMIN_EMAIL") {
+                    this.$router.push('/adminpage');
+                    localStorage.setItem('role', "admin");
+                } else {
+                    this.$router.push('/');
+                    localStorage.setItem('role', "user");
+                }
             },(err) => {
                 console.log(err.body);
                 this.loginResponse = err.body;
