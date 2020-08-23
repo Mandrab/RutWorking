@@ -271,7 +271,8 @@ describe('test kanbans\' operations', function() {
             + '/kanban/0/' + DEVELOPER.email).set({ 'Authorization': developerToken }).expect(200)
         if (res.body.length !== 0) throw 'Wrong number of tasks returned'
 
-        await module.updateTaskStatus(taskID, States.TODO, States.IN_PROGRESS, (await DEVELOPER.getUser())._id())
+        await module.updateTaskStatus(taskID, States.TODO, States.IN_PROGRESS, (await DEVELOPER.getUser())._id(),
+            (await DEVELOPER.getUser())._id())
 
         // filter user
         res = await request.get('/projects/' + PROJECTS['get'].name + '/modules/' + PROJECTS['get'].modules[0].name
