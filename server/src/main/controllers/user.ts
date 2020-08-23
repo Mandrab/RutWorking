@@ -52,7 +52,7 @@ export async function changePassword(request: any, result: any) {
             return result.status(400).send('Info missing in body!')
 
         let user = await User.findByEmail(request.params.userEmail)
-        if (user.comparePassword(request.body.oldPassword)) {
+        if (await user.comparePassword(request.body.oldPassword)) {
             await user.changePassword(request.body.newPassword)
             result.status(200).send('Successfully updated!')
         } else result.status(401).send('Invalid password!')
