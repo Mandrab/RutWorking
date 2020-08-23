@@ -56,6 +56,19 @@
         <div class="row mt-5">
             <div class="col-sm-6 offset-sm-3 bg-light rounded">
                 <h2>Gamification</h2>
+                <div class="row" v-if="scoreReady">
+                    <div class="col-md-12 m-0 p-0" v-for="(score, index) in scores" :key="index">
+                        <div v-if="indexInScoreArray == index" class=" row scoreTile  m-1 p-0">
+                            <div class="col-sm-6 text-left text-primary"> <b>{{index+1}})  ME</b> </div>
+                            <div class="col-sm-6  text-right">Score: {{score.score}}</div>
+                        </div>
+                        <div v-else class=" row scoreTile  m-1 p-0">
+                            <div class="col-sm-6 text-left">{{index+1}})  {{score.email}}</div>
+                            <div class="col-sm-6  text-right">Score: {{score.score}}</div>
+                        </div>
+                        
+                    </div>
+                </div>
             </div>
         </div>
         <changePwdModal v-if="this.showModalPasswordChange" @closeModal="closeModalPwd"></changePwdModal>
@@ -74,7 +87,10 @@ export default {
             username: '',
             role: '',
             showDropdownMenu: false,
-            showModalPasswordChange: false
+            showModalPasswordChange: false,
+            indexInScoreArray: null,
+            scores: [],
+            scoreReady: false
         }
     },
     components: {
@@ -104,6 +120,42 @@ export default {
                 console.log(err.body);
                 //mostrare errore nel componente contenitore dei tile magari con una scritta rossa
             });
+
+
+            //var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
+            this.$http.get(localStorage.getItem('path') + '/contest/ranking', tokenJson).then(function(response) {
+                this.scoreReady= false;
+                console.log(response.body);
+                var res = response.body;
+                try {//è un livello di sicurezza in più, potrebbe non servire try catch in futuro
+                    res = JSON.parse(res);
+                } catch (error) {
+                    console.log(error);
+                }
+
+                this.scores = res;
+                if(res.length >0){
+                    for(var i = 0; i<res.length; i++){
+                        if(res[i].email == this.username){
+                            this.indexInScoreArray = i;
+                            alert(this.indexInScoreArray)
+                            alert(res[i].email);
+                        }
+                    }
+                }
+                if(this.indexInScoreArray == null){
+                    alert("non in lista")
+                }
+                this.scoreReady= true;
+
+            }, (err) => {
+                alert(err);
+                console.log(err.body);
+                //mostrare errore nel componente contenitore dei tile magari con una scritta rossa
+            });
+
+
+
             
         },
         changePassword () {
@@ -121,3 +173,13 @@ export default {
     }
 };
 </script>
+
+<style scoped>
+.scoreTile{
+    border-radius:  0.25rem;
+    background-color: #DDDDDD;
+}
+
+
+
+</style>
