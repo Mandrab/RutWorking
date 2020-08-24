@@ -1,29 +1,28 @@
 <template>
     <div class="container-fluid">
         <nav class="navbar navbar-expand-lg navbar-light bg-light rounded">
-        <a class="col-6 col-sm-6 col-md-6 col-xl-6 navbar-brand text-left mx-0 p-1" href="#" @click="openHomePage">RutWorking</a>
-        <!-- collapse w-100 order-3 dual-collapse2 -->
-        <div class="col-6 col-sm-6 col-md-6 col-xl-6 mx-0 p-0">
-            <b-dropdown class="d-none d-sm-block d-md-block d-lg-block float-right" id="dropdown-options" right variant="light">
-                <template v-slot:button-content>
-                    {{ username }}
-                </template>
-                <b-dropdown-item @click="openHomePage">Home page</b-dropdown-item>
-                <b-dropdown-item @click="logout">Logout</b-dropdown-item>
-            </b-dropdown>
+            <a class="col-6 col-sm-6 col-md-6 col-xl-6 navbar-brand text-left mx-0 p-1" href="#" @click="openHomePage">RutWorking</a>
+            <!-- collapse w-100 order-3 dual-collapse2 -->
+            <div class="col-6 col-sm-6 col-md-6 col-xl-6 mx-0 p-0">
+                <b-dropdown class="d-none d-sm-block d-md-block d-lg-block float-right" id="dropdown-options" right variant="light">
+                    <template v-slot:button-content>
+                        {{ username }}
+                    </template>
+                    <b-dropdown-item @click="openHomePage">Home page</b-dropdown-item>
+                    <b-dropdown-item @click="logout">Logout</b-dropdown-item>
+                </b-dropdown>
 
-            <b-dropdown class="d-sm-none float-right" id="dropdown-options" right variant="light">
-                <template v-slot:button-content>
-                    ...
-                </template>
-                <b-dropdown-header disabled> {{ username }} </b-dropdown-header>
-                <b-dropdown-divider></b-dropdown-divider>
-                <b-dropdown-item @click="openHomePage">Home page</b-dropdown-item>
-                
-                <b-dropdown-item @click="logout">Logout</b-dropdown-item>
-            </b-dropdown>
-        </div>
-    </nav>
+                <b-dropdown class="d-sm-none float-right" id="dropdown-options" right variant="light">
+                    <template v-slot:button-content>
+                        ...
+                    </template>
+                    <b-dropdown-header disabled> {{ username }} </b-dropdown-header>
+                    <b-dropdown-divider></b-dropdown-divider>
+                    <b-dropdown-item @click="openHomePage">Home page</b-dropdown-item>
+                    <b-dropdown-item @click="logout">Logout</b-dropdown-item>
+                </b-dropdown>
+            </div>
+        </nav>
 
         <div class="row mt-5">
             <div class="col-sm bg-light rounded p-5 mx-5 mb-5">
@@ -42,28 +41,35 @@
                 </div>
             </div>
             <div class="col-sm bg-light rounded p-5 mx-5 mb-5">
-                <h2>Access management</h2>
-                <button @click.prevent="changePassword" class="btn btn-primary">Change password</button>
+                <div>
+                    <h2>Access management</h2>
+                </div>
+                <div class="mt-5">
+                    <button @click.prevent="changePassword" class="btn btn-primary">Change password</button>
+                </div>
             </div>
         </div>
     
+        <!--
         <div class="row mt-5">
             <div class="col-sm-6 offset-sm-3 bg-light rounded">
                 <h2>Statistics</h2>
             </div>
         </div>
-
-        <div class="row mt-5">
-            <div class="col-sm-6 offset-sm-3 bg-light rounded">
+        -->
+        
+        <div class="row mb-5 mx-5">
+            <div class="col-12 col-sm-12 col-md-12 col-lg-6 offset-lg-3 bg-light rounded">
                 <div class="row">
-                    <div class="col-6 col-sm-6 col-md-6 col-xl-6 justify-content-center p-3">
+                    <div class="col-12 col-sm-12 col-md-12 col-xl-12 justify-content-center px-3 pt-3 pb-0">
                         <h2>Gamification</h2>
                     </div>
-                    <div v-if="role == 'admin'" class="col-6 col-sm-6 col-md-6 col-xl-6 text-right p-3">
+                </div>
+                <div v-if="role == 'admin'" class="row">
+                    <div class="col-12 col-sm-12 col-md-12 col-xl-12 justify-content-center px-3 pt-0 pb-3">
                         <button @click.prevent="resetRanking" class="btn btn-primary">Reset</button>
                     </div>
                 </div>
-                
                 <div class="row" v-if="scoreReady">
                     <div class="col-md-12 m-0 p-0" v-for="(score, index) in scores" :key="index">
                         <div v-if="indexInScoreArray == index" class=" row scoreTile  m-1 p-0">
@@ -74,12 +80,13 @@
                             <div class="col-sm-6 text-left">{{index+1}})  {{score.email}}</div>
                             <div class="col-sm-6  text-right">Score: {{score.score}}</div>
                         </div>
-                        
                     </div>
                 </div>
             </div>
         </div>
+
         <changePasswordFormModal v-if="this.showModalPasswordChange" @closeModal="closeModalPwd"></changePasswordFormModal>
+    
     </div>
 </template>
 
