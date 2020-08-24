@@ -101,16 +101,17 @@ export default {
         },
         checkDeadline () {
             this.moduleReady = false;
-            var date = new Date(module.deadline);
-            var weekAgo = new Date();
+            var date = new Date(this.module.deadline);
+            var weekLater = new Date();
             var today = new Date();
-            weekAgo.setDate(today.getDate()-7);
-            if (date <= today && date >= weekAgo ) {
+            weekLater.setDate(date.getDate()+7);
+
+            if (date >= today && date <= weekLater ) {
                 this.deadlineColor = 'orange';
             }
-            else if (date < weekAgo) {
+            else if(date < today) {
                 this.deadlineColor = 'red';
-            } else { // fare l'intermedio giallo
+            } else { 
                 this.deadlineColor = 'green';
             }
             this.moduleReady = true;
