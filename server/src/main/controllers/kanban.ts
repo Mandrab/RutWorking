@@ -16,6 +16,8 @@ export async function newTask(request: any, result: any) {
         if (!request.body.name) return result.status(409).send('Task name not found!')
         let status = request.body.status ? States.parse(request.body.status) : null
         let assignee = request.body.assignee ? await User.findByEmail(request.body.assignee) : null
+        if (assignee && !module.developersIDs().some(it => it.toString() === assignee._id().toString()))
+            return result.status(404).send('The specified user is not a developer of the module')
 
         await module.newTask(request.body.name, request.body.description, status, assignee) // TODO parse to avoid code injection or strange things
 
