@@ -79,13 +79,13 @@
                 </div>
             </div>
         </div>
-        <changePwdModal v-if="this.showModalPasswordChange" @closeModal="closeModalPwd"></changePwdModal>
+        <changePasswordFormModal v-if="this.showModalPasswordChange" @closeModal="closeModalPwd"></changePasswordFormModal>
     </div>
 </template>
 
 
 <script>
-import changePwdModal from '../components/ChangePwdModal.vue';
+import changePasswordFormModal from '../components/ChangePasswordFormModal.vue';
 
 export default {
     data () {
@@ -102,7 +102,7 @@ export default {
         }
     },
     components: {
-        changePwdModal
+        changePasswordFormModal
     },
     created () {
         this.init();

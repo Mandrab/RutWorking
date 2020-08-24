@@ -59,11 +59,11 @@ export default {
             this.submitted = true;
             this.$validator.validate().then(valid => {
                 if (valid && (this.newPassword == this.newPassword2)) {
-                    this.changePWD();
+                    this.changePassword();
                 }
             });
         },
-        changePWD() {
+        changePassword() {
             this.changingPWD = true;
             var tokenjson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
             var json = {

@@ -3,13 +3,11 @@
         <taskTile v-for="(tile, index) in stageTasks" :item="tile" :key="index" @updateTask="updateTask"></taskTile>
         <div v-if="stageTasks.length == 0"> Empty </div>
         <button v-if="showButton()" @click="addTask" class="btn btn-primary">+</button>
-        <!--<createTaskModal v-if="showModalFormTask" :insertUser="userInForm" @closeModal="hideModalTaskForm"></createTaskModal>-->
     </div>
 </template>
 
 <script>
 import taskTile from '../components/TaskTile.vue';
-//import createTaskModal from '../components/CreateTaskModal.vue';
 
 export default {
     data () {
@@ -23,8 +21,7 @@ export default {
         }
     },
     components: {
-       taskTile,
-       //createTaskModal
+       taskTile
     },
     computed: {
       

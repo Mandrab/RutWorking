@@ -18,13 +18,13 @@
       </div>
     </div>
 
-    <createTaskModal v-if="showModalFormTask" :insertUser="isUserRequired" @closeModal="hideModalTaskForm"></createTaskModal>
+    <createTaskFormModal v-if="showModalFormTask" :insertUser="isUserRequired" @closeModal="hideModalTaskForm"></createTaskFormModal>
   </div>
 </template>
 
 <script>
 import kanbanStage from '../components/KanbanStage.vue';
-import createTaskModal from '../components/CreateTaskModal.vue';
+import createTaskFormModal from '../components/CreateTaskFormModal.vue';
 import { vueWindowSize } from 'vue-window-size';
 vueWindowSize.init();
 
@@ -51,7 +51,7 @@ export default {
     },
     components:{
       kanbanStage,
-      createTaskModal
+      createTaskFormModal
     },
     computed: {
       
