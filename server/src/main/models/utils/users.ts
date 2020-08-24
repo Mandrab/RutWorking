@@ -20,7 +20,7 @@ mongooseSet('useFindAndModify', false)
  * @param password of the user
  * @returns token binded to account
  */
-export async function login(userEmail: string, password: string): Promise<string> {
+export async function login(userEmail: string, password: string) {
     try {
         let user = await User.findByEmail(userEmail)
 
@@ -29,7 +29,10 @@ export async function login(userEmail: string, password: string): Promise<string
 
         if (!user.isActive()) throw { code: 403, message: 'Unable to login! Account has been deactivated!' }
 
-        return jwtSign({ id: user._id() }, authSecret, { expiresIn: 86400 }) // 24 hours
+        return {
+            accessToken: jwtSign({ id: user._id() }, authSecret, { expiresIn: 86400 }), // 24 hours
+            userRole: (await user.role()).name()
+        }
     } catch (err) {
         if (err.code && err.message) throw err
         throw { code: 500, message: 'Internal error!' }
