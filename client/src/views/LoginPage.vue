@@ -78,16 +78,17 @@ export default {
                 localStorage.removeItem('user');
                 localStorage.setItem('user', JSON.stringify(obj));
                 var user = JSON.parse(localStorage.getItem('user')); //
-                console.log("USER LOGGED-IN");
+                console.log("USER LOGGED-IN"); //
                 console.log(user); //
 
-                // DEBUG, da sistemare
-                if (this.username == "ADMIN_EMAIL") {
+                var role = response.body.userRole;
+                localStorage.removeItem('role');
+                localStorage.setItem('role', role);
+                if (role == "admin") {
                     this.$router.push('/adminpage');
-                    localStorage.setItem('role', "admin");
+                    
                 } else {
                     this.$router.push('/');
-                    localStorage.setItem('role', "user");
                 }
             },(err) => {
                 console.log(err.body);
