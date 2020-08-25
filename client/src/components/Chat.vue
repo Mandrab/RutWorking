@@ -240,7 +240,6 @@ export default {
   },
   mounted(){
     this.loadMessages();
-    //this.messageList.forEach(x=>x.liked = false);
   }
 }
 </script>

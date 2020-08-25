@@ -3,6 +3,9 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light rounded">
         <a class="col-6 col-sm-6 col-md-6 col-xl-6 navbar-brand text-left mx-0 p-1" href="#">RutWorking</a>
         <!-- collapse w-100 order-3 dual-collapse2 -->
+
+        <button @click.prevent="notifications">Campanella</button>
+
         <div class="col-6 col-sm-6 col-md-6 col-xl-6 mx-0 p-0">
             <b-dropdown class="d-none d-sm-block d-md-block d-lg-block float-right" id="dropdown-options" right variant="light">
                 <template v-slot:button-content>
@@ -79,6 +82,8 @@ export default {
             projectDetail: {},
             projectIndex: 0,
             showDropdownMenu: false,
+            messaging: {},
+            USER: { email: 'x@y.z' }
         }
     },
     components: {
@@ -89,6 +94,29 @@ export default {
     },
     created () {
         this.init();
+
+        firebase.initializeApp({
+            apiKey: "AIzaSyBlQXIMxfjDcCQZsVR7d752X2TaXXJrc_M",
+            authDomain: "rutworking-fb3b3.firebaseapp.com",
+            databaseURL: "https://rutworking-fb3b3.firebaseio.com",
+            projectId: "rutworking-fb3b3",
+            storageBucket: "rutworking-fb3b3.appspot.com",
+            messagingSenderId: "936912710994",
+            appId: "1:936912710994:web:6a3c55ae351665f2da5e8b"
+        })
+        this.messaging = firebase.messaging()
+
+        
+
+        this.messaging.onTokenRefresh(async () => {
+            let refreshedToken = await this.messaging.getToken()
+
+            this.USER.firebaseToken = refreshedToken
+            console.log('Token refreshed: ' + refreshedToken)
+        })
+
+        this.messaging.onMessage(payload => { appendMessage(payload.data.sender, payload.data.message) })
+            //this.messageList.forEach(x=>x.liked = false);
     },
     methods: {
         addProject () {
@@ -181,7 +209,12 @@ export default {
         },
         openPersonalArea () {
             this.$router.push('/personalarea');
-        }
+        },
+        notifications() {
+            alert("NOTIFICATIONS");
+                this.messaging.requestPermission().catch(e => alert(e))
+            
+            }
     }
 };
 </script>

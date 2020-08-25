@@ -18,7 +18,6 @@ export async function newMessage(request: any, result: any) {
         await module.newMessage(user, request.body.message) // TODO parse to avoid code injection or strange things
 
         result.status(201).send('Message succesfully created!')
-
         try {
             await sendNotification(
                 Topics.CHAT_MESSAGE,
