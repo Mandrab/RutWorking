@@ -70,13 +70,11 @@ export default {
             });
         },
         openDetail (event1, event2) {
-            alert("indice che passa da project list verso la home: "+event2)
             this.$emit('detail', event1, event2);
         },
         dispatchedPagination: function (toDisplay) {
             this.dispReady = false;
             //finding actual page
-            //alert(this.projectsArr.indexOf(toDisplay[0]))
             var tmp = this.projectsArr.indexOf(toDisplay[0]);
             this.page = tmp;
 

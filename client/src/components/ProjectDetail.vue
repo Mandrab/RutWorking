@@ -89,8 +89,6 @@ export default {
                 this.isProjectChief = false;
             }
 
-            
-            alert("prog: "+ this.project+" mem: "+this.isMember)
             this.checkDeadline();
             this.getProjectInfo();
             this.projectInfo = {'projectName': this.project.name, 'isProjectChief': this.isProjectChief }
@@ -116,7 +114,7 @@ export default {
 
         getProjectInfo() {
             this.projectReady = false;
-            //alert(this.project.name);
+
             if(localStorage.getItem('projectName')){
                 localStorage.removeItem('projectName');
             }
@@ -125,7 +123,7 @@ export default {
             }
 
             localStorage.setItem('projectName', this.project.name); ////////
-            //alert(localStorage.getItem('projectName'));
+
             localStorage.setItem('isProjectChief', this.isProjectChief); ///////
             
             
@@ -136,22 +134,15 @@ export default {
             this.$http.get(localStorage.getItem('path') + '/projects/project/'+localStorage.getItem('projectName'), tokenJson).then(function(response) {
                 console.log(response.body);
                 var res = response.body;
-                try {//è un livello di sicurezza in più, potrebbe non servire tray atch in futuro
-                    res = JSON.parse(res);
-                } catch (error) {console.log(error)}
-                this.projectDetail = res;//lo memorizzo nei data di questa view per poi poterlo passare al componente container (tramite props) che lo userà per creare i componenti tiles
+                
+                this.projectDetail = res;
 
                 this.modulesArr = res.modules;
 
                 console.log(this.modulesArr);
 
-                
-                
-
                 this.projectReady = true;
             }, (err) => {
-                alert("err");
-                alert(err.body);
                 console.log(err.body);
                 this.projectReady = true;
             });
@@ -166,7 +157,6 @@ export default {
             var today = new Date();
             weekLater.setDate(date.getDate()+7);
 
-            //alert(date >= today && date <= weekLater)
             if (date >= today && date <= weekLater ) {
                 this.deadlineColor = 'orange';
             }
@@ -194,7 +184,6 @@ export default {
                     console.log(isModuleChief);
                 }
                 localStorage.setItem('isModuleChief', isModuleChief); ///
-                //alert(isModuleChief);
                 
                 localStorage.setItem('isProjectChief', this.isProjectChief);
                 this.$router.push('/workingarea');

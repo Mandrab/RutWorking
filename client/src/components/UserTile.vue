@@ -68,10 +68,10 @@ export default {
             var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
             
             this.$http.delete(localStorage.getItem('path') + '/user/' + this.item.email, tokenJson).then(function(response) {
-                alert(response.body);
+                console.log(response.body);
                 this.$emit('userBlocked');
             }, (err) => {
-                alert(err.body);
+                console.log(err.body);
             });
         }
     }

@@ -3,9 +3,6 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light rounded">
         <a class="col-6 col-sm-6 col-md-6 col-xl-6 navbar-brand text-left mx-0 p-1" href="#">RutWorking</a>
         <!-- collapse w-100 order-3 dual-collapse2 -->
-
-        <button @click.prevent="notifications">Campanella</button>
-
         <div class="col-6 col-sm-6 col-md-6 col-xl-6 mx-0 p-0">
             <b-dropdown class="d-none d-sm-block d-md-block d-lg-block float-right" id="dropdown-options" right variant="light">
                 <template v-slot:button-content>
@@ -82,8 +79,6 @@ export default {
             projectDetail: {},
             projectIndex: 0,
             showDropdownMenu: false,
-            messaging: {},
-            USER: { email: 'x@y.z' }
         }
     },
     components: {
@@ -94,33 +89,9 @@ export default {
     },
     created () {
         this.init();
-
-        firebase.initializeApp({
-            apiKey: "AIzaSyBlQXIMxfjDcCQZsVR7d752X2TaXXJrc_M",
-            authDomain: "rutworking-fb3b3.firebaseapp.com",
-            databaseURL: "https://rutworking-fb3b3.firebaseio.com",
-            projectId: "rutworking-fb3b3",
-            storageBucket: "rutworking-fb3b3.appspot.com",
-            messagingSenderId: "936912710994",
-            appId: "1:936912710994:web:6a3c55ae351665f2da5e8b"
-        })
-        this.messaging = firebase.messaging()
-
-        
-
-        this.messaging.onTokenRefresh(async () => {
-            let refreshedToken = await this.messaging.getToken()
-
-            this.USER.firebaseToken = refreshedToken
-            console.log('Token refreshed: ' + refreshedToken)
-        })
-
-        this.messaging.onMessage(payload => { appendMessage(payload.data.sender, payload.data.message) })
-            //this.messageList.forEach(x=>x.liked = false);
     },
     methods: {
         addProject () {
-            alert("progetto aggiunto mi accingo a refreshare");
             this.getProjectList();
         },
         deleteProject () {
@@ -136,16 +107,9 @@ export default {
             var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
             //var json = { "user": this.username }//in realta la mail??? attenzione ai nomi
             vm.$http.get(localStorage.getItem('path') + '/projects/0/' + this.username/*, json*/, tokenJson).then(function(response) {
-                console.log("++++++++++++++++++++++++++++++++++++")
                 console.log(response.body);
-                var res = response.body;
-                try {//è un livello di sicurezza in più, potrebbe non servire tray atch in futuro
-                    res = JSON.parse(res);
-                } catch (error) {console.log(error)}
-                this.projectsArr = res;//lo memorizzo nei data di questa view per poi poterlo passare al componente container (tramite props) che lo userà per creare i componenti tiles
+                this.projectsArr = response.body;//lo memorizzo nei data di questa view per poi poterlo passare al componente container (tramite props) che lo userà per creare i componenti tiles
                 //alert("prova");//l'ho messo per farti vedere che viene mostrata l'iconcina di cariacmento(in futuro metteremo una iconcina più bella, ovviamente sarà un componente )
-                console.log(",,,,,,,");
-                console.log(this.projectsArr);
                 
                 for (var i = 0; i < this.projectsArr.length; i++) {
                     if (this.projectsArr[i].modules.length != 0) {
@@ -153,19 +117,14 @@ export default {
                         for (var j = 0; j < this.projectsArr[i].modules.length; j++) {
                             isModulesMember.push(this.projectsArr[i].modules[j].member);
                         }
-                        console.log("èèèèèèèè");
-                        console.log(isModulesMember);
                         this.isMember[i] = isModulesMember;
-                        console.log(this.isMember)
-                    }else{
+                    } else {
                         this.isMember[i] = [];
                     }
                 }
 
-                
                 this.projectsReady = true;
             }, (err) => {
-                alert(err);
                 console.log(err.body);
                 //mostrare errore nel componente contenitore dei tile magari con una scritta rossa
                 this.projectsReady = true;//?????? gestiamo bene la logica
@@ -209,12 +168,7 @@ export default {
         },
         openPersonalArea () {
             this.$router.push('/personalarea');
-        },
-        notifications() {
-            alert("NOTIFICATIONS");
-                this.messaging.requestPermission().catch(e => alert(e))
-            
-            }
+        }
     }
 };
 </script>
