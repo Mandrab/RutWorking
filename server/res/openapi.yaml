@@ -57,6 +57,9 @@ paths:
                 properties:
                   accessToken:
                     type: string
+                  userRole:
+                    type: string
+                    enum: [admin, user]
         401:
           description: Email or password is wrong
         403:
