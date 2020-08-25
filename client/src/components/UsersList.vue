@@ -50,6 +50,25 @@ export default {
         infiniteLoading
     },
     methods: {
+        showUsersList() {
+            this.isUsersListReady = false;
+            this.skipN = 100;
+            var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
+            
+            this.$http.get(localStorage.getItem('path') + '/users', tokenJson).then(function(response) {
+                console.log(response.body);
+                var res = response.body;
+                this.usersArr = res;
+                if (this.usersArr.length == 100) {
+                    this.moreUsers = true;
+                } else {
+                    this.moreUsers = false;
+                }
+                this.isUsersListReady = true;
+            }, (err) => {
+                alert(err.body);
+            });
+        },
         showMoreUsers($state) {
             var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
             
@@ -70,24 +89,6 @@ export default {
                 }
 
                 this.skipN += 100;
-            }, (err) => {
-                alert(err.body);
-            });
-        },
-        showUsersList() {
-            this.isUsersListReady = false;
-            var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
-            
-            this.$http.get(localStorage.getItem('path') + '/users', tokenJson).then(function(response) {
-                console.log(response.body);
-                var res = response.body;
-                this.usersArr = res;
-                if (this.usersArr.length == 100) {
-                    this.moreUsers = true;
-                } else {
-                    this.moreUsers = false;
-                }
-                this.isUsersListReady = true;
             }, (err) => {
                 alert(err.body);
             });
