@@ -71,7 +71,7 @@
                     </div>
                 </div>
                 <div class="row" v-if="scoreReady">
-                    <div class="col-md-12 m-0 p-0" v-for="(score, index) in scores" :key="index">
+                    <div class="col-md-12 m-0 p-0" v-for="(score, index) in firstTenScores" :key="index">
                         <div v-if="indexInScoreArray == index" class=" row scoreTile  m-1 p-0">
                             <div class="col-sm-6 text-left text-primary"> <b>{{index+1}}) ME</b> </div>
                             <div class="col-sm-6  text-right">Score: {{score.score}}</div>
@@ -79,6 +79,12 @@
                         <div v-else class=" row scoreTile  m-1 p-0">
                             <div class="col-sm-6 text-left">{{index+1}})  {{score.email}}</div>
                             <div class="col-sm-6  text-right">Score: {{score.score}}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 m-0 p-0" v-if="indexInScoreArray>10">
+                        <div class=" row scoreTile  m-1 p-0">
+                            <div class="col-sm-6 text-left text-primary"> <b>{{indexInScoreArray+1}}) ME</b> </div>
+                            <div class="col-sm-6  text-right">Score: {{scores[indexInScoreArray].score}}</div>
                         </div>
                     </div>
                 </div>
@@ -105,6 +111,7 @@ export default {
             showModalPasswordChange: false,
             indexInScoreArray: null,
             scores: [],
+            firstTenScores:[],
             scoreReady: false
         }
     },
@@ -152,6 +159,7 @@ export default {
                 }
 
                 this.scores = res;
+                this.firstTenScores = res.slice(0, 10)
                 if(res.length >0){
                     for(var i = 0; i<res.length; i++){
                         if(res[i].email == this.username){
