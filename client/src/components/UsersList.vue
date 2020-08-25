@@ -12,19 +12,21 @@
 		</li>
         <div>
             <ul v-if="isUsersListReady" class="list-group">
-                <userTile v-for="(tile, index) in usersArr" :item="tile" :key="index" :index="index" :page="page" @userBlocked="showUsersList"></userTile>
-		    </ul>
-            <pagination v-if="ready" limit="100" @displayChanged="dispatchedPagination($event)" shown="8" :bottom="true"></pagination>
+                <userTile v-for="(tile, index) in usersArr" :item="tile" :key="index" :index="index" @userBlocked="showUsersList"></userTile>
+                <infinite-loading v-if="moreUsers" @infinite="showMoreUsers($event)"></infinite-loading>
+            </ul>
         </div>
 
         <registerUserFormModal v-if="registerUser" @userAdded="showUsersList" @closeModal="closeUserRegistration"></registerUserFormModal>
 	</div>
 </template>
 
+<script src="https://unpkg.com/vue-infinite-loading@^2/dist/vue-infinite-loading.js"></script>
+
 <script>
 import userTile from '../components/UserTile.vue'
 import registerUserFormModal from '../components/RegisterUserFormModal.vue'
-import pagination from '../components/Pagination.vue'
+import infiniteLoading from 'vue-infinite-loading';
 
 export default {
     data() {
@@ -32,9 +34,8 @@ export default {
             usersArr: [],
             isUsersListReady: false,
             registerUser: false,
-            display: [],
-            page: 0,
-            dispReady: true
+            moreUsers: false,
+            skipN: 100,
         }
     },
     props: {
@@ -46,9 +47,33 @@ export default {
     components: {
         userTile,
         registerUserFormModal,
-        pagination
+        infiniteLoading
     },
     methods: {
+        showMoreUsers($state) {
+            var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
+            
+            this.$http.get(localStorage.getItem('path') + '/users/' + this.skipN, tokenJson).then(function(response) {
+                console.log(response.body);
+                var res = response.body;
+                this.usersArr = this.usersArr.concat(res);
+
+                console.log(this.usersArr); //
+
+                $state.loaded();
+
+                if (res.legnth == 100) {
+                    this.moreUsers = true;
+                } else {
+                    this.moreUsers = false;
+                    $state.complete();
+                }
+
+                this.skipN += 100;
+            }, (err) => {
+                alert(err.body);
+            });
+        },
         showUsersList() {
             this.isUsersListReady = false;
             var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
@@ -57,7 +82,11 @@ export default {
                 console.log(response.body);
                 var res = response.body;
                 this.usersArr = res;
-
+                if (this.usersArr.length == 100) {
+                    this.moreUsers = true;
+                } else {
+                    this.moreUsers = false;
+                }
                 this.isUsersListReady = true;
             }, (err) => {
                 alert(err.body);
@@ -68,26 +97,16 @@ export default {
         },
         closeUserRegistration() {
             this.registerUser = false;
-        },
-        dispatchedPagination: function (toDisplay) {
-            this.dispReady = false;
-            //finding actual page
-            //alert(this.projectsArr.indexOf(toDisplay[0]))
-            var tmp = this.projectsArr.indexOf(toDisplay[0]);
-            this.page = tmp;
-
-
-            //console.log(this.isModulesMember);
-            //console.log(tmp+2)
-            //console.log(this.isModulesMember[tmp+2])
-            //alert(this.isModulesMember[2+tmp])
-            console.log("çççççççççççççççççççççççççç")
-
-
-            this.display = toDisplay;
-
-            this.dispReady = true;
         }
     }
 };
 </script>
+
+<style >
+.scroll-area {
+  position: relative;
+  margin: auto;
+  width: 600px;
+  height: 400px;
+}
+</style>
