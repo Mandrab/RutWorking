@@ -41,9 +41,10 @@ async function signIn() {
     USER.token = body.accessToken
 
     USER.firebaseToken = await messaging.getToken()
+
     await fetch('http://localhost:8080/firebase/notification', {
         headers: {
-            'Authorization': USER.token,
+            'Authorization': 'Bearer ' + USER.token,
             'Content-Type': 'application/json'
         },
         method: 'PUT',

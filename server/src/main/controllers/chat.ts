@@ -3,7 +3,7 @@
  * 
  * @author Paolo Baldini
  */
-import { Project, getMessages as _getMessages, User } from '../models'
+import { Project, getMessages as _getMessages } from '../models'
 import { _admin } from '../config/firebase'
 import { sendNotification, Topics } from './notifications'
 
