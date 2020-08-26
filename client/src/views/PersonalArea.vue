@@ -59,9 +59,9 @@
         -->
         
         <div class="row mb-5 mx-5">
-            <div class="col-12 col-sm-12 col-md-12 col-lg-6 offset-lg-3 bg-light rounded">
+            <div class="col-12 col-sm-12 col-md-12 col-lg-6 offset-lg-3 bg-light rounded pb-3">
                 <div class="row">
-                    <div class="col-12 col-sm-12 col-md-12 col-xl-12 justify-content-center px-3 pt-3 pb-0">
+                    <div class="col-12 col-sm-12 col-md-12 col-xl-12 justify-content-center px-5 pt-3 pb-0">
                         <h2>Gamification</h2>
                     </div>
                 </div>
