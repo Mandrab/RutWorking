@@ -14,7 +14,7 @@
                 <div style="font-size: 14px; line-height:normal;"  class="col-12 col-sm-12 col-md-12 col-xl-12">
                     {{ item.taskDescription }}
                 </div>
-                <button v-if="isModuleChief" @click="deleteTask" class="deletebtn">x</button>
+                <button v-if="isModuleChief" @click="deleteTask" class="deletebtn"> <font-awesome-icon icon="times" size="xs" /> </button>
             </div>
         </div>
         <div v-if="isRightArrowDisabled" class="col-1 p-0"></div>
@@ -210,7 +210,6 @@ export default {
     width: 15px;
     padding: 0px;
     margin: 0px;
-    font-size: auto;
     background-color: darkred;
 }
 

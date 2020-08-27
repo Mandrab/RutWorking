@@ -6,7 +6,7 @@
             <div class="col-6 col-sm-6 col-md-6 col-xl-6 mx-0 p-0">
                 <b-dropdown class="d-none d-sm-block d-md-block d-lg-block float-right" id="dropdown-options" right variant="light">
                     <template v-slot:button-content>
-                        {{ username }}
+                        {{ username }} <font-awesome-icon icon="user" />
                     </template>
                     <b-dropdown-item @click="openHomePage">Home page</b-dropdown-item>
                     <b-dropdown-item @click="logout">Logout</b-dropdown-item>
