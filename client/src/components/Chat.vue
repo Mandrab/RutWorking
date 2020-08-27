@@ -47,7 +47,7 @@
 
 <script>
 
-import availableColors from './colors'
+import availableColors from '../assets/colors'
 import { messaging } from '../../firebase'
 
 export default {
