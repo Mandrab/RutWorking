@@ -3,7 +3,7 @@
         <li v-if="isModuleMember" class="list-group-item" id="member" @click="openModule">
             <div>
                 <div class="row">
-                     <div v-if="ready" style="position: absolute; top:0px; right:0px; font-size: 12px;" v-bind:style="{ color: deadlineColor }">
+                     <div v-if="ready" style="position: absolute; top: 15px; right: 15px; font-size: 12px;" v-bind:style="{ color: deadlineColor }">
                         {{ new Date(item.deadline).getDate() }}/{{ new Date(item.deadline).getMonth() + 1 }}/{{ new Date(item.deadline).getFullYear() }}
                     </div>
                     <div class="col-12 text-left font-weight-bold h5 pb-0 mb-0">
@@ -20,12 +20,12 @@
                         <div v-if="isModuleChief">
                             <b-dropdown size="sm" id="dropdown-options" right class="m-2">
                                 <template v-slot:button-content>
-                                    ...
+                                    <font-awesome-icon icon="ellipsis-h"/>
                                 </template>
-                                <b-dropdown-item v-if="isModuleChief && isUserCreationHide" @click.stop="expandUserCreation">Add user</b-dropdown-item>
-                                <b-dropdown-item v-if="isModuleChief && !isUserCreationHide" @click.stop="reduceUserCreation">Close user</b-dropdown-item>
+                                <b-dropdown-item v-if="isModuleChief && isUserCreationHide" @click.stop="expandUserCreation"><font-awesome-icon icon="user-plus"/> Add user</b-dropdown-item>
+                                <b-dropdown-item v-if="isModuleChief && !isUserCreationHide" @click.stop="reduceUserCreation"><font-awesome-icon icon="times"/> Close user</b-dropdown-item>
                                 <b-dropdown-divider></b-dropdown-divider>
-                                <b-dropdown-item v-if="isModuleChief" @click.stop="deleteModule" class="bg-danger">Delete module</b-dropdown-item>
+                                <b-dropdown-item v-if="isModuleChief" @click.stop="deleteModule" class="bg-danger"><font-awesome-icon icon="trash-alt"/> Delete module</b-dropdown-item>
                             </b-dropdown>
                         </div>
                     </div>
@@ -57,7 +57,7 @@
         <li v-if="!isModuleMember" class="list-group-item">
             <div>
                 <div class="row">
-                    <div v-if="ready" class="text-secondary" style="position: absolute; top:0px; right:0px; font-size: 12px;">
+                    <div v-if="ready" class="text-secondary" style="position: absolute; top: 15px; right: 15px; font-size: 12px;">
                         {{ new Date(item.deadline).getDate() }}/{{ new Date(item.deadline).getMonth() + 1 }}/{{ new Date(item.deadline).getFullYear() }}
                     </div>
                     <div class="col-12 text-left font-weight-bold h5 pb-0 mb-0 text-secondary">

@@ -1,6 +1,6 @@
 <template>
     <div class="col-sm-12 offset-sm-0 detail-project">
-        <div class="projectInfo" v-if="projectReady">
+        <div v-if="projectReady">
             <div v-if="isProjectChief" class="row">
                 <div class="col-12 col-sm-9 col-md-9 col-xl-9 text-left pl-0">
                     <h2>{{ project.name }}</h2>
@@ -9,7 +9,7 @@
                     Deadline: {{ new Date(project.deadline).getDate() }}/{{ new Date(project.deadline).getMonth() + 1}}/{{ new Date(project.deadline).getFullYear() }}
                 </div>
                 <div class="col-2 col-sm-1 col-md-1 col-xl-1">
-                    <button class="btn btn-primary" @click="showModalForm">+</button>
+                    <button class="btn btn-primary" @click="showModalForm"><font-awesome-icon icon="plus"/></button>
                 </div>
             </div>
 
@@ -195,7 +195,6 @@ export default {
 </script>
 
 <style scoped>
-
 
 @media (max-width: 576px) {
     .detail-project {

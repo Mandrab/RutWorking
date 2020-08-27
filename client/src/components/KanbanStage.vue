@@ -2,7 +2,7 @@
     <div v-if="ready" class="container pt-3">
         <taskTile v-for="(tile, index) in stageTasks" :item="tile" :key="index" @updateTask="updateTask"></taskTile>
         <!--<div v-if="stageTasks.length == 0"> Empty </div>-->
-        <button v-if="showButton()" @click="addTask" class="btn btn-primary"><font-awesome-icon icon="plus" /></button>
+        <button v-if="showButton()" @click="addTask" class="btn btn-primary"><font-awesome-icon icon="plus"/></button>
     </div>
 </template>
 
