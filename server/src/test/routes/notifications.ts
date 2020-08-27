@@ -1,3 +1,9 @@
+/**
+ * Tests notifications routes
+ * 
+ * @author Paolo Baldini
+ */
+import { describe } from 'mocha'
 import { User, register, Roles } from '../../main/models'
 import { secret } from '../../main/config/auth'
 import { config as dbConfig } from '../../main/config/db'
@@ -10,9 +16,7 @@ require('../../test-config/firebase')
 
 const request = require('supertest')('http://localhost:8080')
 
-const USER: any = {
-    email: 'user@user.user'
-}
+const USER: any = { email: 'user@user.user' }
 
 describe('test notifications\' operations', function () {
     before(async function () {

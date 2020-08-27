@@ -1,15 +1,18 @@
 /**
- * Tests project routes
+ * Tests kanban routes
  * 
  * @author Paolo Baldini
  */
+import { describe } from 'mocha'
+import assert from 'assert'
 import { connect } from 'mongoose'
 import { Roles, Project } from '../../main/models'
 import { States } from '../../main/models/db'
 import { config as dbConfig } from '../../main/config/db'
-import { TestProjectBuilders } from './utils/TestProject'
-import { TestUser } from './utils/TestUser'
-import { TestClass } from './utils/TestClass'
+import { TestProjectBuilders } from '../utils/TestProject'
+import { TestUser } from '../utils/TestUser'
+import { TestClass } from '../utils/TestClass'
+import { equals } from '../utils/Collection'
 
 const request = require('supertest')('http://localhost:8080')
 
@@ -143,8 +146,8 @@ describe('test kanbans\' operations', function() {
             .send({ newState: 'IN-PROGRESS', assignee: RANDOM_USER.email }).expect(409)
 
         await module.refresh()
-        let items = module.kanbanItems().filter(it => it._id().toString() === task1ID.toString())
-        if (items[0].assigneeID()) throw 'Task assignee present!'
+        let items = module.kanbanItems().filter(it => equals(it._id(), task1ID))
+        assert(!items[0].assigneeID(), 'Task assignee present!')
 
         // valid token chief
         await request.put('/projects/' + PROJECTS['update'].name + '/modules/' + PROJECTS['update'].modules[0].name
@@ -156,15 +159,15 @@ describe('test kanbans\' operations', function() {
             + '/kanban/' + task2ID).set({ 'Authorization': developerToken })
             .send({ newState: 'DONE', assignee: DEVELOPER.email }).expect(200)
         await module.refresh()
-        items = module.kanbanItems().filter(it => it._id().toString() === task1ID.toString())
-        if (!items[0].assigneeID()) throw 'Task assignee not present!'
+        items = module.kanbanItems().filter(it => equals(it._id(), task1ID))
+        assert(items[0].assigneeID(), 'Task assignee not present!')
 
         // TO-DO does not need an assignee
         await request.put('/projects/' + PROJECTS['update'].name + '/modules/' + PROJECTS['update'].modules[0].name
             + '/kanban/' + task1ID).set({ 'Authorization': chiefToken }).send({ newState: 'TO-DO' }).expect(200)
         await module.refresh()
-        items = module.kanbanItems().filter(it => it._id().toString() === task1ID.toString())
-        if (items[0].status() !== States.TODO || items[0].assigneeID()) throw 'Incorrect task!'
+        items = module.kanbanItems().filter(it => equals(it._id(), task1ID))
+        assert(items[0].status() === States.TODO && !items[0].assigneeID(), 'Incorrect task!')
 
         return Promise.resolve()
     })
@@ -209,8 +212,8 @@ describe('test kanbans\' operations', function() {
             + '/kanban/' + taskID).set({ 'Authorization': chiefToken }).expect(200)
         
         await module.refresh()
-        if (module.kanbanItems().length != 1) throw 'Error deleting task!'
-        if (module.kanbanItems()[0]._id() === taskID) throw 'Deleted wrong task!'
+        assert(module.kanbanItems().length === 1, 'Error deleting task!')
+        assert(module.kanbanItems()[0]._id() !== taskID, 'Deleted wrong task!')
 
         return Promise.resolve()
     })
@@ -251,12 +254,11 @@ describe('test kanbans\' operations', function() {
             + '/kanban').set({ 'Authorization': developerToken }).expect(200)
 
         let initialTasksN = res.body.length
-        if (initialTasksN !== 2) throw 'Wrong number of tasks returned'
+        assert(initialTasksN === 2, 'Wrong number of tasks returned')
 
-        if (!res.body.some((it: { name: string }) => it.name === 'qwerty')
-            || !res.body.some((it: { name: string }) => it.name === 'asd')) throw 'A task not appear in return!'
-        if ((res.body[0].description && res.body[0].description !== '')
-            || (res.body[1].description && res.body[1].description !== '')) throw 'A description not match!'
+        assert(res.body.some((it: { name: string }) => it.name === 'qwerty')
+        && res.body.some((it: { name: string }) => it.name === 'asd'), 'A task not appear in return!')
+        assert(res.body[0].taskDescription === '' || res.body[1].taskDescription === '', 'A description not match!')
 
         await request.get('/projects/' + PROJECTS['get'].name + '/modules/' + PROJECTS['get'].modules[0].name
             + '/kanban').set({ 'Authorization': chiefToken }).expect(200)
@@ -264,12 +266,12 @@ describe('test kanbans\' operations', function() {
         // skip first
         res = await request.get('/projects/' + PROJECTS['get'].name + '/modules/' + PROJECTS['get'].modules[0].name
             + '/kanban/1').set({ 'Authorization': developerToken }).expect(200)
-        if (res.body.length !== initialTasksN -1) throw 'Wrong number of tasks returned'
+        assert(res.body.length === initialTasksN -1, 'Wrong number of tasks returned')
 
         // filter user
         res = await request.get('/projects/' + PROJECTS['get'].name + '/modules/' + PROJECTS['get'].modules[0].name
             + '/kanban/0/' + DEVELOPER.email).set({ 'Authorization': developerToken }).expect(200)
-        if (res.body.length !== 0) throw 'Wrong number of tasks returned'
+        assert(res.body.length === 0, 'Wrong number of tasks returned')
 
         await module.updateTaskStatus(taskID, States.TODO, States.IN_PROGRESS, (await DEVELOPER.getUser())._id(),
             (await DEVELOPER.getUser())._id())
@@ -277,7 +279,7 @@ describe('test kanbans\' operations', function() {
         // filter user
         res = await request.get('/projects/' + PROJECTS['get'].name + '/modules/' + PROJECTS['get'].modules[0].name
             + '/kanban/0/' + DEVELOPER.email).set({ 'Authorization': developerToken }).expect(200)
-        if (res.body.length !== 1) throw 'Wrong number of tasks returned'
+        assert(res.body.length === 1, 'Wrong number of tasks returned')
 
         return Promise.resolve()
     })

@@ -1,7 +1,7 @@
-import { DBProject } from '../../../main/models/db'
+import { DBProject } from '../../main/models/db'
 import { TestUser } from './TestUser'
 import { TestModule } from './TestModule'
-import { Roles } from '../../../main/models'
+import { Roles } from '../../main/models'
 
 /**
  * Class to simplify projects use on tests.
