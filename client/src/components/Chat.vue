@@ -78,7 +78,8 @@ export default {
   created() {
     this.init();
     messaging.onMessage(payload => {
-      console.log("MESSAGE PAYLOAD: " + payload)
+      console.log("MESSAGE PAYLOAD: ")
+      console.log(payload)
       alert(payload.data.sender, payload.data.message)
     });
   },
