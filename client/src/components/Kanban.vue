@@ -91,24 +91,13 @@ export default {
             var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
             this.$http.get(localStorage.getItem('path') + '/projects/' + this.module.project + '/modules/' + this.module.name + '/kanban', tokenJson).then(function(response) {
                 console.log(response.body);
-                var res = response.body;
-                try {//è un livello di sicurezza in più, potrebbe non servire tray atch in futuro
-                    res = JSON.parse(res);
-                } catch (error) {console.log(error)}
-                console.log(res);
-                this.tasksArr = res;
+                this.tasksArr = response.body;
 
                 this.groupTasksByStage();
-                
-
-                console.log("ULTIMOOOO");
-                console.log(this.groupedTasks);
 
                 this.areTasksReady = true;
 
             }, (err) => {
-                alert("err");
-                alert(err.body);
                 console.log(err.body);
             });
         },

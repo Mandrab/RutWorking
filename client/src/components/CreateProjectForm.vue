@@ -4,18 +4,18 @@
         <form @submit.prevent="handleSubmit">
             <div class="form-group">
                 <label for="name">Name</label>
-                <input type="text" v-model="project.projectName" v-validate="'required'" name="name" class="form-control" :class="{ 'is-invalid': submitted && errors.has('name') }" />
-                <div v-if="submitted && errors.has('name')" class="invalid-feedback">{{ errors.first('name') }}</div>
+                <input type="text" v-model="project.projectName" name="name" class="form-control" :class="{ 'is-invalid': submitted && !project.projectName }" />
+                <div v-show="submitted && !project.projectName" class="invalid-feedback">Name is required</div>
             </div>
             <div class="form-group">
                 <label for="description">Description</label>
-                <textarea rows=5 columns=10 v-model="project.description" v-validate="'required'" name="description" class="form-control" :class="{ 'is-invalid': submitted && errors.has('description') }" />
-                <div v-if="submitted && errors.has('description')" class="invalid-feedback">{{ errors.first('description') }}</div>
+                <textarea rows=5 columns=10 v-model="project.description" name="description" class="form-control" :class="{ 'is-invalid': submitted && !project.description }" />
+                <div v-show="submitted && !project.description" class="invalid-feedback">Description is required</div>
             </div>
             <div class="form-group">
                 <label for="deadline">Deadline</label>
-                <input type="date" v-model="deadline" v-validate="'required'" name="deadline" class="form-control" :class="{ 'is-invalid': submitted && errors.has('deadline') }" />
-                <div v-if="submitted && errors.has('deadline')" class="invalid-feedback">{{ errors.first('deadline') }}</div>
+                <input type="date" v-model="deadline" name="deadline" class="form-control" :class="{ 'is-invalid': submitted && !deadline }" />
+                <div v-show="submitted && !deadline" class="invalid-feedback">Deadline is required</div>
             </div>
             <div class="form-group">
                 <button @click="handleSubmit" class="btn btn-primary" :disabled="creating">Add Project</button>
@@ -23,10 +23,13 @@
                 <button @click="closeForm" class="btn btn-link">Cancel</button>
             </div>
         </form>
+
+        <simpleModal v-if="showModal" :title="title" :message="message" @closeModal="closeModal"></simpleModal>
     </div>
 </template>
 
 <script>
+import simpleModal from './SimpleModal.vue'
 
 export default {
     data () {
@@ -38,61 +41,57 @@ export default {
             deadline: '',
             submitted: false,
             creating: false,
+            showModal: false,
+            title: 'Choose a date',
+            message: ''
         }
+    },
+    components: {
+        simpleModal
     },
     watch: {
         deadline: function () {
             var date = new Date(this.deadline);
             var today = new Date();
-            if (date<today) {
+            if (date < today) {
                 this.deadline = '';
-                alert("Invalid date!");
+                this.message = "Invalid date!";
+                this.showModal = true;
             }
         }
     },
     computed: {
-        
     },
     methods: {
         handleSubmit() {
             this.submitted = true;
-            this.$validator.validate().then(valid => {
-                if (valid) {
-                    this.addProject(this.project);
-                }
-            });
-           //this.addProject(this.project);
+            if (this.project.projectName && this.project.description && this.deadline) {
+                this.addProject(this.project);
+            }
         },
         addProject (project) {
             this.creating = true;
-            var vm = this;
             var tokenjson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
             var json = {
                 "description": this.project.description,
                 "deadline": this.deadline.toString(),
             }
-            vm.$http.post(localStorage.getItem('path') + '/projects/project/' + project.projectName, json, tokenjson).then(function(response) {
+            this.$http.post(localStorage.getItem('path') + '/projects/project/' + project.projectName, json, tokenjson).then(function(response) {
                 console.log(response.body);
-                console.log(this.creating);
-                //mando un emit al padre con il progetto appena creato
-                //var myEmail = localStorage.getItem
-                /*var project =   {
-                                    "name": project.projectName,
-                                    "chief": "prova@gmail.com",
-                                    "modules": [],
-                                    "description": "descrizione progetto 4",
-                                    "deadline": "2020-09-27T00:00:00.000Z"
-                                }*/
+
                 this.$emit('projectAdded');
                 this.closeForm();
             }, (err) => {
-                alert(err.body);
+                console.log(err.body);
                 this.creating = false;
             });
         },
         closeForm () {
             this.creating = false;
-            this.$emit('hide'); // notifico il padre
+            this.$emit('hide');
+        },
+        closeModal() {
+            this.showModal = false;
         }
     }
 };

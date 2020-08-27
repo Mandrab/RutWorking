@@ -17,8 +17,14 @@
     "test:linux:darwin": "npm run-script run & sleep 7 && mocha --timeout 10000 build/test/**/*.js",
 
     "test-notifications": "run-script-os",
+<<<<<<< HEAD
+    "test-notifications:win32": "firebase login; firebase serve --only hosting",
+    "test-notifications:linux:darwin": "npm run-script run & echo $PWD; cd $PWD/src/test-pages/notifications/ && node ./before.js && firebase serve --only hosting",
+    
+=======
     "test-notifications:win32": "echo todo",
     "test-notifications:linux:darwin": "npm run-script run & cd ./src/test-pages/notifications/ && node ./before.js && firebase login; firebase serve --only hosting"
+>>>>>>> 5d0f9d40c8643fab2209f084f7662ca235a68adc
   },
   "repository": {
     "type": "git",

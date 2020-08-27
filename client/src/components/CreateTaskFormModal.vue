@@ -16,24 +16,19 @@
                     <form @submit.prevent="handleSubmit">
                       <div class="form-group">
                           <label for="name">Name</label>
-                          <input type="text" v-model="t.taskName" v-validate="'required'" name="name" class="form-control" :class="{ 'is-invalid': submitted && errors.has('name') }" />
-                          <div v-if="submitted && errors.has('name')" class="invalid-feedback">{{ errors.first('name') }}</div>
+                          <input type="text" v-model="t.taskName" name="name" class="form-control" :class="{ 'is-invalid': submitted && !t.taskName }" />
+                          <div v-show="submitted && !t.taskName" class="invalid-feedback">Name is required</div>
                       </div>
                       <div class="form-group">
                           <label for="description">Description</label>
-                          <textarea rows=5 columns=10 v-model="t.description" v-validate="'required'" name="description" class="form-control" :class="{ 'is-invalid': submitted && errors.has('description') }" />
-                          <div v-if="submitted && errors.has('description')" class="invalid-feedback">{{ errors.first('description') }}</div>
+                          <textarea rows=5 columns=10 v-model="t.description" name="description" class="form-control" :class="{ 'is-invalid': submitted && !t.description }" />
+                          <div v-show="submitted && !t.description" class="invalid-feedback">Description is required</div>
                       </div>
                       <div v-if="insertUser" class="form-group">
                           <label for="assignee">Assignee</label>
-                          <input type="text" v-model="t.assignee" v-validate="'required'" name="assignee" class="form-control" :class="{ 'is-invalid': submitted && errors.has('assignee') }" />
-                          <div v-if="submitted && errors.has('assignee')" class="invalid-feedback">{{ errors.first('assignee') }}</div>
+                          <input type="text" v-model="t.assignee" name="assignee" class="form-control" :class="{ 'is-invalid': submitted && !t.assignee }" />
+                          <div v-show="submitted && !t.assignee" class="invalid-feedback">Assignee is required</div>
                       </div>
-                      <!--<div class="form-group">
-                          <label for="deadline">Deadline</label>
-                          <input type="date" v-model="deadline" v-validate="'required'" name="deadline" class="form-control" :class="{ 'is-invalid': submitted && errors.has('deadline') }" />
-                          <div v-if="submitted && errors.has('deadline')" class="invalid-feedback">{{ errors.first('deadline') }}</div>
-                      </div>-->
                       <div class="form-group">
                           <button @click.prevent="handleSubmit" class="btn btn-primary" :disabled="creating">Confirm</button>
                           <img v-show="creating" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
@@ -71,28 +66,18 @@ export default {
     watch: {
     },
     mounted() {
-        alert(this.insertUser)
-        
         this.projectName = localStorage.getItem('projectName');
         this.moduleName = localStorage.getItem('moduleName');
-        //qui sotto usa il metodo sbagliato per settarli 
-        //this.isProjectChief = localStorage.getItem('isProjectChief');
-        //this.isModuleChief = localStorage.getItem('isModuleChief');
-
-
     },
     methods: {
         handleSubmit() {
             this.submitted = true;
-            this.$validator.validate().then(valid => {
-                if (valid) {
-                    this.addTask();
-                }
-            });
+            if (this.t.taskName && this.t.description && ((this.insertUser && this.t.assignee) || !this.insertUser)) {
+                this.addTask();
+            }
         },
         addTask() {
             this.creating = true;
-            var vm = this;
             var tokenjson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
             var stat ;
             if(this.insertUser){stat = "ASSIGNED"}else{stat = "TO-DO"}
@@ -105,14 +90,13 @@ export default {
             }
             console.log(localStorage.getItem('path') + '/projects/'+this.projectName+'/modules/' + this.moduleName + "/kanban" );
 
-            vm.$http.post(localStorage.getItem('path') + '/projects/'+this.projectName+'/modules/' + this.moduleName + "/kanban" , json, tokenjson).then(function(response) {
-                alert(response.body)
+            this.$http.post(localStorage.getItem('path') + '/projects/'+this.projectName+'/modules/' + this.moduleName + "/kanban" , json, tokenjson).then(function(response) {
                 console.log(response.body);
                 console.log(this.creating);
                 this.$emit('taskAdded');
                 this.closeForm();
             }, (err) => {
-                alert(err.body);
+                console.log(err.body);
                 this.creating = false;
             });
         },

@@ -91,9 +91,6 @@ export default {
             }
 
             this.taskReady = true;
-            /*setTimeout(() => {
-                alert(this.isModuleChief);
-            }, 2000);*/
         },
         moveToNextStage () {
             var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
@@ -114,7 +111,7 @@ export default {
                 default:
                     nextStage = this.item.status;
             }
-            //alert(this.item.assignee);
+
             // se il task non e' assegnato a nessuno, l'assegnatario diventa colui che preme il pulsante "right" (passando da TO-DO a ASSIGNED)
             if (this.item.assignee == null) {
                 this.item.assignee = this.username;
@@ -123,23 +120,14 @@ export default {
                 "newState": nextStage,
                 "assignee": this.item.assignee
             }
-            //alert(this.item.assignee);
+
             this.$http.put(localStorage.getItem('path') + '/projects/' + this.projectName + '/modules/' + this.moduleName + '/kanban/' + this.item.id, json, tokenJson).then(function(response) {
                 console.log(response.body);
-                var res = response.body;
-                try {//è un livello di sicurezza in più, potrebbe non servire tray atch in futuro
-                    res = JSON.parse(res);
-                } catch (error) {console.log(error)}
-                console.log(res);
-
-                console.log("INIZIO");
+                
                 this.$emit('updateTask');
 
             }, (err) => {
-                alert("err");
-                alert(err.body);
                 console.log(err.body);
-                
             });
         },
         moveToPreviousStage () {
@@ -159,33 +147,19 @@ export default {
                     nextStage = this.item.status;
             }
             if (nextStage == "TO-DO") {
-                //alert(this.item.assignee);
                 this.item.assignee = null;
-                //alert(this.item.assignee);
-                console.log("oooooooooo")
-                console.log(this.item.assignee);
             }
             var json = {
                 "newState": nextStage,
                 "assignee": this.item.assignee
             }
-            //alert(this.item.assignee);
             this.$http.put(localStorage.getItem('path') + '/projects/' + this.projectName + '/modules/' + this.moduleName + '/kanban/' + this.item.id, json, tokenJson).then(function(response) {
                 console.log(response.body);
-                var res = response.body;
-                try {//è un livello di sicurezza in più, potrebbe non servire tray atch in futuro
-                    res = JSON.parse(res);
-                } catch (error) {console.log(error)}
-                console.log(res);
-
-                console.log("INIZIO");
+ 
                 this.$emit('updateTask');
 
             }, (err) => {
-                alert("err");
-                alert(err.body);
                 console.log(err.body);
-                
             });
 
         },
@@ -194,16 +168,9 @@ export default {
 
             this.$http.delete(localStorage.getItem('path') + '/projects/' + this.projectName + '/modules/' + this.moduleName + '/kanban/' + this.item.id, tokenJson).then(function(response) {
                 console.log(response.body);
-                var res = response.body;
-                try {//è un livello di sicurezza in più, potrebbe non servire tray atch in futuro
-                    res = JSON.parse(res);
-                } catch (error) {console.log(error)}
-                console.log(res);
 
                 this.$emit('updateTask');
             }, (err) => {
-                alert("err");
-                alert(err.body);
                 console.log(err.body);
             }); 
         }

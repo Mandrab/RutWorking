@@ -59,9 +59,9 @@
         -->
         
         <div class="row mb-5 mx-5">
-            <div class="col-12 col-sm-12 col-md-12 col-lg-6 offset-lg-3 bg-light rounded">
+            <div class="col-12 col-sm-12 col-md-12 col-lg-6 offset-lg-3 bg-light rounded pb-3">
                 <div class="row">
-                    <div class="col-12 col-sm-12 col-md-12 col-xl-12 justify-content-center px-3 pt-3 pb-0">
+                    <div class="col-12 col-sm-12 col-md-12 col-xl-12 justify-content-center px-5 pt-3 pb-0">
                         <h2>Gamification</h2>
                     </div>
                 </div>
@@ -71,7 +71,7 @@
                     </div>
                 </div>
                 <div class="row" v-if="scoreReady">
-                    <div class="col-md-12 m-0 p-0" v-for="(score, index) in scores" :key="index">
+                    <div class="col-md-12 m-0 p-0" v-for="(score, index) in firstTenScores" :key="index">
                         <div v-if="indexInScoreArray == index" class=" row scoreTile  m-1 p-0">
                             <div class="col-sm-6 text-left text-primary"> <b>{{index+1}}) ME</b> </div>
                             <div class="col-sm-6  text-right">Score: {{score.score}}</div>
@@ -81,18 +81,26 @@
                             <div class="col-sm-6  text-right">Score: {{score.score}}</div>
                         </div>
                     </div>
+                    <div class="col-md-12 m-0 p-0" v-if="indexInScoreArray>10">
+                        <div class=" row scoreTile  m-1 p-0">
+                            <div class="col-sm-6 text-left text-primary"> <b>{{indexInScoreArray+1}}) ME</b> </div>
+                            <div class="col-sm-6  text-right">Score: {{scores[indexInScoreArray].score}}</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <changePasswordFormModal v-if="this.showModalPasswordChange" @closeModal="closeModalPwd"></changePasswordFormModal>
     
+        <simpleModal v-if="showModal" :title="title" :message="message" @closeModal="closeModal"></simpleModal>
     </div>
 </template>
 
 
 <script>
 import changePasswordFormModal from '../components/ChangePasswordFormModal.vue';
+import simpleModal from '../components/SimpleModal.vue'
 
 export default {
     data () {
@@ -105,11 +113,16 @@ export default {
             showModalPasswordChange: false,
             indexInScoreArray: null,
             scores: [],
-            scoreReady: false
+            firstTenScores:[],
+            scoreReady: false,
+            showModal: false,
+            title: 'Users ranking',
+            message: ''
         }
     },
     components: {
-        changePasswordFormModal
+        changePasswordFormModal,
+        simpleModal
     },
     created () {
         this.init();
@@ -119,19 +132,14 @@ export default {
             this.username = JSON.parse(localStorage.getItem('user')).email;
 
             var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
-            this.$http.get(localStorage.getItem('path') + '/user/' + this.username/*, json*/, tokenJson).then(function(response) {
+            this.$http.get(localStorage.getItem('path') + '/user/' + this.username, tokenJson).then(function(response) {
                 console.log(response.body);
                 var res = response.body;
-                try {//è un livello di sicurezza in più, potrebbe non servire try catch in futuro
-                    res = JSON.parse(res);
-                } catch (error) {
-                    console.log(error);
-                }
+                
                 this.name = res.name;
                 this.surname = res.surname;
                 this.role = res.role;
             }, (err) => {
-                alert(err);
                 console.log(err.body);
                 //mostrare errore nel componente contenitore dei tile magari con una scritta rossa
             });
@@ -145,29 +153,17 @@ export default {
                 this.scoreReady= false;
                 console.log(response.body);
                 var res = response.body;
-                try {//è un livello di sicurezza in più, potrebbe non servire try catch in futuro
-                    res = JSON.parse(res);
-                } catch (error) {
-                    console.log(error);
-                }
-
                 this.scores = res;
+                this.firstTenScores = res.slice(0, 10)
                 if(res.length >0){
                     for(var i = 0; i<res.length; i++){
                         if(res[i].email == this.username){
                             this.indexInScoreArray = i;
-                            alert(this.indexInScoreArray)
-                            alert(res[i].email);
                         }
                     }
                 }
-                if(this.indexInScoreArray == null){
-                    alert("non in lista")
-                }
                 this.scoreReady= true;
-
             }, (err) => {
-                alert(err);
                 console.log(err.body);
                 //mostrare errore nel componente contenitore dei tile magari con una scritta rossa
             });
@@ -183,11 +179,15 @@ export default {
 
             this.$http.put(localStorage.getItem('path') + '/contest/reset', {}, tokenjson).then(function(response) {
                 console.log(response.body);
-                alert("General ranking of users successfully reset!");
+                this.message = 'General ranking of users successfully reset!';
+                this.showModal = true;
                 this.getContestRanking();
             }, (err) => {
-                alert(err.body);
+                console.log(err.body);
             });
+        },
+        closeModal() {
+            this.showModal = false;
         },
         openHomePage () {
             if (this.role == "user") {

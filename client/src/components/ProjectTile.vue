@@ -39,7 +39,6 @@ export default {
         }
         this.checkDeadline();
         
-        //alert(this.isMember);
         console.log(this.isMember)
         this.isModulesMember = this.isMember;
         this.projectIndexInList = this.index;
@@ -83,24 +82,16 @@ export default {
             this.ready = true;
         },
         open () {
-            alert("indice premuto globale: "+ this.projectIndexInList+this.page)
-            this.$emit('openDetail', this.item, this.projectIndexInList+this.page);
+            this.$emit('openDetail', this.item, this.projectIndexInList + this.page);
         },
         deleteProject () {
             var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
 
             this.$http.delete(localStorage.getItem('path') + '/projects/project/' + this.item.name, tokenJson).then(function(response) {
                 console.log(response.body);
-                var res = response.body;
-                try {//è un livello di sicurezza in più, potrebbe non servire tray atch in futuro
-                    res = JSON.parse(res);
-                } catch (error) {console.log(error)}
-                console.log(res);
 
                 this.$emit('projectDeleted');
             }, (err) => {
-                alert("err");
-                alert(err.body);
                 console.log(err.body);
             }); 
         }

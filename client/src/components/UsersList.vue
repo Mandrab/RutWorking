@@ -66,7 +66,7 @@ export default {
                 }
                 this.isUsersListReady = true;
             }, (err) => {
-                alert(err.body);
+                console.log(err.body);
             });
         },
         showMoreUsers($state) {
@@ -90,7 +90,7 @@ export default {
 
                 this.skipN += 100;
             }, (err) => {
-                alert(err.body);
+                console.log(err.body);
             });
         },
         openUserRegistration() {

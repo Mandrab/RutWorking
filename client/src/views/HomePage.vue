@@ -89,11 +89,9 @@ export default {
     },
     created () {
         this.init();
-            //this.messageList.forEach(x=>x.liked = false);
     },
     methods: {
         addProject () {
-            alert("progetto aggiunto mi accingo a refreshare");
             this.getProjectList();
         },
         deleteProject () {
@@ -109,16 +107,9 @@ export default {
             var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
             //var json = { "user": this.username }//in realta la mail??? attenzione ai nomi
             vm.$http.get(localStorage.getItem('path') + '/projects/0/' + this.username/*, json*/, tokenJson).then(function(response) {
-                console.log("++++++++++++++++++++++++++++++++++++")
                 console.log(response.body);
-                var res = response.body;
-                try {//è un livello di sicurezza in più, potrebbe non servire tray atch in futuro
-                    res = JSON.parse(res);
-                } catch (error) {console.log(error)}
-                this.projectsArr = res;//lo memorizzo nei data di questa view per poi poterlo passare al componente container (tramite props) che lo userà per creare i componenti tiles
+                this.projectsArr = response.body;//lo memorizzo nei data di questa view per poi poterlo passare al componente container (tramite props) che lo userà per creare i componenti tiles
                 //alert("prova");//l'ho messo per farti vedere che viene mostrata l'iconcina di cariacmento(in futuro metteremo una iconcina più bella, ovviamente sarà un componente )
-                console.log(",,,,,,,");
-                console.log(this.projectsArr);
                 
                 for (var i = 0; i < this.projectsArr.length; i++) {
                     if (this.projectsArr[i].modules.length != 0) {
@@ -126,19 +117,14 @@ export default {
                         for (var j = 0; j < this.projectsArr[i].modules.length; j++) {
                             isModulesMember.push(this.projectsArr[i].modules[j].member);
                         }
-                        console.log("èèèèèèèè");
-                        console.log(isModulesMember);
                         this.isMember[i] = isModulesMember;
-                        console.log(this.isMember)
-                    }else{
+                    } else {
                         this.isMember[i] = [];
                     }
                 }
 
-                
                 this.projectsReady = true;
             }, (err) => {
-                alert(err);
                 console.log(err.body);
                 //mostrare errore nel componente contenitore dei tile magari con una scritta rossa
                 this.projectsReady = true;//?????? gestiamo bene la logica
