@@ -1,4 +1,5 @@
 <template>
+  <div>
     <transition name="modal">
         <div class="modal-mask">
           <div class="modal-wrapper">
@@ -13,22 +14,22 @@
                     <form @submit.prevent="handleSubmit">
                       <div class="form-group">
                           <label for="old-password">Old password</label>
-                          <input  type="password" v-model="oldPassword" v-validate="'required'" name="old-password" class="form-control" :class="{ 'is-invalid': submitted && errors.has('old-password') }" />
-                          <div v-if="submitted && errors.has('old-password')" class="invalid-feedback">{{ errors.first('old-password') }}</div>
+                          <input type="password" v-model="oldPassword" name="old-password" class="form-control" :class="{ 'is-invalid': submitted && !oldPassword }" />
+                          <div v-show="submitted && !oldPassword" class="invalid-feedback">Old password is required</div>
                       </div>
                       <div class="form-group">
                           <label for="new-password">New password</label>
-                          <input  type="password" v-model="newPassword" v-validate="'required'" name="new-password" class="form-control" :class="{ 'is-invalid': submitted && errors.has('new-password') }" />
-                          <div v-if="submitted && errors.has('new-password')" class="invalid-feedback">{{ errors.first('new-password') }}</div>
+                          <input type="password" v-model="newPassword" name="new-password" class="form-control" :class="{ 'is-invalid': submitted && !newPassword }" />
+                          <div v-show="submitted && !newPassword" class="invalid-feedback">New password is required</div>
                       </div>
                       <div class="form-group">
                           <label for="confirm-new-password">Confirm new password</label>
-                          <input  type="password" v-model="newPassword2" v-validate="'required'" name="confirm-new-password" class="form-control" :class="{ 'is-invalid': submitted && errors.has('confirm-new-password') }" />
-                          <div v-if="submitted && errors.has('confirm-new-password')" class="invalid-feedback">{{ errors.first('confirm-new-password') }}</div>
+                          <input type="password" v-model="newPassword2" name="confirm-new-password" class="form-control" :class="{ 'is-invalid': submitted && !newPassword2 }" />
+                          <div v-show="submitted && !newPassword2" class="invalid-feedback">New password confirmation is required</div>
                       </div>
                       <div class="form-group">
-                          <button @click.prevent="handleSubmit" class="btn btn-primary" :disabled="changingPWD">Confirm</button>
-                          <img v-show="changingPWD" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+                          <button @click.prevent="handleSubmit" class="btn btn-primary" :disabled="changingPassword">Confirm</button>
+                          <img v-show="changingPassword" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
                           <button @click.prevent="closeForm" class="btn btn-link">Cancel</button>
                       </div>
                     </form>
@@ -37,10 +38,15 @@
             </div>
           </div>
         </div>
-      </transition>
+    </transition>
+
+    <simpleModal v-if="showModal" :title="title" :message="message" @closeModal="closeModal"></simpleModal>
+  </div>
 </template>
 
 <script>
+import simpleModal from './SimpleModal.vue'
+
 export default {
     data () {
         return {
@@ -48,23 +54,29 @@ export default {
             newPassword: '',
             newPassword2: '',
             submitted: false,
-            changingPWD: false,
+            changingPassword: false,
+            showModal: false,
+            title: 'Password update',
+            message: ''
         }
+    },
+    components: {
+      simpleModal
     },
     methods: {
         handleSubmit() {
+            this.showModal = false;
             if (this.newPassword != this.newPassword2) {
-                alert("The new passwords do not match!")
+              this.message = 'The new passwords do not match!';
+              this.showModal = true;
             }
             this.submitted = true;
-            this.$validator.validate().then(valid => {
-                if (valid && (this.newPassword == this.newPassword2)) {
-                    this.changePassword();
-                }
-            });
+            if (this.oldPassword && this.newPassword && this.newPassword2 && (this.newPassword == this.newPassword2)) {
+                this.changePassword();
+            }
         },
         changePassword() {
-            this.changingPWD = true;
+            this.changingPassword = true;
             var tokenjson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
             var json = {
                 "oldPassword": this.oldPassword,
@@ -72,21 +84,24 @@ export default {
             }
             var mail = JSON.parse(localStorage.getItem('user')).email ;//ottieni mail dallo storage
             
-            console.log(localStorage.getItem('path') + '/user/' + mail);
-            
             this.$http.put(localStorage.getItem('path') + '/user/' + mail, json, tokenjson).then(function(response) {
                 console.log(response.body);
-                console.log(this.changingPWD);
-                alert("Password changed successfully!")
+
+                this.message = 'Password changed successfully!';
+                this.showModal = true;
                 this.closeForm();
             }, (err) => {
-                alert(err.body);
-                this.changingPWD = false;
+                this.changingPassword = false;
+                this.message = err.body;
+                this.showModal = true;
             });
         },
         closeForm () {
-            this.changingPWD = false;
+            this.changingPassword = false;
             this.$emit('closeModal'); // notifico il padre
+        },
+        closeModal() {
+            this.showModal = false;
         }
     }
 }

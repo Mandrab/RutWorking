@@ -47,7 +47,7 @@
 
 <script>
 
-import availableColors from './colors'
+import availableColors from '../assets/colors'
 
 export default {
   components: {
@@ -118,17 +118,12 @@ export default {
         this.$http.post(localStorage.getItem('path') + '/projects/' + this.module.project + '/modules/' + this.module.name + '/messages', json, tokenJson).then(function(response) {
             console.log(response.body);
             var res = response.body;
-            try {//è un livello di sicurezza in più, potrebbe non servire try catch in futuro
-                res = JSON.parse(res);
-            } catch (error) {
-                console.log(error);
-            }
+            
             console.log("SEND MSG");
             console.log(res);
 
             this.messageList = [...this.messageList, Object.assign({}, message, {id: Math.random()})]
         }, (err) => {
-            alert(err);
             console.log(err.body);
             //mostrare errore nel componente contenitore dei tile magari con una scritta rossa
         });
@@ -186,11 +181,15 @@ export default {
         this.$http.get(localStorage.getItem('path') + '/projects/' + this.module.project + '/modules/' + this.module.name + '/messages', tokenJson).then(function(response) {
             console.log(response.body);
             var res = response.body;
+<<<<<<< HEAD
             try {//è un livello di sicurezza in più, potrebbe non servire try catch in futuro
                 res = JSON.parse(res);
             } catch (error) {
                 console.log(error);
             }
+=======
+
+>>>>>>> 5d0f9d40c8643fab2209f084f7662ca235a68adc
             var i = 0;
             var messagesFormatted = [];
 
@@ -220,7 +219,6 @@ export default {
 
             this.messageHistoryReady = true;
         }, (err) => {
-            alert(err);
             console.log(err.body);
             //mostrare errore nel componente contenitore dei tile magari con una scritta rossa
         });
@@ -292,7 +290,6 @@ export default {
   },
   mounted(){
     this.loadMessages();
-    //this.messageList.forEach(x=>x.liked = false);
   }
 }
 </script>

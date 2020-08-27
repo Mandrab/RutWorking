@@ -93,12 +93,14 @@
 
         <changePasswordFormModal v-if="this.showModalPasswordChange" @closeModal="closeModalPwd"></changePasswordFormModal>
     
+        <simpleModal v-if="showModal" :title="title" :message="message" @closeModal="closeModal"></simpleModal>
     </div>
 </template>
 
 
 <script>
 import changePasswordFormModal from '../components/ChangePasswordFormModal.vue';
+import simpleModal from '../components/SimpleModal.vue'
 
 export default {
     data () {
@@ -111,12 +113,20 @@ export default {
             showModalPasswordChange: false,
             indexInScoreArray: null,
             scores: [],
+<<<<<<< HEAD
             firstTenScores:[],
             scoreReady: false
+=======
+            scoreReady: false,
+            showModal: false,
+            title: 'Users ranking',
+            message: ''
+>>>>>>> 5d0f9d40c8643fab2209f084f7662ca235a68adc
         }
     },
     components: {
-        changePasswordFormModal
+        changePasswordFormModal,
+        simpleModal
     },
     created () {
         this.init();
@@ -126,19 +136,14 @@ export default {
             this.username = JSON.parse(localStorage.getItem('user')).email;
 
             var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
-            this.$http.get(localStorage.getItem('path') + '/user/' + this.username/*, json*/, tokenJson).then(function(response) {
+            this.$http.get(localStorage.getItem('path') + '/user/' + this.username, tokenJson).then(function(response) {
                 console.log(response.body);
                 var res = response.body;
-                try {//è un livello di sicurezza in più, potrebbe non servire try catch in futuro
-                    res = JSON.parse(res);
-                } catch (error) {
-                    console.log(error);
-                }
+                
                 this.name = res.name;
                 this.surname = res.surname;
                 this.role = res.role;
             }, (err) => {
-                alert(err);
                 console.log(err.body);
                 //mostrare errore nel componente contenitore dei tile magari con una scritta rossa
             });
@@ -152,30 +157,29 @@ export default {
                 this.scoreReady= false;
                 console.log(response.body);
                 var res = response.body;
-                try {//è un livello di sicurezza in più, potrebbe non servire try catch in futuro
-                    res = JSON.parse(res);
-                } catch (error) {
-                    console.log(error);
-                }
-
                 this.scores = res;
+<<<<<<< HEAD
                 this.firstTenScores = res.slice(0, 10)
                 if(res.length >0){
                     for(var i = 0; i<res.length; i++){
                         if(res[i].email == this.username){
+=======
+                if (res.length >0) {
+                    for (var i = 0; i<res.length; i++) {
+                        if (res[i].email == this.username) {
+>>>>>>> 5d0f9d40c8643fab2209f084f7662ca235a68adc
                             this.indexInScoreArray = i;
-                            alert(this.indexInScoreArray)
-                            alert(res[i].email);
                         }
                     }
                 }
-                if(this.indexInScoreArray == null){
+                /*
+                if (this.indexInScoreArray == null) {
                     alert("non in lista")
                 }
+                */
                 this.scoreReady= true;
 
             }, (err) => {
-                alert(err);
                 console.log(err.body);
                 //mostrare errore nel componente contenitore dei tile magari con una scritta rossa
             });
@@ -191,11 +195,15 @@ export default {
 
             this.$http.put(localStorage.getItem('path') + '/contest/reset', {}, tokenjson).then(function(response) {
                 console.log(response.body);
-                alert("General ranking of users successfully reset!");
+                this.message = 'General ranking of users successfully reset!';
+                this.showModal = true;
                 this.getContestRanking();
             }, (err) => {
-                alert(err.body);
+                console.log(err.body);
             });
+        },
+        closeModal() {
+            this.showModal = false;
         },
         openHomePage () {
             if (this.role == "user") {

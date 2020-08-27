@@ -6,18 +6,18 @@
 
               <div class="modal-header text-secondary">
                 <slot name="header">
-                  Login failed
+                  {{ title }}
                 </slot>
               </div>
 
               <div class="modal-body text-danger">
                 <slot name="body">
                     <strong>
-                        {{mess}}
+                        {{ message }}
                     </strong>
                     <br/> 
-                        <div class="text-secondary">
-                            Pease try again 
+                        <div v-if="secondaryMessage" class="text-secondary">
+                            {{ secondaryMessage }}
                         </div> 
                 </slot>
               </div>
@@ -43,7 +43,13 @@ export default {
         }
     },
     props: {
-        mess: {
+        title: {
+            type: String
+        },
+        message: {
+            type: String
+        },
+        secondaryMessage: {
             type: String
         }
     },

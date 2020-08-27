@@ -15,18 +15,18 @@
                     <form @submit.prevent="handleSubmit">
                       <div class="form-group">
                           <label for="name">Name</label>
-                          <input type="text" v-model="user.name" v-validate="'required'" name="name" class="form-control" :class="{ 'is-invalid': submitted && errors.has('name') }" />
-                          <div v-if="submitted && errors.has('name')" class="invalid-feedback">{{ errors.first('name') }}</div>
+                          <input type="text" v-model="user.name" name="name" class="form-control" :class="{ 'is-invalid': submitted && !user.name }" />
+                          <div v-show="submitted && !user.name" class="invalid-feedback">Name is required</div>
                       </div>
                       <div class="form-group">
                           <label for="surname">Surname</label>
-                          <input type="text" v-model="user.surname" v-validate="'required'" name="surname" class="form-control" :class="{ 'is-invalid': submitted && errors.has('surname') }" />
-                          <div v-if="submitted && errors.has('surname')" class="invalid-feedback">{{ errors.first('surname') }}</div>
+                          <input type="text" v-model="user.surname" name="surname" class="form-control" :class="{ 'is-invalid': submitted && !user.surname }" />
+                          <div v-show="submitted && !user.surname" class="invalid-feedback">Surname is required</div>
                       </div>
                       <div class="form-group">
                           <label for="email">E-mail</label>
-                          <input type="email" v-model="user.email" v-validate="'required'" name="email" class="form-control" :class="{ 'is-invalid': submitted && errors.has('email') }" />
-                          <div v-if="submitted && errors.has('email')" class="invalid-feedback">{{ errors.first('email') }}</div>
+                          <input type="email" v-model="user.email" name="email" class="form-control" :class="{ 'is-invalid': submitted && !user.email }" />
+                          <div v-show="submitted && !user.email" class="invalid-feedback">E-mail is required</div>
                       </div>
                       <div class="form-group">
                           <button @click.prevent="handleSubmit" class="btn btn-primary" :disabled="creating">Confirm</button>
@@ -61,11 +61,9 @@ export default {
     methods: {
         handleSubmit() {
             this.submitted = true;
-            this.$validator.validate().then(valid => {
-                if (valid) {
-                    this.addUser();
-                }
-            });
+            if (this.user.name && this.user.surname && this.user.email) {
+                this.addUser();
+            }
         },
         addUser() {
             this.creating = true;
@@ -81,7 +79,7 @@ export default {
                 this.$emit('userAdded');
                 this.closeForm();
             }, (err) => {
-                alert(err.body);
+                console.log(err.body);
                 this.creating = false;
             });
         },

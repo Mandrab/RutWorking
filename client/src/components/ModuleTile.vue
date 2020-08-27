@@ -130,10 +130,6 @@ export default {
             this.$http.get(localStorage.getItem('path') + '/projects/' + this.projectInfo.projectName + '/modules/' + this.item.name, tokenJson).then(function(response) {
                 console.log(response.body);
                 var res = response.body;
-                try {//è un livello di sicurezza in più, potrebbe non servire tray atch in futuro
-                    res = JSON.parse(res);
-                } catch (error) {console.log(error)}
-                console.log(res);
                 this.developers = res.developers;
                 
 
@@ -157,8 +153,6 @@ export default {
                 this.developersReady = true;
 
             }, (err) => {
-                //alert("err");
-                //alert(err.body);
                 console.log(err.body);
                 this.developersReady = false;
             });
@@ -167,7 +161,6 @@ export default {
         this.isDescHide = !this.isDescHide;
         //this.$forceUpdate();
         },
-
         reduceUserCreation () {
             this.isUserCreationHide = true;
         },
@@ -190,26 +183,20 @@ export default {
             }
             this.ready = true;
         },
-        openModule () {
+        openModule() {
             // PROVARE QUI
             localStorage.setItem('isModuleChief', this.isModuleChief);
-            //alert(this.isModuleChief);
             localStorage.setItem('moduleName', this.item.name);
-            // passo i developers
+
             localStorage.removeItem('developers');
             localStorage.setItem('developers', this.developers);
 
             this.$emit('openModule', this.item);
         },
-        deleteModule () {
+        deleteModule() {
             var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
             this.$http.delete(localStorage.getItem('path') + '/projects/' + this.projectInfo.projectName + '/modules/' + this.item.name, tokenJson).then(function(response) {
                 console.log(response.body);
-                var res = response.body;
-                try {//è un livello di sicurezza in più, potrebbe non servire tray atch in futuro
-                    res = JSON.parse(res);
-                    console.log(res);
-                } catch (error) {console.log(error)}
 
                 this.$emit('refreshModulesList', this.item);
             }, (err) => {
@@ -217,34 +204,25 @@ export default {
             });
             
         },
-        handleSubmit () {
+        handleSubmit() {
             this.submitted = true;
             //this.showModal=false;
-            const { email } = this;
-            if (email) {
-                this.addUser( this.email )
+            if (this.email) {
+                this.addUser(this.email);
             }
         },
         addUser(email) {
-            alert(email);
             this.adding = true;
-            var vm = this;
             var tokenjson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
-            var json = {
-                //"description": this.mod.description,
-                //"deadline": this.deadline.toString()
-            }
-            console.log(localStorage.getItem('path') + '/projects/'+this.projectInfo.projectName+'/modules/' + this.item.name + "/developers/" + email);
-
-            vm.$http.post(localStorage.getItem('path') + '/projects/'+this.projectInfo.projectName+'/modules/' + this.item.name + "/developers/" + email, json, tokenjson).then(function(response) {
-                alert("added")
+        
+            this.$http.post(localStorage.getItem('path') + '/projects/'+this.projectInfo.projectName+'/modules/' + this.item.name + "/developers/" + email, {}, tokenjson).then(function(response) {
                 console.log(response.body);
                 console.log(this.adding);
                 this.adding=false;
                 this.reduceUserCreation();
+                this.email = '';
+                this.submitted = false;
             }, (err) => {
-                alert(err);
-                console.log(err);
                 console.log(err.body);
                 this.adding = false;
             });

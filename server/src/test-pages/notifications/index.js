@@ -6,7 +6,15 @@
  */
 const USER = { email: 'x@y.z' }
 
-firebase.initializeApp(/* PUT YOUR CONFIG HERE */)
+firebase.initializeApp({
+    apiKey: "AIzaSyBlQXIMxfjDcCQZsVR7d752X2TaXXJrc_M",
+    authDomain: "rutworking-fb3b3.firebaseapp.com",
+    databaseURL: "https://rutworking-fb3b3.firebaseio.com",
+    projectId: "rutworking-fb3b3",
+    storageBucket: "rutworking-fb3b3.appspot.com",
+    messagingSenderId: "936912710994",
+    appId: "1:936912710994:web:6a3c55ae351665f2da5e8b"
+   })
 const messaging = firebase.messaging()
 
 async function notifications() {
@@ -43,7 +51,7 @@ async function signIn() {
     USER.firebaseToken = await messaging.getToken()
     await fetch('http://localhost:8080/firebase/notification', {
         headers: {
-            'Authorization': USER.token,
+            'Authorization': 'Bearer ' + USER.token,
             'Content-Type': 'application/json'
         },
         method: 'PUT',

@@ -1,4 +1,5 @@
 <template>
+  <div>
     <transition name="modal">
         <div class="modal-mask">
           <div class="modal-wrapper">
@@ -14,19 +15,19 @@
                 <slot name="body">
                     <form @submit.prevent="handleSubmit">
                       <div class="form-group">
-                          <label for="name">Module Name</label>
-                          <input type="text" v-model="mod.moduleName" v-validate="'required'" name="name" class="form-control" :class="{ 'is-invalid': submitted && errors.has('name') }" />
-                          <div v-if="submitted && errors.has('name')" class="invalid-feedback">{{ errors.first('name') }}</div>
+                          <label for="name">Name</label>
+                          <input type="text" v-model="mod.moduleName" name="name" class="form-control" :class="{ 'is-invalid': submitted && !mod.moduleName }" />
+                          <div v-show="submitted && !mod.moduleName" class="invalid-feedback">Name is required</div>
                       </div>
                       <div class="form-group">
                           <label for="description">Description</label>
-                          <textarea rows=5 columns=10 v-model="mod.description" v-validate="'required'" name="description" class="form-control" :class="{ 'is-invalid': submitted && errors.has('description') }" />
-                          <div v-if="submitted && errors.has('description')" class="invalid-feedback">{{ errors.first('description') }}</div>
+                          <textarea rows=5 columns=10 v-model="mod.description" name="description" class="form-control" :class="{ 'is-invalid': submitted && !mod.description }" />
+                          <div v-show="submitted && !mod.description" class="invalid-feedback">Description is required</div>
                       </div>
                       <div class="form-group">
                           <label for="deadline">Deadline</label>
-                          <input type="date" v-model="deadline" v-validate="'required'" name="deadline" class="form-control" :class="{ 'is-invalid': submitted && errors.has('deadline') }" />
-                          <div v-if="submitted && errors.has('deadline')" class="invalid-feedback">{{ errors.first('deadline') }}</div>
+                          <input type="date" v-model="deadline" name="deadline" class="form-control" :class="{ 'is-invalid': submitted && !deadline }" />
+                          <div v-show="submitted && !deadline" class="invalid-feedback">Deadline is required</div>
                       </div>
                       <div class="form-group">
                           <button @click.prevent="handleSubmit" class="btn btn-primary" :disabled="creating">Confirm</button>
@@ -36,21 +37,18 @@
                     </form>
                 </slot>
               </div>
-
-              <!--<div class="modal-footer">
-                <slot name="footer">
-                  <button class="modal-default-button btn btn-primary" @click.prevent="closeForm"">
-                    OK
-                  </button>
-                </slot>
-              </div>-->
             </div>
           </div>
         </div>
-      </transition>
+    </transition>
+
+    <simpleModal v-if="showModal" :title="title" :message="message" @closeModal="closeModal"></simpleModal>
+  </div>
 </template>
 
 <script>
+import simpleModal from './SimpleModal.vue'
+
 export default {
     data () {
         return {
@@ -61,7 +59,13 @@ export default {
             deadline: '',
             submitted: false,
             creating: false,
+            showModal: false,
+            title: 'Choose a date',
+            message: ''
         }
+    },
+    components: {
+      simpleModal
     },
     props: {
         project: {
@@ -74,7 +78,7 @@ export default {
             var date = new Date(this.deadline.toString());
             var today = new Date();
             var projectDline = new Date(this.project.deadline);
-            if (date>projectDline) {
+            if (date > projectDline) {
               
               //alert("oppala")
               //alert(this.deadline);
@@ -85,7 +89,7 @@ export default {
               var day = ("0" + projectDline.getDate()).slice(-2);
               var month = ("0" + (projectDline.getMonth() + 1)).slice(-2);
 
-              var newDate = projectDline.getFullYear()+"-"+(month)+"-"+(day) ;
+              var newDate = projectDline.getFullYear() + "-" + (month) + "-" + (day) ;
 
               this.deadline = newDate;
               //alert(this.deadline);
@@ -125,44 +129,43 @@ export default {
               console.log(firstDayMonth)
               */
             }
-            if (date<today) {
+            if (date < today) {
                 this.deadline = '';
-                alert("Invalid date!");
+                this.message = "Invalid date!";
+                this.showModal = true;
             }
         }
     },
     methods: {
         handleSubmit() {
             this.submitted = true;
-            this.$validator.validate().then(valid => {
-                if (valid) {
-                    this.addModule();
-                }
-            });
+            if (this.mod.moduleName && this.mod.description && this.deadline) {
+                this.addModule();
+            }
         },
         addModule() {
             this.creating = true;
-            var vm = this;
             var tokenjson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
             var json = {
                 "description": this.mod.description,
                 "deadline": this.deadline.toString()
             }
-            console.log(localStorage.getItem('path') + '/projects/'+this.project.name+'/modules/' + this.mod.moduleName);
-
-            vm.$http.post(localStorage.getItem('path') + '/projects/'+this.project.name+'/modules/' + this.mod.moduleName, json, tokenjson).then(function(response) {
+            
+            this.$http.post(localStorage.getItem('path') + '/projects/' + this.project.name+'/modules/' + this.mod.moduleName, json, tokenjson).then(function(response) {
                 console.log(response.body);
-                console.log(this.creating);
                 this.$emit('moduleAdded');
                 this.closeForm();
             }, (err) => {
-                alert(err.body);
+                console.log(err.body);
                 this.creating = false;
             });
         },
         closeForm () {
             this.creating = false;
             this.$emit('closeModal'); // notifico il padre
+        },
+        closeModal() {
+            this.showModal = false;
         }
     }
 }
