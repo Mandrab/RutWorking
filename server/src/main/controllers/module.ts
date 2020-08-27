@@ -11,6 +11,7 @@ import {
     Project,
     User
 } from '../models'
+import { sendNotification, Topics } from './notifications'
 
 export async function newModule(request: any, result: any) {
     try {
@@ -44,6 +45,16 @@ export async function addDeveloper(request: any, result: any) {
 
         await _addDeveloper(projectName, moduleName, userEmail)
         result.status(200).send('Succesfully added!')
+
+        try {
+            await sendNotification(
+                Topics.DEVELOPER_ADDED,
+                projectName,
+                moduleName,
+                'User ' + userEmail + ' has been added as a developer',
+                request.userID
+            )
+        } catch (err) { console.log(err) }
     } catch(err) {
         if (err.code && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
