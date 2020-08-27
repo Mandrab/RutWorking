@@ -39,11 +39,11 @@ export async function sendNotification(
         ? await Promise.all(module.developers())
         : [ await module.chief() ]
 
-    if (module.chiefID().toString() !in module.developers().map(it => it.toString()))
+    if (!module.developers().some(it => it.toString() == module.chiefID().toString()))
         receivers = receivers.concat(await module.chief())
     let tokens = receivers.filter(dev => dev.firebaseToken()).map(dev => dev.firebaseToken())
 
-    if (tokens.length !== 0) {
+    if (tokens.length > 0) {
         await _admin.messaging().sendMulticast({
             data: {
                 topic: topic.valueOf(),
