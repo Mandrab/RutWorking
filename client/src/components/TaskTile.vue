@@ -1,24 +1,24 @@
 <template>
     <div>
-        <div v-if="taskReady" class="row border border-dark p-0 mt-1 mb-1">
-            <button v-if="!isLeftArrowDisabled" style="font-size: auto; border-left: 0px; border-top: 0px; border-bottom: 0px; border-right: solid 1px;"  class="col-1 p-0 m-0"  @click="moveToPreviousStage"><font-awesome-icon icon="angle-left" size="" /></button>
+        <div v-if="taskReady" class="row task-area rounded p-0 mt-1 mb-1">
+            <button v-if="!isLeftArrowDisabled"  class="btn btn-light left-arrow col-1 p-0 m-0"  @click="moveToPreviousStage"><font-awesome-icon icon="angle-left" size="" /></button>
             <div v-if="isLeftArrowDisabled"  class="col-1 p-0"></div>
             <div class="col-10">
                 <div class="row">
-                    <div style="font-size: 18px; font-weight: bold; " class="cropTitle text-left col-12">
+                    <div style="font-size: 18px; font-weight: bold; " class="crop-title text-left col-12">
                         {{ item.name }}
                     </div>
-                    <div style="font-size:9px;" class=" crop text-left col-12">
+                    <div style="font-size: 11px;" class=" crop text-left col-12">
                         {{ item.assignee }}
                     </div>
-                    <div style="font-size: 14px; line-height:normal;"  class="col-12 col-sm-12 col-md-12 col-xl-12">
+                    <div style="font-size: 14px; line-height: normal; text-align: justify;"  class="col-12 col-sm-12 col-md-12 col-xl-12 p-2">
                         {{ item.taskDescription }}
                     </div>
-                    <div v-if="isModuleChief" @click="deleteTask" class="deletebtn"> <font-awesome-icon class="deleteIcon" icon="trash-alt" size="xs" /> </div>
+                    <div v-if="isModuleChief" @click="deleteTask" class="delete-btn"> <font-awesome-icon class="delete-icon" icon="trash-alt" size="s"/> </div>
                 </div>
             </div>
             <div v-if="isRightArrowDisabled" class="col-1 p-0"></div>
-            <button v-if="!isRightArrowDisabled" style="font-size: auto; border-right: 0px; border-top: 0px; border-bottom: 0px; border-left: solid 1px;" class="col-1 p-0 m-0" @click="moveToNextStage"><font-awesome-icon icon="angle-right" size="" /></button>
+            <button v-if="!isRightArrowDisabled" class="btn btn-light right-arrow col-1 p-0 m-0" @click="moveToNextStage"><font-awesome-icon icon="angle-right" size="" /></button>
         </div>
     </div>
 </template>
@@ -182,6 +182,12 @@ export default {
 .list-group-item:hover {
     background-color: lightgray;
 }
+
+.task-area {
+    background-color: lightgray;
+    border: solid 1px darkgray;
+}
+
 .next {
     position: absolute;
     top:0px;
@@ -192,34 +198,60 @@ export default {
     margin: 0px;
     font-size: auto;
 }
+
 .previous {
     position: absolute;
-    top:0px;
-    left:0px;
+    top: 0px;
+    left: 0px;
     height: 100%;
     padding: 0px;
     margin: 0px;
     width: 15%;
     font-size: auto;
 }
-.deletebtn{
+
+.left-arrow {
+    font-size: auto;
+    border-left: 0px;
+    border-top: 0px;
+    border-bottom: 0px;
+    border-right: solid 1px darkgray;
+
+}
+
+.right-arrow {
+    font-size: auto;
+    border-right: 0px;
+    border-top: 0px;
+    border-bottom: 0px;
+    border-left: solid 1px darkgray;
+}
+
+
+.delete-btn {
     position: absolute;
-    top:0px;
-    right:0px;
+    top: 1px;
+    right: 2px;
+    height: 15px;
+    width: 15px;
+    color: #be0000;
+    background-color: none;
+    cursor: pointer;
+}
+
+.delete-icon:hover {
+    color: #a50000;
+}
+
+.delete-icon {
+    position: absolute;
+    top: 1px;
+    right: 2px;
     height: 15px;
     width: 15px;
     padding: 0px;
     margin: 0px;
-    background-color: darkred;
-}
-
-.deleteIcon{
-    position: absolute;
-    top:1px;
-    right:2px;
-    padding: 0px;
-    margin: 0px;
-    color: white;
+    color: #be0000;
 }
 
 .crop{
@@ -229,13 +261,10 @@ export default {
     width: 100%;
 }
 
-.cropTitle{
+.crop-title{
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow-x: hidden;
     width: 93%;
 }
-
-
-
 </style>
