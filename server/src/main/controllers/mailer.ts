@@ -25,9 +25,9 @@ const transporter = createTransport({
  */
 export function sendEmail(address: string, subject: string, message: string, next: Function) {
     transporter.sendMail({
-        from: emailConfig.email,
+        from: /*'noreply-' + */emailConfig.email,
         to: address,
         subject: subject,
         text: message
-    }, (err: any, info: any) => next(err, info))
+    }, (err: any, _: any) => next(err))
 }
