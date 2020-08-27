@@ -12,8 +12,6 @@ import { DBUser } from '../../main/models/db'
 import { sign } from 'jsonwebtoken'
 import { _admin } from '../../main/config/firebase'
 
-require('../../test-config/firebase')
-
 const request = require('supertest')('http://localhost:8080')
 
 const USER: any = { email: 'user@user.user' }
