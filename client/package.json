@@ -16,6 +16,7 @@
     "bootstrap-vue": "^2.15.0",
     "core-js": "^3.6.5",
     "dragula": "^3.7.2",
+    "firebase": "^7.19.0",
     "swiper": "^6.0.4",
     "vee-validate": "^2.2.8",
     "vue": "^2.6.11",

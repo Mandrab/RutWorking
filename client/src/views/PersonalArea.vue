@@ -162,13 +162,7 @@ export default {
                         }
                     }
                 }
-                /*
-                if (this.indexInScoreArray == null) {
-                    alert("non in lista")
-                }
-                */
                 this.scoreReady= true;
-
             }, (err) => {
                 console.log(err.body);
                 //mostrare errore nel componente contenitore dei tile magari con una scritta rossa

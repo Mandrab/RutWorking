@@ -3,6 +3,7 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light rounded">
         <a class="col-6 col-sm-6 col-md-6 col-xl-6 navbar-brand text-left mx-0 p-1" href="#">RutWorking</a>
         <!-- collapse w-100 order-3 dual-collapse2 -->
+
         <div class="col-6 col-sm-6 col-md-6 col-xl-6 mx-0 p-0">
             <b-dropdown class="d-none d-sm-block d-md-block d-lg-block float-right" id="dropdown-options" right variant="light">
                 <template v-slot:button-content>
@@ -57,7 +58,6 @@
   </div>
 </template>
 
-
 <script>
 //import dropdownMenu from '../components/DropdownMenu.vue';
 import projectsList from '../components/ProjectsList.vue'
@@ -78,7 +78,7 @@ export default {
             //isModulesMember: [],
             projectDetail: {},
             projectIndex: 0,
-            showDropdownMenu: false,
+            showDropdownMenu: false
         }
     },
     components: {
