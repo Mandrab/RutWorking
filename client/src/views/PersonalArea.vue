@@ -59,9 +59,9 @@
         -->
         
         <div class="row mb-5 mx-5">
-            <div class="col-12 col-sm-12 col-md-12 col-lg-6 offset-lg-3 bg-light rounded">
+            <div class="col-12 col-sm-12 col-md-12 col-lg-6 offset-lg-3 bg-light rounded pb-3">
                 <div class="row">
-                    <div class="col-12 col-sm-12 col-md-12 col-xl-12 justify-content-center px-3 pt-3 pb-0">
+                    <div class="col-12 col-sm-12 col-md-12 col-xl-12 justify-content-center px-5 pt-3 pb-0">
                         <h2>Gamification</h2>
                     </div>
                 </div>
@@ -71,7 +71,7 @@
                     </div>
                 </div>
                 <div class="row" v-if="scoreReady">
-                    <div class="col-md-12 m-0 p-0" v-for="(score, index) in scores" :key="index">
+                    <div class="col-md-12 m-0 p-0" v-for="(score, index) in firstTenScores" :key="index">
                         <div v-if="indexInScoreArray == index" class=" row scoreTile  m-1 p-0">
                             <div class="col-sm-6 text-left text-primary"> <b>{{index+1}}) ME</b> </div>
                             <div class="col-sm-6  text-right">Score: {{score.score}}</div>
@@ -79,6 +79,12 @@
                         <div v-else class=" row scoreTile  m-1 p-0">
                             <div class="col-sm-6 text-left">{{index+1}})  {{score.email}}</div>
                             <div class="col-sm-6  text-right">Score: {{score.score}}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 m-0 p-0" v-if="indexInScoreArray>10">
+                        <div class=" row scoreTile  m-1 p-0">
+                            <div class="col-sm-6 text-left text-primary"> <b>{{indexInScoreArray+1}}) ME</b> </div>
+                            <div class="col-sm-6  text-right">Score: {{scores[indexInScoreArray].score}}</div>
                         </div>
                     </div>
                 </div>
@@ -107,10 +113,15 @@ export default {
             showModalPasswordChange: false,
             indexInScoreArray: null,
             scores: [],
+<<<<<<< HEAD
+            firstTenScores:[],
+            scoreReady: false
+=======
             scoreReady: false,
             showModal: false,
             title: 'Users ranking',
             message: ''
+>>>>>>> 5d0f9d40c8643fab2209f084f7662ca235a68adc
         }
     },
     components: {
@@ -147,9 +158,16 @@ export default {
                 console.log(response.body);
                 var res = response.body;
                 this.scores = res;
+<<<<<<< HEAD
+                this.firstTenScores = res.slice(0, 10)
+                if(res.length >0){
+                    for(var i = 0; i<res.length; i++){
+                        if(res[i].email == this.username){
+=======
                 if (res.length >0) {
                     for (var i = 0; i<res.length; i++) {
                         if (res[i].email == this.username) {
+>>>>>>> 5d0f9d40c8643fab2209f084f7662ca235a68adc
                             this.indexInScoreArray = i;
                         }
                     }

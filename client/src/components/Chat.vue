@@ -18,6 +18,7 @@
       :showTypingIndicator="showTypingIndicator"
       :showEdition="false"
       :showDeletion="false"
+      @scrollToTop="handleScrollToTop"
       @onType="handleOnType"
       @edit="editMessage"
       @remove="removeMessage"
@@ -71,7 +72,8 @@ export default {
       chosenColor: null,
       alwaysScrollToBottom: true,
       messageStyling: true,
-      userIsTyping: false
+      userIsTyping: false,
+      msgCount: 0
     }
   },
   created() {
@@ -172,13 +174,22 @@ export default {
     },*/
     loadMessages() {
         this.messageHistoryReady = false;
+        this.msgCount = 0;
         this.username = JSON.parse(localStorage.getItem('user')).email;
 
         var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
         this.$http.get(localStorage.getItem('path') + '/projects/' + this.module.project + '/modules/' + this.module.name + '/messages', tokenJson).then(function(response) {
             console.log(response.body);
             var res = response.body;
+<<<<<<< HEAD
+            try {//è un livello di sicurezza in più, potrebbe non servire try catch in futuro
+                res = JSON.parse(res);
+            } catch (error) {
+                console.log(error);
+            }
+=======
 
+>>>>>>> 5d0f9d40c8643fab2209f084f7662ca235a68adc
             var i = 0;
             var messagesFormatted = [];
 
@@ -200,19 +211,71 @@ export default {
               messagesFormatted[i] = m;
               i++;
             });
-
-
-
             this.messageList = messagesFormatted;
             //this.messageList = res;
             console.log("MESSAGE LIST");
             console.log(this.messageList);
+            this.msgCount = res.length;
 
             this.messageHistoryReady = true;
         }, (err) => {
             console.log(err.body);
             //mostrare errore nel componente contenitore dei tile magari con una scritta rossa
         });
+    },
+    handleScrollToTop() {
+      console.log("scrollTop")
+      if(this.msgCount % 100 == 0 ){
+        console.log("loadNewer")
+        //TODOOOO
+        var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
+        this.$http.get(localStorage.getItem('path') + '/projects/' + this.module.project + '/modules/' + this.module.name + '/messages/'+this.msgCount, tokenJson).then(function(response) {
+              console.log(response.body);
+              var res = response.body;
+              try {//è un livello di sicurezza in più, potrebbe non servire try catch in futuro
+                  res = JSON.parse(res);
+              } catch (error) {
+                  console.log(error);
+              }
+              var i = 0;
+              var messagesFormatted = [];
+
+              res.forEach(el => {
+                var m = {}
+                if(el.sender == this.username){
+                  m.author = "me";
+                }else {
+                  m.author = el.sender;
+                }
+                m.data = {
+                  text: el.message
+                }
+                m.id = i;
+                m.type = "text";
+                // dovrebbe essere nel formato giusto adesso
+                console.log("___:::::::::_________:::::::_____")
+                console.log(m);
+                messagesFormatted[i] = m;
+                i++;
+              });
+              this.messageList = messagesFormatted.reverse().concat(this.messageList);
+              //this.messageList = res;
+              console.log("MESSAGE LIST");
+              console.log(this.messageList);
+              
+              this.msgCount += res.length;
+
+              this.messageHistoryReady = true;
+          }, (err) => {
+              alert(err);
+              console.log(err.body);
+              //mostrare errore nel componente contenitore dei tile magari con una scritta rossa
+          });
+        //provare a caricare ulteriori messaggi
+      }else{
+        console.log("Nothing to load")
+      }
+      
     }
   },
   computed: {
