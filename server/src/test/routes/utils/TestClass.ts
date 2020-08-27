@@ -1,26 +1,26 @@
 /**
- * Utilities to test-class
+ * Utilities functions to simplify/clarify tests
  * 
  * @author Paolo Baldini
  */
 export namespace TestClass {
 
-    export function array<T>(length: number, strategy: (idx?: number) => T): T[] {
-        return new Array(length).fill(0).map(idx => strategy(idx))
-    }
-
     /**
-     * Generate an associative array
+     * Generate an associative array. It's composed by a string key and an object value
      * 
-     * @param keys key array
-     * @param strategy to generate the value
+     * @param keys keys array
+     * @param strategy to generate the value based on the index
+     * @return array/map of key-value pairs
      */
-    export function associativeArray<T>(keys: string[], strategy: (idx?: number) => T): { [key: string]: T } {
+    export function associativeArray<T>(
+        keys: string[],
+        strategy: (idx?: number, key?: string) => T
+    ): { [key: string]: T } {
 
-        let result: { [key: string]: T } = { }
+        let map: { [key: string]: T } = { }
         keys.forEach((it, idx) => {
-            result[it] = strategy(idx)
+            map[it] = strategy(idx)
         })
-        return result
+        return map
     }
 }
