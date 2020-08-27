@@ -250,7 +250,6 @@ export default {
                 m.id = i;
                 m.type = "text";
                 // dovrebbe essere nel formato giusto adesso
-                console.log("___:::::::::_________:::::::_____")
                 console.log(m);
                 messagesFormatted[i] = m;
                 i++;
