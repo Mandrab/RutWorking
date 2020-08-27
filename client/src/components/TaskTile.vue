@@ -11,10 +11,11 @@
                     <div style="font-size: 11px;" class=" crop text-left col-12">
                         {{ item.assignee }}
                     </div>
-                    <div style="font-size: 14px; line-height: normal; text-align: justify;"  class="col-12 col-sm-12 col-md-12 col-xl-12 p-2">
+                    <div style="font-size: 14px; line-height: normal; text-align: justify;" class="col-12 col-sm-12 col-md-12 col-xl-12 p-2">
                         {{ item.taskDescription }}
                     </div>
-                    <div v-if="isModuleChief" @click="deleteTask" class="delete-btn"><font-awesome-icon class="delete-icon" icon="trash-alt" size="sm"/></div>
+                    <div v-if="isModuleChief" @click="deleteTask" class="d-none d-sm-block d-md-block d-lg-block delete-btn"><font-awesome-icon class="delete-icon" icon="trash-alt" size="sm"/></div>
+                    <div v-if="isModuleChief" @click="deleteTask" class="d-sm-none delete-btn"><font-awesome-icon class="delete-icon" icon="trash-alt" size="lg"/></div>
                 </div>
             </div>
             <div v-if="isRightArrowDisabled" class="col-1 p-0"></div>
@@ -232,8 +233,6 @@ export default {
     position: absolute;
     top: 1px;
     right: 2px;
-    height: 15px;
-    width: 15px;
     color: #be0000;
     background-color: none;
     cursor: pointer;
@@ -247,15 +246,13 @@ export default {
     position: absolute;
     top: 1px;
     right: 2px;
-    height: 15px;
-    width: 15px;
     padding: 0px;
     margin: 0px;
     color: #be0000;
 }
 
-.crop{
-     text-overflow: ellipsis;
+.crop {
+    text-overflow: ellipsis;
     white-space: nowrap;
     overflow-x: hidden;
     width: 100%;

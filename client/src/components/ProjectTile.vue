@@ -5,7 +5,7 @@
                 {{ item.name }}
             </div>
             <div class="col-3 col-sm-3 col-md-3 col-xl-3 text-right">
-                <div v-if="isProjectChief" @click="deleteProject" class="delete-btn"><font-awesome-icon class="delete-icon" icon="trash-alt" size="sm"/></div>
+                <div v-if="isProjectChief" @click="deleteProject" class="delete-btn"><font-awesome-icon class="delete-icon" icon="trash-alt" size="lg"/></div>
             </div>
         </div>
         <div v-if="ready" class="row float-right small" v-bind:style="{ color: deadlineColor }">
@@ -108,8 +108,6 @@ export default {
     position: absolute;
     top: 1px;
     right: 2px;
-    height: 15px;
-    width: 15px;
     color: #be0000;
     background-color: none;
     cursor: pointer;
@@ -123,8 +121,6 @@ export default {
     position: absolute;
     top: 1px;
     right: 2px;
-    height: 15px;
-    width: 15px;
     padding: 0px;
     margin: 0px;
     color: #be0000;
