@@ -1,7 +1,7 @@
 <template>
 <div>
     <div v-if="taskReady" class="row border border-dark p-0 mt-1 mb-1">
-        <button v-if="!isLeftArrowDisabled" style="font-size: auto; border-left: 0px; border-top: 0px; border-bottom: 0px; border-right: solid 1px;"  class="col-1 p-0 m-0"  @click="moveToPreviousStage">⯇</button>
+        <button v-if="!isLeftArrowDisabled" style="font-size: auto; border-left: 0px; border-top: 0px; border-bottom: 0px; border-right: solid 1px;"  class="col-1 p-0 m-0"  @click="moveToPreviousStage"><font-awesome-icon icon="angle-left" size="" /></button>
         <div v-if="isLeftArrowDisabled"  class="col-1 p-0"></div>
         <div class="col-10">
             <div class="row">
@@ -18,7 +18,7 @@
             </div>
         </div>
         <div v-if="isRightArrowDisabled" class="col-1 p-0"></div>
-        <button v-if="!isRightArrowDisabled" style="font-size: auto; border-right: 0px; border-top: 0px; border-bottom: 0px; border-left: solid 1px;" class="col-1 p-0 m-0" @click="moveToNextStage">⯈</button>
+        <button v-if="!isRightArrowDisabled" style="font-size: auto; border-right: 0px; border-top: 0px; border-bottom: 0px; border-left: solid 1px;" class="col-1 p-0 m-0" @click="moveToNextStage"><font-awesome-icon icon="angle-right" size="" /></button>
     </div>
 </div>
 </template>
