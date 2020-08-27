@@ -113,15 +113,11 @@ export default {
             showModalPasswordChange: false,
             indexInScoreArray: null,
             scores: [],
-<<<<<<< HEAD
             firstTenScores:[],
-            scoreReady: false
-=======
             scoreReady: false,
             showModal: false,
             title: 'Users ranking',
             message: ''
->>>>>>> 5d0f9d40c8643fab2209f084f7662ca235a68adc
         }
     },
     components: {
@@ -158,16 +154,10 @@ export default {
                 console.log(response.body);
                 var res = response.body;
                 this.scores = res;
-<<<<<<< HEAD
                 this.firstTenScores = res.slice(0, 10)
                 if(res.length >0){
                     for(var i = 0; i<res.length; i++){
                         if(res[i].email == this.username){
-=======
-                if (res.length >0) {
-                    for (var i = 0; i<res.length; i++) {
-                        if (res[i].email == this.username) {
->>>>>>> 5d0f9d40c8643fab2209f084f7662ca235a68adc
                             this.indexInScoreArray = i;
                         }
                     }
