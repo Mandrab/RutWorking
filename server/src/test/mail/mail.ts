@@ -1,13 +1,12 @@
 /**
- * Tests project routes
+ * Tests project email-send capabilities
  * 
  * @author Paolo Baldini
  */
 import { describe } from 'mocha'
+import assert from 'assert'
 import { sendEmail } from '../../main/controllers/mailer'
 import { config as emailConfig } from '../../main/config/email'
-import { assert } from 'console'
-import { fail } from 'assert'
 
 describe('test emails\' operations', function() {
 
@@ -20,7 +19,7 @@ describe('test emails\' operations', function() {
 
         try {
             await sendEmail('Invalid email format', "test", "testing sent of emails")
-            fail('Invalid mail format should not be allowed by nodemailer')
+            assert.fail('Invalid mail format should not be allowed by nodemailer')
         } catch(err) { }
 
         assert(res1.accepted.length > 0 && res1.rejected.length === 0, 'That should be a valid call')
