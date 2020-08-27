@@ -37,8 +37,8 @@ export async function register(request: any, result: any) {
         )
 
         sendEmail(request.params.userEmail, 'Registration',
-            'Your generated password is: ' + password + ' Change it as soon as possible!',
-            (err: any, _: any) => { if (err) console.log(err) })
+            'Your generated password is: ' + password + ' Change it as soon as possible!')
+            .catch((err: any) => { if (err) console.log(err) })
 
         result.status(201).send('Succesfully created!')
         //console.log('Generated password: ' + password) // TODO remove.. only to debug
@@ -101,8 +101,8 @@ export async function blockUser(request: any, result: any) {
         result.status(200).send('User has been blocked!')
 
         sendEmail(request.params.userEmail, 'Block of account',
-            'Your account has been blocked. You will no longer be able to log into your account.',
-            (err: any,_: any) => { if (err) console.log(err) })
+            'Your account has been blocked. You will no longer be able to log into your account.')
+            .catch((err: any) => { if (err) console.log(err) })
     } catch(err) {
         if (err.code && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')

@@ -21,13 +21,12 @@ const transporter = createTransport({
  * @param address email address to which send the mail
  * @param subject subject of the email
  * @param message body of the email
- * @param next callback
  */
-export function sendEmail(address: string, subject: string, message: string, next: Function) {
-    transporter.sendMail({
-        from: /*'noreply-' + */emailConfig.email,
+export async function sendEmail(address: string, subject: string, message: string) {
+    return transporter.sendMail({
+        from: emailConfig.email,
         to: address,
         subject: subject,
         text: message
-    }, (err: any, _: any) => next(err))
+    })
 }
