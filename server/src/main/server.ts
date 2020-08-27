@@ -10,8 +10,8 @@ import { DBRole } from './models/db'
 const setup = async () => { 
     const app = express()
 
-    //app.use(cors({ origin: "http://localhost:8081" })) // ??
-    app.use(cors({ origin: "http://localhost:5000" })) // ??
+    app.use(cors({ origin: "http://localhost:8081" })) // ??
+    //app.use(cors({ origin: "http://localhost:5000" })) // ??
 
     // parse requests of content-type application/json
     app.use(json())

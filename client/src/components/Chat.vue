@@ -47,6 +47,7 @@
 <script>
 
 import availableColors from './colors'
+import { messaging } from '../../firebase'
 
 export default {
   components: {
@@ -76,6 +77,10 @@ export default {
   },
   created() {
     this.init();
+    messaging.onMessage(payload => {
+      console.log("MESSAGE PAYLOAD: " + payload)
+      alert(payload.data.sender, payload.data.message)
+    });
   },
   methods: {
     init() {
