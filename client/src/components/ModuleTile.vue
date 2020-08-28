@@ -25,11 +25,7 @@
                                 <b-dropdown-item v-if="isModuleChief && isUserCreationHide" @click.stop="expandUserCreation"><font-awesome-icon icon="user-plus"/> Add user</b-dropdown-item>
                                 <b-dropdown-item v-if="isModuleChief && !isUserCreationHide" @click.stop="reduceUserCreation"><font-awesome-icon icon="times"/> Close user</b-dropdown-item>
                                 <b-dropdown-divider></b-dropdown-divider>
-<<<<<<< HEAD
-                                <b-dropdown-item v-if="isModuleChief" @click.stop="deleteModule" > <a href="#" class="r">Delete module</a></b-dropdown-item>
-=======
-                                <b-dropdown-item v-if="isModuleChief" @click.stop="deleteModule" class="bg-danger"><font-awesome-icon icon="trash-alt"/> Delete module</b-dropdown-item>
->>>>>>> 68718703755a9309934c9f4a5e774f7b0f81c014
+                                <b-dropdown-item v-if="isModuleChief" @click.stop="deleteModule" ><font-awesome-icon icon="trash-alt"/> <a href="#" class="r">Delete module</a></b-dropdown-item>
                             </b-dropdown>
                         </div>
                     </div>

@@ -1,11 +1,7 @@
 <template>
     <div>
         <div v-if="taskReady" class="row task-area rounded p-0 mt-1 mb-1">
-<<<<<<< HEAD
-            <button v-if="!isLeftArrowDisabled"  class="btn btn-light left-arrow col-1 p-0 m-0"  @click="moveToPreviousStage"><font-awesome-icon icon="angle-left"  /></button>
-=======
             <button v-if="!isLeftArrowDisabled"  class="btn btn-light left-arrow col-1 p-0 m-0"  @click="moveToPreviousStage"><font-awesome-icon icon="angle-left" size="sm" /></button>
->>>>>>> 68718703755a9309934c9f4a5e774f7b0f81c014
             <div v-if="isLeftArrowDisabled"  class="col-1 p-0"></div>
             <div class="col-10">
                 <div class="row">
@@ -18,20 +14,12 @@
                     <div style="font-size: 14px; line-height: normal; text-align: justify;" class="col-12 col-sm-12 col-md-12 col-xl-12 p-2">
                         {{ item.taskDescription }}
                     </div>
-<<<<<<< HEAD
-                    <div v-if="isModuleChief" @click="deleteTask" class="delete-btn"> <font-awesome-icon class="delete-icon" icon="trash-alt" size="sm"/> </div>
-                </div>
-            </div>
-            <div v-if="isRightArrowDisabled" class="col-1 p-0"></div>
-            <button v-if="!isRightArrowDisabled" class="btn btn-light right-arrow col-1 p-0 m-0" @click="moveToNextStage"><font-awesome-icon icon="angle-right" /></button>
-=======
                     <div v-if="isModuleChief" @click="deleteTask" class="d-none d-sm-block d-md-block d-lg-block delete-btn"><font-awesome-icon class="delete-icon" icon="trash-alt" size="sm"/></div>
                     <div v-if="isModuleChief" @click="deleteTask" class="d-sm-none delete-btn"><font-awesome-icon class="delete-icon" icon="trash-alt" size="lg"/></div>
                 </div>
             </div>
             <div v-if="isRightArrowDisabled" class="col-1 p-0"></div>
             <button v-if="!isRightArrowDisabled" class="btn btn-light right-arrow col-1 p-0 m-0" @click="moveToNextStage"><font-awesome-icon icon="angle-right" size="sm"/></button>
->>>>>>> 68718703755a9309934c9f4a5e774f7b0f81c014
         </div>
     </div>
 </template>
