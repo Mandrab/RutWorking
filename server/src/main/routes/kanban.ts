@@ -29,7 +29,7 @@ module.exports = function (app: any) {
         isModuleChief
     ], deleteTask)
 
-    // get first 100 kanban's tasks. user and skipN can be used 
+    // get kanban's tasks. user and skipN can be used 
     app.get('/projects/:projectName/modules/:moduleName/kanban/:skipN?/:user?', [
         isActive,
         or(_isProjectChief, _isModuleChief, _isDeveloper)

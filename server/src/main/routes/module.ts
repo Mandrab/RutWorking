@@ -13,7 +13,7 @@ const _isModuleChief = _isChief('module')
 const _isProjectChief = _isChief('project')
 
 module.exports = function (app: any) {
-    // project-chief (check inside) can create a module to work on
+    // project-chief can create a module to work on
     app.post('/projects/:projectName/modules/:moduleName', [
         isActive,
         isProjectChief

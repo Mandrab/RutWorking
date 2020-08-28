@@ -12,13 +12,13 @@ const _isAdmin = _isRole(Roles.ADMIN)
 const _isUser = _isRole(Roles.USER)
 
 module.exports = function (app: any) {
-    // admin can start/reset a contest to find the gooddest employee
+    // admin can start/reset a contest to find the goodest employee
     app.put('/contest/reset', [
         isActive,
         isAdmin
     ], resetContest)
 
-    // users can get the contest status (point of each user)
+    // users can get the contest status (aka: ranking; point of each user)
     app.get('/contest/ranking/:skipN?', [
         isActive,
         or(_isAdmin, _isUser)

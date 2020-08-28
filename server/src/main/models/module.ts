@@ -13,8 +13,8 @@ export class Module {
     name(): string { return this.module.name }
     chiefID(): Schema.Types.ObjectId { return this.module.chief }
     chief(): Promise<User> { return User.findById(this.module.chief) }
-    description() { return this.module.description }
-    deadline() { return this.module.deadline }
+    description(): string { return this.module.description }
+    deadline(): Date { return this.module.deadline }
     developersIDs(): Array<Schema.Types.ObjectId> { return this.module.developers }
     developers(): Array<Promise<User>> {
         return this.module.developers.map((developerID: Schema.Types.ObjectId) => User.findById(developerID))
@@ -28,18 +28,29 @@ export class Module {
 
     constructor(private module: IDBModule, private parentID: Schema.Types.ObjectId) { }
 
+    /** Delete the module */
     async delete() {
         return await DBProject.updateOne({ _id: this.parentID }, {
             $pull: { "modules": { name: this.name() } }
         })
     }
 
+    /**
+     * Add a developer to the module
+     * 
+     * @param userID id of the user to add
+     */
     async addDeveloper(userID: Schema.Types.ObjectId) {
         await DBProject.updateOne({_id: this.parentID, "modules._id": this._id() }, {
             $addToSet: { "modules.$.developers": userID }
         })
     }
 
+    /**
+     * Remove a developer from the module
+     * 
+     * @param userID id of the developer to remove
+     */
     async removeDeveloper(userID: Schema.Types.ObjectId) {
         // remove user from module developers
         await DBProject.updateOne(
@@ -67,9 +78,8 @@ export class Module {
     /**
      * Add a new message to the module chat
      * 
-     * @param id of the sender
-     * @param chiefID id of module chief
-     * @param projectID parent project of the module
+     * @param senderID id of the message sender
+     * @param body of the message
      */
     async newMessage(senderID: Schema.Types.ObjectId, body: string) {
         await DBProject.updateOne({_id: this.parentID, "modules._id": this._id() }, {
@@ -84,8 +94,10 @@ export class Module {
     /**
      * Add a new task to the module kanban
      * 
-     * @param description tasks description
-     * @param projectID parent project of the module
+     * @param name of the task
+     * @param description task description
+     * @param status todo, assigned, inprogress, done
+     * @param assignee default assignee of the task
      */
     async newTask(name: string, description?: string, status?: States, assignee?: User) {
         let task: any = {
@@ -103,8 +115,11 @@ export class Module {
     /**
      * Update the status of a task of the module kanban
      * 
-     * @param description tasks description
-     * @param projectID parent project of the module
+     * @param taskID id of the task to update
+     * @param oldStatus actual state of the task
+     * @param newStatus new status to set
+     * @param oldAssignee actual assignee of the task
+     * @param assignee new assignee to set
      */
     async updateTaskStatus(
         taskID: Schema.Types.ObjectId,
@@ -139,6 +154,11 @@ export class Module {
             await DBUser.updateOne({ _id: oldAssignee }, { $inc: { score: -2 } })
     }
 
+    /**
+     * Remove a task from the module kanban
+     * 
+     * @param taskID id of the task to remove
+     */
     async deleteTask(taskID: string | Schema.Types.ObjectId) {
         await DBProject.updateOne(
             { _id: this.parentID },
@@ -147,6 +167,7 @@ export class Module {
         )
     }
 
+    /** Reload module informations */
     async refresh() {
         this.module = (await DBProject.findById(this.parentID)).modules.find(it =>
             it._id.toString() === this._id().toString()
@@ -155,6 +176,11 @@ export class Module {
     }
 }
 
+/**
+ * Interface to use a message class
+ * 
+ * @author Paolo Baldini
+ */
 export interface IMessage {
     _id(): Schema.Types.ObjectId
     date(): Date
@@ -162,6 +188,11 @@ export interface IMessage {
     bodyMessage(): string
 }
 
+/**
+ * A message class
+ * 
+ * @author Paolo Baldini
+ */
 class Message implements IMessage {
     _id(): Schema.Types.ObjectId { return this.message._id }
     date(): Date { return this.message.date }
@@ -172,6 +203,11 @@ class Message implements IMessage {
     constructor(private message: IDBMessage) { }
 }
 
+/**
+ * Interface to use a task class
+ * 
+ * @author Paolo Baldini
+ */
 export interface IKanbanItem {
     _id(): Schema.Types.ObjectId
     taskDescription(): string
@@ -180,6 +216,11 @@ export interface IKanbanItem {
     assignee(): Promise<User>
 }
 
+/**
+ * A task class
+ * 
+ * @author Paolo Baldini
+ */
 class KanbanItem implements IKanbanItem {
     _id(): Schema.Types.ObjectId { return this.kanbanItem._id }
     taskDescription(): string { return this.kanbanItem._id }

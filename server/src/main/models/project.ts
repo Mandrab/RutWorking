@@ -23,6 +23,8 @@ export class Project {
      * 
      * @param _name of the module
      * @param chiefID id of module chief
+     * @param description of the project
+     * @param deadline of the project
      */
     async newModule(_name: string, chiefID: Schema.Types.ObjectId, description?: string, deadline?: Date) {
         let obj: any = {
@@ -40,8 +42,10 @@ export class Project {
         })
     }
 
+    /** Reload project informations */
     async refresh() { this.project = await DBProject.findById(this._id()) }
 
+    /** Remove project from db */
     async delete() { return await DBProject.findByIdAndRemove(this._id()) }
 
     /**

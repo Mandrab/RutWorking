@@ -22,10 +22,10 @@ module.exports = function (app: any) {
     // User can change his own password
     app.put('/user/:userEmail', [isActive, isUser], changePassword)
 
-    // get info of a user TODO limit at the same user? Now is all the users...
+    // get info of a user
     app.get('/user/:userEmail', [isActive, or(_isAdmin, _isUser)], getUserInfo)
 
-    // an ADMIN can block a user TODO raffinalo
+    // an Admin can block a user
     app.delete('/user/:userEmail', [isActive, isAdmin], blockUser)
 
     // list the first 100 user (use skip to move forward)

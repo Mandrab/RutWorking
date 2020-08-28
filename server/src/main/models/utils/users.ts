@@ -3,7 +3,6 @@
  * 
  * @author Paolo Baldini
  */
-
 import { sign as jwtSign } from 'jsonwebtoken'
 import { secret as authSecret } from '../../config/jwt'
 import { set as mongooseSet } from 'mongoose'
@@ -18,7 +17,7 @@ mongooseSet('useFindAndModify', false)
  *
  * @param userEmail mail of the user
  * @param password of the user
- * @returns token binded to account
+ * @returns the token binded to the account and its role in the system
  */
 export async function login(userEmail: string, password: string) {
     try {
@@ -42,10 +41,11 @@ export async function login(userEmail: string, password: string) {
 /**
  * Register a new user to the system
  *
+ * @param name of the user
+ * @param surname of the user
  * @param userEmail email of the user (must not be yet in db)
- * @param password of the user
+ * @param password of the user (in clear. it will automatically hash it)
  * @param role in the system
- * @returns a result specifing operation result
  */
 export async function register(name: string, surname: string, userEmail: string, password: string, role: Roles) {
     let roleSchema = await Role.findByName(role)
@@ -62,6 +62,13 @@ export async function register(name: string, surname: string, userEmail: string,
     } catch (err) { throw { code: 406, message: 'User already existent!' } }
 }
 
+/**
+ * Returns the list of 100 users
+ * 
+ * @param skipN number of users to skip
+ * @returns an collection in which each element contains: email, name, surname, role and
+ * a flag that indicates is it has been blocked
+ */
 export async function getUsers(skipN: number) {
     let users = await DBUser.find().limit(100).skip(skipN)
     return await Promise.all(users.map(async it => {
