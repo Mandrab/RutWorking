@@ -53,7 +53,6 @@ export async function register(request: any, result: any) {
             .catch((err: any) => { if (err) console.log(err) })
 
         result.status(201).send('Succesfully created!')
-        //console.log('Generated password: ' + password) // TODO remove.. only to debug
     } catch (err) {
         if (err.code && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')

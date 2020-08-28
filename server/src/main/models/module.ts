@@ -96,7 +96,7 @@ export class Module {
      * 
      * @param name of the task
      * @param description task description
-     * @param status todo, assigned, inprogress, done
+     * @param status to-do, assigned, in-progress, done
      * @param assignee default assignee of the task
      */
     async newTask(name: string, description?: string, status?: States, assignee?: User) {
@@ -133,7 +133,7 @@ export class Module {
 
         let update: any = { "modules.$[module].kanbanItems.$[kanbanItem].status": newStatus }
 
-        if (newStatus === States.TODO) {            // not set assignee in TODO state
+        if (newStatus === States.TODO) {            // not set assignee in TO-DO state
             update = {
                 $unset: { "modules.$[module].kanbanItems.$[kanbanItem].assignee": "" },
                 $set: update

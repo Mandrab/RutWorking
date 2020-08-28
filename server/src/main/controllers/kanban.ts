@@ -26,7 +26,7 @@ export async function newTask(request: any, result: any) {
             .some(it => it.toString() === assignee._id().toString()))
                 return result.status(404).send('The specified user is not a developer of the module')
 
-        await module.newTask(request.body.name, request.body.description, status, assignee) // TODO parse to avoid code injection or strange things
+        await module.newTask(request.body.name, request.body.description, status, assignee)
 
         result.status(201).send('Task succesfully created!')
     } catch(err) {
@@ -36,7 +36,7 @@ export async function newTask(request: any, result: any) {
 }
 
 /**
- * Update status (todo/inprogress/...; assignee) of a task
+ * Update status (to-do/in-progress/...; assignee) of a task
  * 
  * @param request web query
  * @param result query result
