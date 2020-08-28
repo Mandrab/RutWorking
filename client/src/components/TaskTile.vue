@@ -1,7 +1,7 @@
 <template>
     <div>
         <div v-if="taskReady" class="row task-area rounded p-0 mt-1 mb-1">
-            <button v-if="!isLeftArrowDisabled"  class="btn btn-light left-arrow col-1 p-0 m-0"  @click="moveToPreviousStage"><font-awesome-icon icon="angle-left" size="sm" /></button>
+            <button v-if="!isLeftArrowDisabled"  class="btn btn-light left-arrow col-1 p-0 m-0"  @click="moveToPreviousStage"><font-awesome-icon icon="angle-left" size="lg" /></button>
             <div v-if="isLeftArrowDisabled"  class="col-1 p-0"></div>
             <div class="col-10">
                 <div class="row">
@@ -19,7 +19,7 @@
                 </div>
             </div>
             <div v-if="isRightArrowDisabled" class="col-1 p-0"></div>
-            <button v-if="!isRightArrowDisabled" class="btn btn-light right-arrow col-1 p-0 m-0" @click="moveToNextStage"><font-awesome-icon icon="angle-right" size="sm"/></button>
+            <button v-if="!isRightArrowDisabled" class="btn btn-light right-arrow col-1 p-0 m-0" @click="moveToNextStage"><font-awesome-icon icon="angle-right" size="lg"/></button>
         </div>
     </div>
 </template>
