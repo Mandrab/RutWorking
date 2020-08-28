@@ -31,7 +31,7 @@ export async function getProjects(skipFirst: number = 0, userID?: Schema.Types.O
             }, {
                 "modules.developers": userID
             }]
-        }).skip(skipFirst).sort({ _id: 1 }).limit(100)
+        }).skip(skipFirst).sort({ _id: 1 })//.limit(100)
         : await DBProject.find().skip(skipFirst).sort({ _id: 1 }).limit(100)
 
     let reshapedProjects = projects.map(async it => {

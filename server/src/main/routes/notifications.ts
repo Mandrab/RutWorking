@@ -4,6 +4,7 @@
  * @author Paolo Baldini
  */
 import { isRole, isActive } from '../auths/jwt'
+import { _admin } from '../config/firebase'
 import { Roles } from '../models'
 import { setFirebaseCustomToken } from '../controllers/notifications'
 

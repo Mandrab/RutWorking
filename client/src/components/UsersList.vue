@@ -1,12 +1,12 @@
 <template>
     <div>
-        <li class="list-group-item">
+        <li class="list-group-item bg-light">
             <div class="row">
                 <div class="col-10 col-sm-10 col-md-10 col-xl-10 h3 text-left">
                     Users list
                 </div>
                 <div class="col-2 col-sm-2 col-md-2 col-xl-2 p-0">
-                    <button @click="openUserRegistration" class="btn btn-primary">+</button>
+                    <button @click="openUserRegistration" class="btn btn-primary"><font-awesome-icon icon="plus"/></button>
                 </div>
             </div>
 		</li>

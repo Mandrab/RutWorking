@@ -3,13 +3,15 @@
  * 
  * @author Paolo Baldini
  */
+import { describe } from 'mocha'
+import assert from 'assert'
 import { before, it } from 'mocha'
 import { connect } from 'mongoose'
 import { Roles, register, User } from '../../main/models'
 import { config as dbConfig } from '../../main/config/db'
 import { DBUser } from '../../main/models/db'
 import { sign } from 'jsonwebtoken'
-import { secret } from '../../main/config/auth'
+import { secret } from '../../main/config/jwt'
 
 const request = require('supertest')('http://localhost:8080')
 
@@ -69,7 +71,6 @@ describe('test users\' operations', function() {
         try { await DBUser.deleteOne({ email: USER.email }) } catch (_) { }
         try { await DBUser.deleteOne({ email: NEW_USER.email }) } catch (_) { }
         try { await DBUser.deleteOne({ email: NEW_USER2.email }) } catch (_) { }
-        return Promise.resolve()
     }
 
 /**********************************************************************************************************************
@@ -106,8 +107,6 @@ describe('test users\' operations', function() {
         await request.put('/login').expect(404)
         await request.get('/login').expect(404)
         await request.delete('/login').expect(404)
-
-        return Promise.resolve()
     })
 
 /**********************************************************************************************************************
@@ -144,8 +143,6 @@ describe('test users\' operations', function() {
         // correct one
         await request.post('/user/' + NEW_USER.email).set({ 'Authorization': token })
             .send({ role:'user', name: 'x', surname: 'y' }).expect(201)
-
-        return Promise.resolve()
     })
 
 /**********************************************************************************************************************
@@ -172,8 +169,6 @@ describe('test users\' operations', function() {
         // correct one
         await request.put('/user/' + NEW_USER2.email).set({ 'Authorization': token })
         .send({ oldPassword: NEW_USER2.password, newPassword: '123456' }).expect(200)
-
-        return Promise.resolve()
     })
 
 /**********************************************************************************************************************
@@ -195,8 +190,6 @@ describe('test users\' operations', function() {
 
         // correct one
         await request.delete('/user/' + USER2DELETE.email).set({ 'Authorization': token }).expect(200)
-
-        return Promise.resolve()
     })
 
 /**********************************************************************************************************************
@@ -216,13 +209,11 @@ describe('test users\' operations', function() {
         // correct one
         let result = await request.get('/user/' + USER.email).set({ 'Authorization': token }).expect(200)
 
-        if (result.body.name !== USER.name) throw 'Informations returned are wrong!'
-        if (result.body.surname !== USER.surname) throw 'Informations returned are wrong!'
-        if (result.body.email !== USER.email) throw 'Informations returned are wrong!'
-        if (result.body.role !== USER.role) throw 'Informations returned are wrong!'
-        if (result.body.blocked === USER.active) throw 'Informations returned are wrong!'
-
-        return Promise.resolve()
+        assert(result.body.name === USER.name, 'Informations returned are wrong!')
+        assert(result.body.surname === USER.surname, 'Informations returned are wrong!')
+        assert(result.body.email === USER.email, 'Informations returned are wrong!')
+        assert(result.body.role === USER.role, 'Informations returned are wrong!')
+        assert(result.body.blocked !== USER.active, 'Informations returned are wrong!')
     })
 
 /**********************************************************************************************************************
@@ -244,27 +235,25 @@ describe('test users\' operations', function() {
         // correct user token
         let result = await request.get('/users').set({ 'Authorization': userToken }).expect(200)
 
-        if (result.body.lenght < 2) throw 'impossible quantity of users returned'
-        if (!result.body[0].email) throw 'returned info should contains email'
-        if (!result.body[0].name) throw 'returned info should contains name'
-        if (!result.body[0].surname) throw 'returned info should contains surname'
+        assert(result.body.length >= 2, 'impossible quantity of users returned')
+        assert(result.body[0].email !== null, 'returned info should contains email')
+        assert(result.body[0].name !== null, 'returned info should contains name')
+        assert(result.body[0].surname !== null, 'returned info should contains surname')
 
         // correct admin token
         result = await request.get('/users').set({ 'Authorization': adminToken }).expect(200)
 
-        if (result.body.lenght < 2) throw 'impossible quantity of users returned'
-        if (!result.body[0].email) throw 'returned info should contains email'
-        if (!result.body[0].name) throw 'returned info should contains name'
-        if (!result.body[0].surname) throw 'returned info should contains surname'
+        assert(result.body.length >= 2, 'impossible quantity of users returned')
+        assert(result.body[0].email !== null, 'returned info should contains email')
+        assert(result.body[0].name !== null, 'returned info should contains name')
+        assert(result.body[0].surname !== null, 'returned info should contains surname')
 
         let usersN = result.body.length
 
         // skipN
         result = await request.get('/users/1').set({ 'Authorization': adminToken }).expect(200)
 
-        if (result.body.lenght === usersN -1 || result.body.lenght > 100)
-            throw 'with skip some users should not be returned'
-
-        return Promise.resolve()
+        assert(result.body.length === usersN -1 || result.body.length === 100,
+            'with skip some users should not be returned')
     })
 })

@@ -16,8 +16,9 @@ export async function newTask(request: any, result: any) {
         if (!request.body.name) return result.status(409).send('Task name not found!')
         let status = request.body.status ? States.parse(request.body.status) : null
         let assignee = request.body.assignee ? await User.findByEmail(request.body.assignee) : null
-        if (assignee && !module.developersIDs().some(it => it.toString() === assignee._id().toString()))
-            return result.status(404).send('The specified user is not a developer of the module')
+        if (assignee && !module.developersIDs().concat(module.chiefID())
+            .some(it => it.toString() === assignee._id().toString()))
+                return result.status(404).send('The specified user is not a developer of the module')
 
         await module.newTask(request.body.name, request.body.description, status, assignee) // TODO parse to avoid code injection or strange things
 
@@ -47,8 +48,10 @@ export async function updateStatus(request: any, result: any) {
             if (!module.developersIDs().concat(module.chiefID()).some(it => it.toString() === user._id().toString()))
                 throw { code: 409, message: 'Invalid assignee!' }
 
-            await module.updateTaskStatus(request.params.taskID, States.parse(tasks[0].status()), state, tasks[0].assigneeID(), user._id())
-        } else await module.updateTaskStatus(request.params.taskID, States.parse(tasks[0].status()), state, tasks[0].assigneeID())
+            await module.updateTaskStatus(request.params.taskID, States.parse(tasks[0].status()), state,
+                tasks[0].assigneeID(), user._id())
+        } else await module.updateTaskStatus(request.params.taskID, States.parse(tasks[0].status()), state,
+            tasks[0].assigneeID())
 
         result.status(200).send('Task succesfully updated!')
 

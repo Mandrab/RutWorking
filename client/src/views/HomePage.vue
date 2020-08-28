@@ -5,23 +5,22 @@
         <!-- collapse w-100 order-3 dual-collapse2 -->
 
         <div class="col-6 col-sm-6 col-md-6 col-xl-6 mx-0 p-0">
-            <b-dropdown class="d-none d-sm-block d-md-block d-lg-block float-right" id="dropdown-options" right variant="light">
+            <b-dropdown class="d-none d-sm-block d-md-block d-lg-block float-right" right variant="light">
                 <template v-slot:button-content>
-                    {{ username }} <font-awesome-icon icon="user"/>
+                    {{ username }} 
                 </template>
-                <b-dropdown-item @click="openPersonalArea">Personal area</b-dropdown-item>
-                <b-dropdown-item @click="logout">Logout</b-dropdown-item>
+                <b-dropdown-item @click="openPersonalArea"><font-awesome-icon icon="user"/> Personal area</b-dropdown-item>
+                <b-dropdown-item @click="logout"><font-awesome-icon icon="sign-out-alt"/> Logout</b-dropdown-item>
             </b-dropdown>
 
-            <b-dropdown class="d-sm-none float-right" id="dropdown-options" right variant="light">
+            <b-dropdown class="d-sm-none float-right" right variant="light">
                 <template v-slot:button-content>
-                    ...
+                    <font-awesome-icon icon="bars" size="lg"/>
                 </template>
                 <b-dropdown-header disabled> {{ username }} </b-dropdown-header>
                 <b-dropdown-divider></b-dropdown-divider>
-                <b-dropdown-item @click="openPersonalArea">Personal area</b-dropdown-item>
-                
-                <b-dropdown-item @click="logout">Logout</b-dropdown-item>
+                <b-dropdown-item @click="openPersonalArea"><font-awesome-icon icon="user"/> Personal area</b-dropdown-item>
+                <b-dropdown-item @click="logout"><font-awesome-icon icon="sign-out-alt"/> Logout</b-dropdown-item>
             </b-dropdown>
 
             <!--
@@ -103,10 +102,9 @@ export default {
         },
         getProjectList() {
             this.projectsReady = false;
-            var vm = this;
             var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
-            //var json = { "user": this.username }//in realta la mail??? attenzione ai nomi
-            vm.$http.get(localStorage.getItem('path') + '/projects/0/' + this.username/*, json*/, tokenJson).then(function(response) {
+
+            this.$http.get(localStorage.getItem('path') + '/projects/0/' + this.username/*, json*/, tokenJson).then(function(response) {
                 console.log(response.body);
                 this.projectsArr = response.body;//lo memorizzo nei data di questa view per poi poterlo passare al componente container (tramite props) che lo userà per creare i componenti tiles
                 //alert("prova");//l'ho messo per farti vedere che viene mostrata l'iconcina di cariacmento(in futuro metteremo una iconcina più bella, ovviamente sarà un componente )

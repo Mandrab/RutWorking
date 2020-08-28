@@ -4,7 +4,7 @@ import { Role } from ".";
 import { genSalt, hash, compare } from "bcrypt";
 import { SALT_WORK_FACTOR } from "./db/user";
 import { verify } from "jsonwebtoken";
-import { secret } from "../config/auth";
+import { secret } from "../config/jwt";
 
 /**
  * Represent a user in the system with some utility methods

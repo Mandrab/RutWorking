@@ -3,12 +3,14 @@
  * 
  * @author Paolo Baldini
  */
+import { describe } from 'mocha'
+import assert from 'assert'
 import { connect } from 'mongoose'
 import { Roles, Project } from '../../main/models'
 import { config as dbConfig } from '../../main/config/db'
-import { TestUser } from './utils/TestUser'
-import { TestProjectBuilders } from './utils/TestProject'
-import { TestClass } from './utils/TestClass'
+import { TestUser } from '../utils/TestUser'
+import { TestProjectBuilders } from '../utils/TestProject'
+import { TestClass } from '../utils/TestClass'
 import { DBProject } from '../../main/models/db'
 
 const request = require('supertest')('http://localhost:8080')
@@ -86,8 +88,6 @@ describe('test projects\' operations', function() {
         await NEW_PROJECT.delete()
         await request.post('/projects/project/' + NEW_PROJECT.name).set({ 'Authorization': newChiefToken })
             .send({ description: 'qwerty', deadline: new Date().toString() }).expect(201)
-
-        return Promise.resolve()
     })
 
 /**********************************************************************************************************************
@@ -122,12 +122,10 @@ describe('test projects\' operations', function() {
         // valid token and chief
         await request.delete('/projects/project/' + PROJECTS['delete'].name).set({ 'Authorization': chiefToken })
             .expect(200)
-
-        return Promise.resolve()
     })
 
 /**********************************************************************************************************************
-    PROJECT GET
+    PROJECT GET MULTIPLE
 **********************************************************************************************************************/
 
     it('get multiple', async function() {
@@ -149,7 +147,7 @@ describe('test projects\' operations', function() {
             if the DB contains more than 100 project it could fail'
         let response = await request.get('/projects').set({ 'Authorization': chiefToken }).expect(200)
             .expect('Content-Type', /json/)
-        if (!response.body.some((it: { name: string }) => it.name === PROJECTS['get multiple'].name)) throw ERR
+        assert(response.body.some((it: { name: string }) => it.name === PROJECTS['get multiple'].name), ERR)
 
         let previousSize = response.body.length
         PROJECTS['get multiple 2'] = TestProjectBuilders.new(
@@ -160,15 +158,15 @@ describe('test projects\' operations', function() {
         // project addition
         response = await request.get('/projects').set({ 'Authorization': userToken }).expect(200)
             .expect('Content-Type', /json/)
-        if (!response.body.some((it: { name: string }) => it.name === PROJECTS['get multiple 2'].name)) throw ERR
-        if (response.body.length !== previousSize +1 && response.body.length < 100)
-            throw 'Error in return projects size!'
+        assert(response.body.some((it: { name: string }) => it.name === PROJECTS['get multiple 2'].name), ERR)
+        assert(response.body.length === previousSize +1 || response.body.length >= 100,
+            'Error in return projects size!')
 
         // skip
         response = await request.get('/projects/1').set({ 'Authorization': userToken }).expect(200)
             .expect('Content-Type', /json/)
-        if (!response.body.some((it: { name: string }) => it.name === PROJECTS['get multiple 2'].name)) throw ERR
-        if (response.body.length !== previousSize && response.body.length < 100) throw 'Error in return projects size!'
+        assert(response.body.some((it: { name: string }) => it.name === PROJECTS['get multiple 2'].name), ERR)
+        assert(response.body.length === previousSize || response.body.length >= 100, 'Error in return projects size!')
 
         // invalid mail
         await request.get('/projects/1/-1').set({ 'Authorization': userToken }).expect(404)
@@ -176,12 +174,12 @@ describe('test projects\' operations', function() {
         // valid mail but nor developer nor chief
         response = await request.get('/projects/1/' + user.email()).set({ 'Authorization': userToken })
             .expect(200).expect('Content-Type', /json/)
-        if (response.body.length !== 0) throw 'Error in return projects size!'
+        assert(response.body.length === 0, 'Error in return projects size!')
 
         // valid mail and chief
         response = await request.get('/projects/0/' + chief.email()).set({ 'Authorization': userToken })
             .expect(200).expect('Content-Type', /json/)
-        if (response.body.length < 2) throw 'Error in return projects size!'
+        assert(response.body.length >= 2, 'Error in return projects size!')
 
         let project = await Project.findByName(PROJECTS['get multiple'].name)
         await project.newModule('module', user2._id())
@@ -191,12 +189,12 @@ describe('test projects\' operations', function() {
         // valid mail and developer
         response = await request.get('/projects/0/' + user.email()).set({ 'Authorization': userToken })
             .expect(200).expect('Content-Type', /json/)
-        if (response.body.length < 1) throw 'Error in return projects size!'
+        assert(response.body.length >= 1, 'Error in return projects size!')
 
         // valid mail and module chief
         response = await request.get('/projects/0/' + user2.email()).set({ 'Authorization': user2Token })
             .expect(200).expect('Content-Type', /json/)
-        if (response.body.length < 1) throw 'Error in return projects size!'
+        assert(response.body.length >= 1, 'Error in return projects size!')
 
         let nowDate = new Date()
         PROJECTS['get multiple 3'] = TestProjectBuilders.new(
@@ -214,13 +212,15 @@ describe('test projects\' operations', function() {
         response = await request.get('/projects').set({ 'Authorization': userToken }).expect(200)
             .expect('Content-Type', /json/)
         let module = response.body.find((it: { name: string }) => it.name === PROJECTS['get multiple 3'].name)
-        if (!module) throw 'Project has not been saved or returned correctly!'
+        assert(module !== null, 'Project has not been saved or returned correctly!')
 
-        if (module.description !== 'qwerty') throw 'Description is missing or wrong in returned project!'
-        if (module.deadline !== nowDate.toISOString()) throw 'Deadline is missing or wrong in returned project!'
-
-        return Promise.resolve()
+        assert(module.description === 'qwerty', 'Description is missing or wrong in returned project!')
+        assert(module.deadline === nowDate.toISOString(), 'Deadline is missing or wrong in returned project!')
     })
+
+/**********************************************************************************************************************
+    PROJECT GET SINGLE
+**********************************************************************************************************************/
 
     it('get single', async function() {
         let chiefToken = await PROJECTS['get single'].chief.getToken()
@@ -237,13 +237,11 @@ describe('test projects\' operations', function() {
         // valid token
         let response = await request.get('/projects/project/' + PROJECTS['get single'].name)
             .set({ 'Authorization': chiefToken }).expect(200).expect('Content-Type', /json/)
-        if (response.body.name !== PROJECTS['get single'].name) throw 'Response does not contains project!'
+        assert(response.body.name === PROJECTS['get single'].name, 'Response does not contains project!')
 
         // valid mail and user
         response = await request.get('/projects/project/' + PROJECTS['get single'].name)
             .set({ 'Authorization': userToken }).expect(200).expect('Content-Type', /json/)
-        if (response.body.name !== PROJECTS['get single'].name) throw 'Response does not contains project!'
-
-        return Promise.resolve()
+        assert(response.body.name === PROJECTS['get single'].name, 'Response does not contains project!')
     })
 })

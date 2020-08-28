@@ -5,7 +5,7 @@
                 {{ item.name }}
             </div>
             <div class="col-3 col-sm-3 col-md-3 col-xl-3 text-right">
-                <button v-if="isProjectChief" @click="deleteProject">x</button>
+                <div v-if="isProjectChief" @click="deleteProject" class="delete-btn"><font-awesome-icon class="delete-icon" icon="trash-alt" size="lg"/></div>
             </div>
         </div>
         <div v-if="ready" class="row float-right small" v-bind:style="{ color: deadlineColor }">
@@ -102,5 +102,27 @@ export default {
 <style scoped>
 .list-group-item:hover {
     background-color: lightgray;
+}
+
+.delete-btn {
+    position: absolute;
+    top: 1px;
+    right: 2px;
+    color: #be0000;
+    background-color: none;
+    cursor: pointer;
+}
+
+.delete-icon:hover {
+    color: #a50000;
+}
+
+.delete-icon {
+    position: absolute;
+    top: 1px;
+    right: 2px;
+    padding: 0px;
+    margin: 0px;
+    color: #be0000;
 }
 </style>
