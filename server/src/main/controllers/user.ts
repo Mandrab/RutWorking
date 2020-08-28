@@ -11,6 +11,12 @@ import {
 } from '../models'
 import { sendEmail } from './mailer'
 
+/**
+ * Allow a user to log into the system
+ * 
+ * @param request web query
+ * @param result query result
+ */
 export async function login(request: any, result: any) {
     try {
         let res = await _login(request.body.userEmail, request.body.password)
@@ -21,6 +27,12 @@ export async function login(request: any, result: any) {
     }
 }
 
+/**
+ * Allow an admin to register a user
+ * 
+ * @param request web query
+ * @param result query result
+ */
 export async function register(request: any, result: any) {
     try {
         if (!request.body.role) return result.status(400).send('Role missing in body!')
@@ -48,6 +60,12 @@ export async function register(request: any, result: any) {
     }
 }
 
+/**
+ * Allow a user to change his own password
+ * 
+ * @param request web query
+ * @param result query result
+ */
 export async function changePassword(request: any, result: any) {
     try {
         if (!request.body.oldPassword || !request.body.newPassword)
@@ -64,6 +82,12 @@ export async function changePassword(request: any, result: any) {
     }
 }
 
+/**
+ * Returns informations about a user
+ * 
+ * @param request web query
+ * @param result query result
+ */
 export async function getUserInfo(request: any, result: any) {
     try {
         let user = await User.findByEmail(request.params.userEmail)
@@ -81,6 +105,12 @@ export async function getUserInfo(request: any, result: any) {
     }
 }
 
+/**
+ * Return a list of 100 users, eventually skipping the first N
+ * 
+ * @param request web query
+ * @param result query result
+ */
 export async function getUsers(request: any, result: any) {
     try {
         let skipUsers = request.params.skipN ? parseInt(request.params.skipN, 10) : 0
@@ -94,6 +124,12 @@ export async function getUsers(request: any, result: any) {
     }
 }
 
+/**
+ * Delete a user. Really, only block it for history purpose
+ * 
+ * @param request web query
+ * @param result query result
+ */
 export async function blockUser(request: any, result: any) {
     try {
         let user = await User.findByEmail(request.params.userEmail)

@@ -10,6 +10,12 @@ import {
 } from '../models/utils/projects'
 import { User, Project } from '../models'
 
+/**
+ * Create a new project
+ * 
+ * @param request web query
+ * @param result query result
+ */
 export async function newProject(request: any, result: any) {
     try {
         await _newProject(
@@ -25,6 +31,12 @@ export async function newProject(request: any, result: any) {
     }
 }
 
+/**
+ * Return the list of the projects eventually skipping the first N or filtering by user
+ * 
+ * @param request web query
+ * @param result query result
+ */
 export async function getProjects(request: any, result: any) {
     try {
         let skipProject = request.params.skipN ? parseInt(request.params.skipN, 10) : 0
@@ -42,6 +54,12 @@ export async function getProjects(request: any, result: any) {
     }
 }
 
+/**
+ * Retrieve the information of a project
+ * 
+ * @param request web query
+ * @param result query result
+ */
 export async function getProjectInfo(request: any, result: any) {
     try {
         result.status(200).send(await _getProjectInfo(request.params.name))
@@ -51,6 +69,12 @@ export async function getProjectInfo(request: any, result: any) {
     }
 }
 
+/**
+ * Delete a project from the db
+ * 
+ * @param request web query
+ * @param result query result
+ */
 export async function deleteProject(request: any, result: any) {
     try {
         let project = await Project.findByName(request.params.name)

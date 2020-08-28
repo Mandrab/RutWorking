@@ -8,12 +8,23 @@ import { DBUser } from "../models/db"
 import { Schema } from "mongoose"
 import { User, Project } from "../models"
 
+/**
+ * Possible notification topics
+ * 
+ * @author Paolo Baldini
+ */
 export enum Topics {
     CHAT_MESSAGE = 'chat_message',
     TASK_COMPLETED = 'task_completed',
     DEVELOPER_ADDED = 'developer_added'
 }
 
+/**
+ * Register the firebase token of a user to be used to send notifications
+ * 
+ * @param request web query
+ * @param result query result
+ */
 export async function setFirebaseCustomToken(request: any, result: any) {
     try {
         if (!request.body.firebaseToken) throw { code: 409, message: 'Firebase token not passed!' }
@@ -25,6 +36,15 @@ export async function setFirebaseCustomToken(request: any, result: any) {
     }
 }
 
+/**
+ * Send notification about a topic
+ * 
+ * @param topic of the notification
+ * @param projectName select the module from the specified project
+ * @param moduleName select the users whose are member of the module
+ * @param message to be sent
+ * @param sender of the message
+ */
 export async function sendNotification(
     topic: Topics,
     projectName: string,

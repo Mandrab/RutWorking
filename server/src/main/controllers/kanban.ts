@@ -7,6 +7,12 @@ import { Project, User, getTasks as _getTasks } from '../models'
 import { States } from '../models/db'
 import { sendNotification, Topics } from './notifications'
 
+/**
+ * Insert a new task in a module
+ * 
+ * @param request web query
+ * @param result query result
+ */
 export async function newTask(request: any, result: any) {
     try {
         let project = await Project.findByName(request.params.projectName)
@@ -29,6 +35,12 @@ export async function newTask(request: any, result: any) {
     }
 }
 
+/**
+ * Update status (todo/inprogress/...; assignee) of a task
+ * 
+ * @param request web query
+ * @param result query result
+ */
 export async function updateStatus(request: any, result: any) {
     try {
         let project = await Project.findByName(request.params.projectName)
@@ -72,6 +84,12 @@ export async function updateStatus(request: any, result: any) {
     }
 }
 
+/**
+ * Delete a task
+ * 
+ * @param request web query
+ * @param result query result
+ */
 export async function deleteTask(request: any, result: any) {
     try {
         let project = await Project.findByName(request.params.projectName)
@@ -87,6 +105,12 @@ export async function deleteTask(request: any, result: any) {
     }
 }
 
+/**
+ * Get list of tasks. It's possible to skip N first task
+ * 
+ * @param request web query
+ * @param result query result
+ */
 export async function getTasks(request: any, result: any) {
     try {
         let skipTask = request.params.skipN ? parseInt(request.params.skipN, 10) : 0

@@ -6,6 +6,12 @@
 import { resetContest as _resetContest, getStatus as _getStatus } from '../models'
 import { _admin } from '../config/firebase'
 
+/**
+ * Reset all users scores
+ * 
+ * @param request web query
+ * @param result query result
+ */
 export async function resetContest(_: any, result: any) {
     try {
         let users = await _resetContest()
@@ -17,6 +23,12 @@ export async function resetContest(_: any, result: any) {
     }
 }
 
+/**
+ * Get 100 user ranked for the contest
+ * 
+ * @param request web query
+ * @param result query result
+ */
 export async function getStatus(request: any, result: any) {
     try {
         let skipUsers = request.params.skipN ? parseInt(request.params.skipN, 10) : 0

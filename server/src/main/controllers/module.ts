@@ -13,6 +13,12 @@ import {
 } from '../models'
 import { sendNotification, Topics } from './notifications'
 
+/**
+ * Create a new module of a project
+ * 
+ * @param request web query
+ * @param result query result
+ */
 export async function newModule(request: any, result: any) {
     try {
         let user = request.userID
@@ -37,6 +43,12 @@ export async function newModule(request: any, result: any) {
     }
 }
 
+/**
+ * Add a developer to a module
+ * 
+ * @param request web query
+ * @param result query result
+ */
 export async function addDeveloper(request: any, result: any) {
     try {
         let projectName = request.params.projectName
@@ -61,6 +73,12 @@ export async function addDeveloper(request: any, result: any) {
     }
 }
 
+/**
+ * Remove a developer from a module
+ * 
+ * @param request web query
+ * @param result query result
+ */
 export async function removeDeveloper(request: any, result: any) {
     try {
         let projectName = request.params.projectName
@@ -75,6 +93,12 @@ export async function removeDeveloper(request: any, result: any) {
     }
 }
 
+/**
+ * Get info about the module
+ * 
+ * @param request web query
+ * @param result query result
+ */
 export async function getModuleInfo(request: any, result: any) {
     try {
         let projectName = request.params.projectName
@@ -88,6 +112,12 @@ export async function getModuleInfo(request: any, result: any) {
     }
 }
 
+/**
+ * Delete a module from a project
+ * 
+ * @param request web query
+ * @param result query result
+ */
 export async function deleteModule(request: any, result: any) {
     try {
         let project = await Project.findByName(request.params.projectName)
