@@ -49,7 +49,7 @@ export async function getProjects(request: any, result: any) {
 
         result.status(200).send(projects)
     } catch (err) {
-        if (err.code && err.message) result.status(err.code).send(err.message)
+        if (err.code && err.code < 1000 && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
 }
@@ -64,7 +64,7 @@ export async function getProjectInfo(request: any, result: any) {
     try {
         result.status(200).send(await _getProjectInfo(request.params.name))
     } catch (err) {
-        if (err.code && err.message) result.status(err.code).send(err.message)
+        if (err.code && err.code < 1000 && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
 }
@@ -82,7 +82,7 @@ export async function deleteProject(request: any, result: any) {
 
         result.status(200).send('Project succesfully removed')
     } catch (err) {
-        if (err.code && err.message) result.status(err.code).send(err.message)
+        if (err.code && err.code < 1000 && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
 }

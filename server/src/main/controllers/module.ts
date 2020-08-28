@@ -28,6 +28,9 @@ export async function newModule(request: any, result: any) {
 
         if (user.toString() !== project.chiefID().toString()) return result.status(403).send('Unauthorized!')
 
+        if (project.modules().some(it => it.name() === request.params.moduleName))
+            throw { code: 409, message: 'Module with this name yet exists' }
+
         await _newModule(
             request.params.moduleName,
             request.body.chief ? (await User.findByEmail(request.body.chief))._id() : user,
@@ -38,7 +41,7 @@ export async function newModule(request: any, result: any) {
 
         result.status(201).send('Module succesfully created!')
     } catch(err) {
-        if (err.code && err.message) result.status(err.code).send(err.message)
+        if (err.code && err.code < 1000 && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
 }
@@ -68,7 +71,7 @@ export async function addDeveloper(request: any, result: any) {
             )
         } catch (err) { console.log(err) }
     } catch(err) {
-        if (err.code && err.message) result.status(err.code).send(err.message)
+        if (err.code && err.code < 1000 && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
 }
@@ -88,7 +91,7 @@ export async function removeDeveloper(request: any, result: any) {
         await _removeDeveloper(projectName, moduleName, userEmail)
         result.status(200).send('Developer succesfully removed')
     } catch(err) {
-        if (err.code && err.message) result.status(err.code).send(err.message)
+        if (err.code && err.code < 1000 && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
 }
@@ -107,7 +110,7 @@ export async function getModuleInfo(request: any, result: any) {
         let module = await _getModuleInfo(projectName, moduleName)
         result.status(200).send(module)
     } catch(err) {
-        if (err.code && err.message) result.status(err.code).send(err.message)
+        if (err.code && err.code < 1000 && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
 }
@@ -127,7 +130,7 @@ export async function deleteModule(request: any, result: any) {
         await module.delete()
         result.status(200).send('Module succesfully removed')
     } catch(err) {
-        if (err.code && err.message) result.status(err.code).send(err.message)
+        if (err.code && err.code < 1000 && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
 }

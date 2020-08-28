@@ -210,6 +210,7 @@ class Message implements IMessage {
  */
 export interface IKanbanItem {
     _id(): Schema.Types.ObjectId
+    name(): string
     taskDescription(): string
     status(): string,
     assigneeID(): Schema.Types.ObjectId
@@ -223,6 +224,7 @@ export interface IKanbanItem {
  */
 class KanbanItem implements IKanbanItem {
     _id(): Schema.Types.ObjectId { return this.kanbanItem._id }
+    name(): string { return this.kanbanItem.name }
     taskDescription(): string { return this.kanbanItem._id }
     status(): string { return this.kanbanItem.status }
     assigneeID(): Schema.Types.ObjectId { return this.kanbanItem.assignee }

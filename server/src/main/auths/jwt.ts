@@ -21,7 +21,7 @@ export async function token2id(request: any, result: any, next?: Function): Prom
         if (next) next()
         return request.userID
     } catch (err) {
-        if (err.code && err.message) result.status(err.code).send(err.message)
+        if (err.code && err.code < 1000 && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Invalid token')
     }
 }
@@ -60,7 +60,7 @@ export async function isActive(request: any, result: any, next?: Function): Prom
         if (next) next()
         return true
     } catch (err) {
-        if (err.code && err.message) result.status(err.code).send(err.message)
+        if (err.code && err.code < 1000 && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
 }
@@ -79,7 +79,7 @@ export const isRole = (role: Roles | string) => async (request: any, result: any
 
         if (next) next()
     } catch (err) {
-        if (err.code && err.message) result.status(err.code).send(err.message)
+        if (err.code && err.code < 1000 && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
 }
@@ -116,7 +116,7 @@ export const isChief = (entity: string) => async (request: any, result: any, nex
 
         if (next) next()
     } catch (err) {
-        if (err.code && err.message) result.status(err.code).send(err.message)
+        if (err.code && err.code < 1000 && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
 }
@@ -166,7 +166,7 @@ export async function isDeveloper(request: any, result: any, next?: Function) {
 
         if (next) next()
     } catch (err) {
-        if (err.code && err.message) result.status(err.code).send(err.message)
+        if (err.code && err.code < 1000 && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
 }

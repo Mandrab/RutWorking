@@ -31,7 +31,7 @@ export async function setFirebaseCustomToken(request: any, result: any) {
         await DBUser.updateOne({ _id: request.userID }, { firebaseToken: request.body.firebaseToken })
         result.status(200).send('Token succesfully registered!')
     } catch (err) {
-        if (err.code && err.message) result.status(err.code).send(err.message)
+        if (err.code && err.code < 1000 && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
 }

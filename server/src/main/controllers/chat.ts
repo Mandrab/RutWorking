@@ -36,7 +36,7 @@ export async function newMessage(request: any, result: any) {
             )
         } catch (err) { console.log(err) }
     } catch (err) {
-        if (err.code && err.message) result.status(err.code).send(err.message)
+        if (err.code && err.code < 1000 && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
 }
@@ -55,7 +55,7 @@ export async function getMessages(request: any, result: any) {
 
         result.status(200).send(messages)
     } catch (err) {
-        if (err.code && err.message) result.status(err.code).send(err.message)
+        if (err.code && err.code < 1000 && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
 }

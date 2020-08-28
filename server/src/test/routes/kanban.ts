@@ -88,9 +88,9 @@ describe('test kanbans\' operations', function() {
         await request.post('/projects/' + PROJECTS['post'].name + '/modules/' + PROJECTS['post'].modules[0].name
             + '/kanban').set({ 'Authorization': developerToken }).send({ description: 'asd' }).expect(403)
 
-        // new task
+        // task already exists
         await request.post('/projects/' + PROJECTS['post'].name + '/modules/' + PROJECTS['post'].modules[0].name
-            + '/kanban').set({ 'Authorization': chiefToken }).send({ name: 'qwerty', description: '' }).expect(201)
+            + '/kanban').set({ 'Authorization': chiefToken }).send({ name: 'qwerty', description: '' }).expect(409)
     })
 
 /**********************************************************************************************************************

@@ -33,7 +33,7 @@ export async function login(userEmail: string, password: string) {
             userRole: (await user.role()).name()
         }
     } catch (err) {
-        if (err.code && err.message) throw err
+        if (err.code && err.code < 1000 && err.message) throw err
         throw { code: 500, message: 'Internal error!' }
     }
 }

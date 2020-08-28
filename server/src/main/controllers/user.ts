@@ -22,7 +22,7 @@ export async function login(request: any, result: any) {
         let res = await _login(request.body.userEmail, request.body.password)
         result.status(200).send(res) // 24 hours
     } catch (err) {
-        if (err.code && err.message) result.status(err.code).send(err.message)
+        if (err.code && err.code < 1000 && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
 }
@@ -54,7 +54,7 @@ export async function register(request: any, result: any) {
 
         result.status(201).send('Succesfully created!')
     } catch (err) {
-        if (err.code && err.message) result.status(err.code).send(err.message)
+        if (err.code && err.code < 1000 && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
 }
@@ -76,7 +76,7 @@ export async function changePassword(request: any, result: any) {
             result.status(200).send('Successfully updated!')
         } else result.status(401).send('Invalid password!')
     } catch (err) {
-        if (err.code && err.message) result.status(err.code).send(err.message)
+        if (err.code && err.code < 1000 && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
 }
@@ -99,7 +99,7 @@ export async function getUserInfo(request: any, result: any) {
             blocked: !user.isActive()
         })
     } catch(err) {
-        if (err.code && err.message) result.status(err.code).send(err.message)
+        if (err.code && err.code < 1000 && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
 }
@@ -118,7 +118,7 @@ export async function getUsers(request: any, result: any) {
 
         result.status(200).send(users)
     } catch (err) {
-        if (err.code && err.message) result.status(err.code).send(err.message)
+        if (err.code && err.code < 1000 && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
 }
@@ -139,7 +139,7 @@ export async function blockUser(request: any, result: any) {
             'Your account has been blocked. You will no longer be able to log into your account.')
             .catch((err: any) => { if (err) console.log(err) })
     } catch(err) {
-        if (err.code && err.message) result.status(err.code).send(err.message)
+        if (err.code && err.code < 1000 && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
 }

@@ -85,7 +85,9 @@ describe('test modules\' operations', function() {
         assert(project.modules().some(it => it.name() === module1Name && equals(it.chiefID(), chief._id())),
             'A module is expected to be added')
 
-        // TODO: OK? -> NO ERROR TRYING TO ADD A NEW MODULE WITH EXISTING NAME
+        // trying to add a new module with existing name
+        await request.post('/projects/' + PROJECTS['post module'].name + '/modules/' + module1Name)
+            .set({ 'Authorization': chiefToken }).expect(409)
 
         // valid token and different chief
         await request.post('/projects/' + PROJECTS['post module'].name + '/modules/' + module2Name)

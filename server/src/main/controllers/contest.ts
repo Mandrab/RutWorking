@@ -18,7 +18,7 @@ export async function resetContest(_: any, result: any) {
 
         result.status(200).send(users)
     } catch (err) {
-        if (err.code && err.message) result.status(err.code).send(err.message)
+        if (err.code && err.code < 1000 && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
 }
@@ -37,7 +37,7 @@ export async function getStatus(request: any, result: any) {
 
         result.status(200).send(users)
     } catch (err) {
-        if (err.code && err.message) result.status(err.code).send(err.message)
+        if (err.code && err.code < 1000 && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
 }
