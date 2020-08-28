@@ -84,8 +84,15 @@ export default {
       console.log(payload)
       alert(payload.data.sender, payload.data.message)
     });
+    setTimeout(this.addCasualMsg, 5000);
+    
   },
   methods: {
+    addCasualMsg() {
+      
+      this.messageList.push({"author":"me","data":{"text":"message added 5 sec after created component"},"id":18237,"type":"text"});
+      
+    },
     init() {
         this.module = JSON.parse(localStorage.getItem('module'));
         this.setColor('blue');
@@ -122,11 +129,11 @@ export default {
             "message": message.data.text
         }
         this.$http.post(localStorage.getItem('path') + '/projects/' + this.module.project + '/modules/' + this.module.name + '/messages', json, tokenJson).then(function(response) {
-            console.log(response.body);
+            //console.log(response.body);
             var res = response.body;
-            
-            console.log("SEND MSG");
             console.log(res);
+            console.log("SEND MSG");
+            
 
             this.messageList = [...this.messageList, Object.assign({}, message, {id: Math.random()})]
         }, (err) => {
@@ -203,15 +210,15 @@ export default {
               m.id = i;
               m.type = "text";
               // dovrebbe essere nel formato giusto adesso
-              console.log("___:::::::::_________:::::::_____")
-              console.log(m);
+              //console.log("___:::::::::_________:::::::_____")
+              //console.log(m);
               messagesFormatted[i] = m;
               i++;
             });
-            this.messageList = messagesFormatted;
+            this.messageList = messagesFormatted.reverse();
             //this.messageList = res;
-            console.log("MESSAGE LIST");
-            console.log(this.messageList);
+            //console.log("MESSAGE LIST");
+            //console.log(this.messageList);
             this.msgCount = res.length;
 
             this.messageHistoryReady = true;

@@ -25,7 +25,7 @@
                                 <b-dropdown-item v-if="isModuleChief && isUserCreationHide" @click.stop="expandUserCreation">Add user</b-dropdown-item>
                                 <b-dropdown-item v-if="isModuleChief && !isUserCreationHide" @click.stop="reduceUserCreation">Close user</b-dropdown-item>
                                 <b-dropdown-divider></b-dropdown-divider>
-                                <b-dropdown-item v-if="isModuleChief" @click.stop="deleteModule" class="bg-danger">Delete module</b-dropdown-item>
+                                <b-dropdown-item v-if="isModuleChief" @click.stop="deleteModule" > <a href="#" class="r">Delete module</a></b-dropdown-item>
                             </b-dropdown>
                         </div>
                     </div>
@@ -256,6 +256,9 @@ export default {
 .hovered:hover {
     cursor: pointer;
     text-decoration-line: underline;
+}
+.r{
+    color:red;
 }
 
 </style>

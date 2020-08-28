@@ -1,7 +1,7 @@
 <template>
     <div>
         <div v-if="taskReady" class="row task-area rounded p-0 mt-1 mb-1">
-            <button v-if="!isLeftArrowDisabled"  class="btn btn-light left-arrow col-1 p-0 m-0"  @click="moveToPreviousStage"><font-awesome-icon icon="angle-left" size="" /></button>
+            <button v-if="!isLeftArrowDisabled"  class="btn btn-light left-arrow col-1 p-0 m-0"  @click="moveToPreviousStage"><font-awesome-icon icon="angle-left"  /></button>
             <div v-if="isLeftArrowDisabled"  class="col-1 p-0"></div>
             <div class="col-10">
                 <div class="row">
@@ -14,11 +14,11 @@
                     <div style="font-size: 14px; line-height: normal; text-align: justify;"  class="col-12 col-sm-12 col-md-12 col-xl-12 p-2">
                         {{ item.taskDescription }}
                     </div>
-                    <div v-if="isModuleChief" @click="deleteTask" class="delete-btn"> <font-awesome-icon class="delete-icon" icon="trash-alt" size="s"/> </div>
+                    <div v-if="isModuleChief" @click="deleteTask" class="delete-btn"> <font-awesome-icon class="delete-icon" icon="trash-alt" size="sm"/> </div>
                 </div>
             </div>
             <div v-if="isRightArrowDisabled" class="col-1 p-0"></div>
-            <button v-if="!isRightArrowDisabled" class="btn btn-light right-arrow col-1 p-0 m-0" @click="moveToNextStage"><font-awesome-icon icon="angle-right" size="" /></button>
+            <button v-if="!isRightArrowDisabled" class="btn btn-light right-arrow col-1 p-0 m-0" @click="moveToNextStage"><font-awesome-icon icon="angle-right" /></button>
         </div>
     </div>
 </template>
