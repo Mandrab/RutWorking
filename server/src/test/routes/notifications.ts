@@ -8,11 +8,7 @@ import { Roles } from '../../main/models'
 import { config as dbConfig } from '../../main/config/db'
 import { connect } from 'mongoose'
 import { _admin } from '../../main/config/firebase'
-<<<<<<< HEAD
-
-=======
 import { TestUser } from '../utils/TestUser'
->>>>>>> develop
 
 const request = require('supertest')('http://localhost:8080')
 

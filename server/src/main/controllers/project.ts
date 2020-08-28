@@ -46,7 +46,6 @@ export async function getProjectInfo(request: any, result: any) {
     try {
         result.status(200).send(await _getProjectInfo(request.params.name))
     } catch (err) {
-        console.log(err);
         if (err.code && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
