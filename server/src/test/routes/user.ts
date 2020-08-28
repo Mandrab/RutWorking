@@ -71,7 +71,6 @@ describe('test users\' operations', function() {
         try { await DBUser.deleteOne({ email: USER.email }) } catch (_) { }
         try { await DBUser.deleteOne({ email: NEW_USER.email }) } catch (_) { }
         try { await DBUser.deleteOne({ email: NEW_USER2.email }) } catch (_) { }
-        return Promise.resolve()
     }
 
 /**********************************************************************************************************************
@@ -108,8 +107,6 @@ describe('test users\' operations', function() {
         await request.put('/login').expect(404)
         await request.get('/login').expect(404)
         await request.delete('/login').expect(404)
-
-        return Promise.resolve()
     })
 
 /**********************************************************************************************************************
@@ -146,8 +143,6 @@ describe('test users\' operations', function() {
         // correct one
         await request.post('/user/' + NEW_USER.email).set({ 'Authorization': token })
             .send({ role:'user', name: 'x', surname: 'y' }).expect(201)
-
-        return Promise.resolve()
     })
 
 /**********************************************************************************************************************
@@ -174,8 +169,6 @@ describe('test users\' operations', function() {
         // correct one
         await request.put('/user/' + NEW_USER2.email).set({ 'Authorization': token })
         .send({ oldPassword: NEW_USER2.password, newPassword: '123456' }).expect(200)
-
-        return Promise.resolve()
     })
 
 /**********************************************************************************************************************
@@ -197,8 +190,6 @@ describe('test users\' operations', function() {
 
         // correct one
         await request.delete('/user/' + USER2DELETE.email).set({ 'Authorization': token }).expect(200)
-
-        return Promise.resolve()
     })
 
 /**********************************************************************************************************************
@@ -223,8 +214,6 @@ describe('test users\' operations', function() {
         assert(result.body.email === USER.email, 'Informations returned are wrong!')
         assert(result.body.role === USER.role, 'Informations returned are wrong!')
         assert(result.body.blocked !== USER.active, 'Informations returned are wrong!')
-
-        return Promise.resolve()
     })
 
 /**********************************************************************************************************************
@@ -266,7 +255,5 @@ describe('test users\' operations', function() {
 
         assert(result.body.length === usersN -1 || result.body.length === 100,
             'with skip some users should not be returned')
-
-        return Promise.resolve()
     })
 })

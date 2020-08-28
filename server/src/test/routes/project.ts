@@ -88,8 +88,6 @@ describe('test projects\' operations', function() {
         await NEW_PROJECT.delete()
         await request.post('/projects/project/' + NEW_PROJECT.name).set({ 'Authorization': newChiefToken })
             .send({ description: 'qwerty', deadline: new Date().toString() }).expect(201)
-
-        return Promise.resolve()
     })
 
 /**********************************************************************************************************************
@@ -124,8 +122,6 @@ describe('test projects\' operations', function() {
         // valid token and chief
         await request.delete('/projects/project/' + PROJECTS['delete'].name).set({ 'Authorization': chiefToken })
             .expect(200)
-
-        return Promise.resolve()
     })
 
 /**********************************************************************************************************************
@@ -220,8 +216,6 @@ describe('test projects\' operations', function() {
 
         assert(module.description === 'qwerty', 'Description is missing or wrong in returned project!')
         assert(module.deadline === nowDate.toISOString(), 'Deadline is missing or wrong in returned project!')
-
-        return Promise.resolve()
     })
 
 /**********************************************************************************************************************
@@ -249,7 +243,5 @@ describe('test projects\' operations', function() {
         response = await request.get('/projects/project/' + PROJECTS['get single'].name)
             .set({ 'Authorization': userToken }).expect(200).expect('Content-Type', /json/)
         assert(response.body.name === PROJECTS['get single'].name, 'Response does not contains project!')
-
-        return Promise.resolve()
     })
 })

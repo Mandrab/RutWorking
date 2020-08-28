@@ -91,8 +91,6 @@ describe('test kanbans\' operations', function() {
         // new task
         await request.post('/projects/' + PROJECTS['post'].name + '/modules/' + PROJECTS['post'].modules[0].name
             + '/kanban').set({ 'Authorization': chiefToken }).send({ name: 'qwerty', description: '' }).expect(201)
-
-        return Promise.resolve()
     })
 
 /**********************************************************************************************************************
@@ -168,8 +166,6 @@ describe('test kanbans\' operations', function() {
         await module.refresh()
         items = module.kanbanItems().filter(it => equals(it._id(), task1ID))
         assert(items[0].status() === States.TODO && !items[0].assigneeID(), 'Incorrect task!')
-
-        return Promise.resolve()
     })
 
 /**********************************************************************************************************************
@@ -214,8 +210,6 @@ describe('test kanbans\' operations', function() {
         await module.refresh()
         assert(module.kanbanItems().length === 1, 'Error deleting task!')
         assert(module.kanbanItems()[0]._id() !== taskID, 'Deleted wrong task!')
-
-        return Promise.resolve()
     })
 
 /**********************************************************************************************************************
@@ -280,7 +274,5 @@ describe('test kanbans\' operations', function() {
         res = await request.get('/projects/' + PROJECTS['get'].name + '/modules/' + PROJECTS['get'].modules[0].name
             + '/kanban/0/' + DEVELOPER.email).set({ 'Authorization': developerToken }).expect(200)
         assert(res.body.length === 1, 'Wrong number of tasks returned')
-
-        return Promise.resolve()
     })
 })

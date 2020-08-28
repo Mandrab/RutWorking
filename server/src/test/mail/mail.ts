@@ -23,7 +23,5 @@ describe('test emails\' operations', function() {
         } catch(err) { }
 
         assert(res1.accepted.length > 0 && res1.rejected.length === 0, 'That should be a valid call')
-
-        return Promise.resolve()
     })
 })

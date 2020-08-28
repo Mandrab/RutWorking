@@ -85,8 +85,6 @@ describe('test chats\' operations', function() {
         // valid token developer
         await request.post('/projects/' + PROJECTS['post'].name + '/modules/' + PROJECTS['post'].modules[0].name
             + '/messages').set({ 'Authorization': developerToken }).send({ message: 'asd' }).expect(201)
-
-        return Promise.resolve()
     })
 
 /**********************************************************************************************************************
@@ -134,7 +132,5 @@ describe('test chats\' operations', function() {
         res = await request.get('/projects/' + PROJECTS['get'].name + '/modules/' + PROJECTS['get'].modules[0].name
             + '/messages/1').set({ 'Authorization': developerToken }).expect(200)
         assert(res.body.length === initialMessagesN -1, 'Wrong number of messages returned')
-
-        return Promise.resolve()
     })
 })

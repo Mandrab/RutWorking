@@ -95,8 +95,6 @@ describe('test modules\' operations', function() {
         let user = await USER.getUser()
         assert(project.modules().some(it => it.name() === module2Name && equals(it.chiefID(), user._id())),
             'A module is expected to be added with a different chief')
-
-        return Promise.resolve()
     })
 
 /**********************************************************************************************************************
@@ -149,8 +147,6 @@ describe('test modules\' operations', function() {
         assert(response.body.developers.length >= 1, 'Error retrieving module informations!')
         assert(response.body.developers !== PROJECTS['get module'].modules[0].developers,
             'Error retrieving module informations!')
-
-        return Promise.resolve()
     })
 
 /**********************************************************************************************************************
@@ -184,8 +180,6 @@ describe('test modules\' operations', function() {
         // valid token
         await request.delete('/projects/' + PROJECTS['delete module'].name + '/modules/' + PROJECTS['delete module']
             .modules[1].name).set({ 'Authorization': projectChiefToken }).expect(200)
-
-        return Promise.resolve()
     })
 
 /**********************************************************************************************************************
@@ -236,8 +230,6 @@ describe('test modules\' operations', function() {
         let user = await USER.getUser()
         assert(module.developersIDs().length === 3, 'Wrong number of developers!')
         assert(module.developersIDs().some(it => equals(it, user._id())), 'Unexpected developer!')
-
-        return Promise.resolve()
     })
 
 /**********************************************************************************************************************
@@ -301,7 +293,5 @@ describe('test modules\' operations', function() {
         assert(module.kanbanItems().length === 2, 'Wrong number of tasks!')
         assert(module.kanbanItems().some(it => it.status() === States.DONE)
             || module.kanbanItems().some(it => it.status() === States.TODO), 'Wrong tasks states!')
-
-        return Promise.resolve()
     })
 })
