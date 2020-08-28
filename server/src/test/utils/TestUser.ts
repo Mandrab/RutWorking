@@ -1,7 +1,7 @@
 import { Roles, User, register } from "../../main/models"
 import { DBUser } from "../../main/models/db"
 import { sign } from "jsonwebtoken"
-import { secret } from "../../main/config/auth"
+import { secret } from "../../main/config/jwt"
 
 /**
  * Class to simplify users use on tests.
@@ -32,14 +32,14 @@ export class TestUser {
     /**
      * Autonomously search for the user into mongo db
      * 
-     * @return the model's User class
+     * @returns the model's User class
      */
     async getUser() { return User.findByEmail(this.email) }
 
     /**
      * Autonomously generate a JWT for the user
      * 
-     * @return the token string
+     * @returns the token string
      */
     async getToken() { return sign({ id: (await this.getUser())._id() }, secret, { expiresIn: 86400 }) }
 }

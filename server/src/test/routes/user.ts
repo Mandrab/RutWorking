@@ -11,7 +11,7 @@ import { Roles, register, User } from '../../main/models'
 import { config as dbConfig } from '../../main/config/db'
 import { DBUser } from '../../main/models/db'
 import { sign } from 'jsonwebtoken'
-import { secret } from '../../main/config/auth'
+import { secret } from '../../main/config/jwt'
 
 const request = require('supertest')('http://localhost:8080')
 

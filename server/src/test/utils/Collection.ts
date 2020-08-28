@@ -10,7 +10,7 @@ import { Schema } from 'mongoose'
  * 
  * @param o1 first id
  * @param o2 second id
- * @return true if the two are equals, false otherwise
+ * @returns true if the two are equals, false otherwise
  */
 export function equals(o1: Schema.Types.ObjectId, o2: Schema.Types.ObjectId) {
     return o1.toString() === o2.toString()
