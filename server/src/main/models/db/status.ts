@@ -3,7 +3,7 @@ import { Document, Schema, model as mongooseModel, set as mongooseSet } from 'mo
 mongooseSet('useCreateIndex', true)
 
 /**
- * Schema of STATE document in the DB
+ * Interface of STATE document in the DB
  *
  * @author Paolo Baldini
  */
