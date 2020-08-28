@@ -10,6 +10,7 @@ import { DBRole } from './models/db'
 const setup = async () => { 
     const app = express()
 
+    // allow cross-origin resource sharing only with client (8081)
     app.use(cors({ origin: "http://localhost:8081" }))
 
     // parse requests of content-type application/json
@@ -20,11 +21,11 @@ const setup = async () => {
         useNewUrlParser: true,
         useUnifiedTopology: true
     })
-    try {
-        await register('x', 'y', 'ADMIN_EMAIL', 'ADMIN_PASSWORD', Roles.USER).catch((err: any) => {
-            if (err.code !== 406) throw err
-        })
-    } catch(_) { }
+
+    // register default admin
+    try { await register('x', 'y', 'admin@email.com', 'ADMIN_PASSWORD', Roles.USER) } catch(_) { }
+
+    // insert default roles (if they do not exist)
     try {
         await new DBRole({ name: Roles.ADMIN }).save()
         await new DBRole({ name: Roles.USER }).save()

@@ -8,23 +8,43 @@ import { DBUser } from "../models/db"
 import { Schema } from "mongoose"
 import { User, Project } from "../models"
 
+/**
+ * Possible notification topics
+ * 
+ * @author Paolo Baldini
+ */
 export enum Topics {
     CHAT_MESSAGE = 'chat_message',
     TASK_COMPLETED = 'task_completed',
     DEVELOPER_ADDED = 'developer_added'
 }
 
+/**
+ * Register the firebase token of a user to be used to send notifications
+ * 
+ * @param request web query
+ * @param result query result
+ */
 export async function setFirebaseCustomToken(request: any, result: any) {
     try {
         if (!request.body.firebaseToken) throw { code: 409, message: 'Firebase token not passed!' }
         await DBUser.updateOne({ _id: request.userID }, { firebaseToken: request.body.firebaseToken })
         result.status(200).send('Token succesfully registered!')
     } catch (err) {
-        if (err.code && err.message) result.status(err.code).send(err.message)
+        if (err.code && err.code < 1000 && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
 }
 
+/**
+ * Send notification about a topic
+ * 
+ * @param topic of the notification
+ * @param projectName select the module from the specified project
+ * @param moduleName select the users whose are member of the module
+ * @param message to be sent
+ * @param sender of the message
+ */
 export async function sendNotification(
     topic: Topics,
     projectName: string,

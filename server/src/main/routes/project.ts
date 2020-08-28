@@ -17,9 +17,9 @@ module.exports = function (app: any) {
     // get info of a project
     app.get('/projects/project/:name', [isActive, isUser], getProjectInfo)
 
-    // get about projects (max 100)
+    // get list of projects
     app.get('/projects/:skipN?/:user?', [isActive, isUser], getProjects)
 
-    // project chief or admin can block a project
+    // project chief or admin can delete a project
     app.delete('/projects/project/:name', [isActive, isProjectChief], deleteProject)
 }

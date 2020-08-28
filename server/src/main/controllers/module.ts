@@ -13,6 +13,12 @@ import {
 } from '../models'
 import { sendNotification, Topics } from './notifications'
 
+/**
+ * Create a new module of a project
+ * 
+ * @param request web query
+ * @param result query result
+ */
 export async function newModule(request: any, result: any) {
     try {
         let user = request.userID
@@ -21,6 +27,9 @@ export async function newModule(request: any, result: any) {
         if (!project) return result.status(404).send('Parent project not found!')
 
         if (user.toString() !== project.chiefID().toString()) return result.status(403).send('Unauthorized!')
+
+        if (project.modules().some(it => it.name() === request.params.moduleName))
+            throw { code: 409, message: 'Module with this name yet exists' }
 
         await _newModule(
             request.params.moduleName,
@@ -32,11 +41,17 @@ export async function newModule(request: any, result: any) {
 
         result.status(201).send('Module succesfully created!')
     } catch(err) {
-        if (err.code && err.message) result.status(err.code).send(err.message)
+        if (err.code && err.code < 1000 && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
 }
 
+/**
+ * Add a developer to a module
+ * 
+ * @param request web query
+ * @param result query result
+ */
 export async function addDeveloper(request: any, result: any) {
     try {
         let projectName = request.params.projectName
@@ -56,11 +71,17 @@ export async function addDeveloper(request: any, result: any) {
             )
         } catch (err) { console.log(err) }
     } catch(err) {
-        if (err.code && err.message) result.status(err.code).send(err.message)
+        if (err.code && err.code < 1000 && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
 }
 
+/**
+ * Remove a developer from a module
+ * 
+ * @param request web query
+ * @param result query result
+ */
 export async function removeDeveloper(request: any, result: any) {
     try {
         let projectName = request.params.projectName
@@ -70,11 +91,17 @@ export async function removeDeveloper(request: any, result: any) {
         await _removeDeveloper(projectName, moduleName, userEmail)
         result.status(200).send('Developer succesfully removed')
     } catch(err) {
-        if (err.code && err.message) result.status(err.code).send(err.message)
+        if (err.code && err.code < 1000 && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
 }
 
+/**
+ * Get info about the module
+ * 
+ * @param request web query
+ * @param result query result
+ */
 export async function getModuleInfo(request: any, result: any) {
     try {
         let projectName = request.params.projectName
@@ -83,11 +110,17 @@ export async function getModuleInfo(request: any, result: any) {
         let module = await _getModuleInfo(projectName, moduleName)
         result.status(200).send(module)
     } catch(err) {
-        if (err.code && err.message) result.status(err.code).send(err.message)
+        if (err.code && err.code < 1000 && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
 }
 
+/**
+ * Delete a module from a project
+ * 
+ * @param request web query
+ * @param result query result
+ */
 export async function deleteModule(request: any, result: any) {
     try {
         let project = await Project.findByName(request.params.projectName)
@@ -97,7 +130,7 @@ export async function deleteModule(request: any, result: any) {
         await module.delete()
         result.status(200).send('Module succesfully removed')
     } catch(err) {
-        if (err.code && err.message) result.status(err.code).send(err.message)
+        if (err.code && err.code < 1000 && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
 }

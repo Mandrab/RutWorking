@@ -6,7 +6,7 @@ export const SALT_WORK_FACTOR = 10     // to slow down brute force attacks (inc 
 mongooseSet('useCreateIndex', true)
 
 /**
- * Schema of USER document in the DB
+ * Interface of USER document in the DB
  *
  * @author Paolo Baldini
  */
@@ -54,6 +54,7 @@ const userSchema = new Schema({
     firebaseToken: String
 })
 
+/** Before save hash user password */
 userSchema.pre('save', async function (next) {
     let user = <IDBUser>this
 

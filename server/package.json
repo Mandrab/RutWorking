@@ -7,15 +7,18 @@
     "compile": "run-script-os",
     "compile:win32": "echo todo",
     "compile:linux:darwin": "clear && rm -rf build/ && cp -r src build && tsc",
+
     "run": "run-script-os",
     "run:win32": "echo todo",
     "run:linux:darwin": "npm run-script compile && node build/main/server.js",
+
     "test": "run-script-os",
     "test:win32": "echo todo",
     "test:linux:darwin": "npm run-script run & sleep 7 && mocha --timeout 10000 'build/test/{,!(notifications)/**}/*.js'",
+
     "test-notifications": "run-script-os",
     "test-notifications:win32": "firebase login; firebase serve --only hosting --port=8081",
-    "test-notifications:linux": "npm run-script run & cd ./src/test/notifications/ && node ./before.js && firebase login; firebase serve --only hosting --port=8081"
+    "test-notifications:linux:darwin": "npm run-script run & cd ./src/test/notifications/ && node ./before.js && firebase login; firebase serve --only hosting --port=8081"
   },
   "repository": {
     "type": "git",

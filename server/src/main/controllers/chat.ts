@@ -3,10 +3,16 @@
  * 
  * @author Paolo Baldini
  */
-import { Project, getMessages as _getMessages } from '../models'
 import { _admin } from '../config/firebase'
+import { Project, getMessages as _getMessages } from '../models'
 import { sendNotification, Topics } from './notifications'
 
+/**
+ * Manage the input of a new message
+ * 
+ * @param request web query
+ * @param result query result
+ */
 export async function newMessage(request: any, result: any) {
     try {
         let user = request.userID
@@ -16,7 +22,7 @@ export async function newMessage(request: any, result: any) {
 
         if (!request.body.message) return result.status(409).send('Message body not found!')
 
-        await module.newMessage(user, request.body.message) // TODO parse to avoid code injection or strange things
+        await module.newMessage(user, request.body.message)
 
         result.status(201).send('Message succesfully created!')
 
@@ -30,11 +36,17 @@ export async function newMessage(request: any, result: any) {
             )
         } catch (err) { console.log(err) }
     } catch (err) {
-        if (err.code && err.message) result.status(err.code).send(err.message)
+        if (err.code && err.code < 1000 && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
 }
 
+/**
+ * Respond with 100 messages
+ * 
+ * @param request web query
+ * @param result query result
+ */
 export async function getMessages(request: any, result: any) {
     try {
         let skipMessage = request.params.skipN ? parseInt(request.params.skipN, 10) : 0
@@ -43,7 +55,7 @@ export async function getMessages(request: any, result: any) {
 
         result.status(200).send(messages)
     } catch (err) {
-        if (err.code && err.message) result.status(err.code).send(err.message)
+        if (err.code && err.code < 1000 && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
 }

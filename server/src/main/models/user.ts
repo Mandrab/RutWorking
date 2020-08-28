@@ -107,11 +107,6 @@ export class User {
                 if (err) reject({ code: 401, message: 'Invalid token!' })
                 resolve(User.findById(decoded.id))
             })
-        })//verify(token, secret), (_err: any) => {})
-        /*, (err: any, decoded: any) => {
-            if (err) throw { code: 401, message: 'Invalid token!' }
-
-            return User.findById(decoded.id)
-        })*/
+        })
     }
 }

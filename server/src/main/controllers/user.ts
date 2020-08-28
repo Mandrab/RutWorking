@@ -11,16 +11,28 @@ import {
 } from '../models'
 import { sendEmail } from './mailer'
 
+/**
+ * Allow a user to log into the system
+ * 
+ * @param request web query
+ * @param result query result
+ */
 export async function login(request: any, result: any) {
     try {
         let res = await _login(request.body.userEmail, request.body.password)
         result.status(200).send(res) // 24 hours
     } catch (err) {
-        if (err.code && err.message) result.status(err.code).send(err.message)
+        if (err.code && err.code < 1000 && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
 }
 
+/**
+ * Allow an admin to register a user
+ * 
+ * @param request web query
+ * @param result query result
+ */
 export async function register(request: any, result: any) {
     try {
         if (!request.body.role) return result.status(400).send('Role missing in body!')
@@ -41,13 +53,18 @@ export async function register(request: any, result: any) {
             .catch((err: any) => { if (err) console.log(err) })
 
         result.status(201).send('Succesfully created!')
-        //console.log('Generated password: ' + password) // TODO remove.. only to debug
     } catch (err) {
-        if (err.code && err.message) result.status(err.code).send(err.message)
+        if (err.code && err.code < 1000 && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
 }
 
+/**
+ * Allow a user to change his own password
+ * 
+ * @param request web query
+ * @param result query result
+ */
 export async function changePassword(request: any, result: any) {
     try {
         if (!request.body.oldPassword || !request.body.newPassword)
@@ -59,11 +76,17 @@ export async function changePassword(request: any, result: any) {
             result.status(200).send('Successfully updated!')
         } else result.status(401).send('Invalid password!')
     } catch (err) {
-        if (err.code && err.message) result.status(err.code).send(err.message)
+        if (err.code && err.code < 1000 && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
 }
 
+/**
+ * Returns informations about a user
+ * 
+ * @param request web query
+ * @param result query result
+ */
 export async function getUserInfo(request: any, result: any) {
     try {
         let user = await User.findByEmail(request.params.userEmail)
@@ -76,11 +99,17 @@ export async function getUserInfo(request: any, result: any) {
             blocked: !user.isActive()
         })
     } catch(err) {
-        if (err.code && err.message) result.status(err.code).send(err.message)
+        if (err.code && err.code < 1000 && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
 }
 
+/**
+ * Return a list of 100 users, eventually skipping the first N
+ * 
+ * @param request web query
+ * @param result query result
+ */
 export async function getUsers(request: any, result: any) {
     try {
         let skipUsers = request.params.skipN ? parseInt(request.params.skipN, 10) : 0
@@ -89,11 +118,17 @@ export async function getUsers(request: any, result: any) {
 
         result.status(200).send(users)
     } catch (err) {
-        if (err.code && err.message) result.status(err.code).send(err.message)
+        if (err.code && err.code < 1000 && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
 }
 
+/**
+ * Delete a user. Really, only block it for history purpose
+ * 
+ * @param request web query
+ * @param result query result
+ */
 export async function blockUser(request: any, result: any) {
     try {
         let user = await User.findByEmail(request.params.userEmail)
@@ -104,7 +139,7 @@ export async function blockUser(request: any, result: any) {
             'Your account has been blocked. You will no longer be able to log into your account.')
             .catch((err: any) => { if (err) console.log(err) })
     } catch(err) {
-        if (err.code && err.message) result.status(err.code).send(err.message)
+        if (err.code && err.code < 1000 && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
 }

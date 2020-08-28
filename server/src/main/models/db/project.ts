@@ -4,7 +4,7 @@ import { ModuleSchema, IDBModule } from './module'
 mongooseSet('useCreateIndex', true)
 
 /**
- * Schema of PROJECT document in the DB
+ * Interface of PROJECT document in the DB
  *
  * @author Paolo Baldini
  */

@@ -7,6 +7,12 @@ import { Project, User, getTasks as _getTasks } from '../models'
 import { States } from '../models/db'
 import { sendNotification, Topics } from './notifications'
 
+/**
+ * Insert a new task in a module
+ * 
+ * @param request web query
+ * @param result query result
+ */
 export async function newTask(request: any, result: any) {
     try {
         let project = await Project.findByName(request.params.projectName)
@@ -20,15 +26,24 @@ export async function newTask(request: any, result: any) {
             .some(it => it.toString() === assignee._id().toString()))
                 return result.status(404).send('The specified user is not a developer of the module')
 
-        await module.newTask(request.body.name, request.body.description, status, assignee) // TODO parse to avoid code injection or strange things
+        if (module.kanbanItems().some(it => it.name() === request.body.name))
+            return result.status(409).send('A task with this name already exists')
+
+        await module.newTask(request.body.name, request.body.description, status, assignee)
 
         result.status(201).send('Task succesfully created!')
     } catch(err) {
-        if (err.code && err.message) result.status(err.code).send(err.message)
+        if (err.code && err.code < 1000 && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
 }
 
+/**
+ * Update status (to-do/in-progress/...; assignee) of a task
+ * 
+ * @param request web query
+ * @param result query result
+ */
 export async function updateStatus(request: any, result: any) {
     try {
         let project = await Project.findByName(request.params.projectName)
@@ -67,11 +82,17 @@ export async function updateStatus(request: any, result: any) {
             }
         } catch (err) { console.log(err) }
     } catch(err) {
-        if (err.code && err.message) result.status(err.code).send(err.message)
+        if (err.code && err.code < 1000 && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
 }
 
+/**
+ * Delete a task
+ * 
+ * @param request web query
+ * @param result query result
+ */
 export async function deleteTask(request: any, result: any) {
     try {
         let project = await Project.findByName(request.params.projectName)
@@ -82,11 +103,17 @@ export async function deleteTask(request: any, result: any) {
 
         result.status(200).send('Task succesfully deleted!')
     } catch(err) {console.log(err)
-        if (err.code && err.message) result.status(err.code).send(err.message)
+        if (err.code && err.code < 1000 && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
 }
 
+/**
+ * Get list of tasks. It's possible to skip N first task
+ * 
+ * @param request web query
+ * @param result query result
+ */
 export async function getTasks(request: any, result: any) {
     try {
         let skipTask = request.params.skipN ? parseInt(request.params.skipN, 10) : 0
@@ -100,7 +127,7 @@ export async function getTasks(request: any, result: any) {
 
         result.status(200).send(tasks)
     } catch (err) {
-        if (err.code && err.message) result.status(err.code).send(err.message)
+        if (err.code && err.code < 1000 && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')
     }
 }

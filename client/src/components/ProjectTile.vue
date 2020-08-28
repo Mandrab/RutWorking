@@ -104,6 +104,10 @@ export default {
     background-color: lightgray;
 }
 
+li:active {
+    background-color: lightgray;
+}
+
 .delete-btn {
     position: absolute;
     top: 1px;

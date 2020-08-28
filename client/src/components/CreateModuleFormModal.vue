@@ -60,7 +60,7 @@ export default {
             submitted: false,
             creating: false,
             showModal: false,
-            title: 'Choose a date',
+            title: '',
             message: ''
         }
     },
@@ -131,6 +131,7 @@ export default {
             }
             if (date < today) {
                 this.deadline = '';
+                this.title = 'Choose a date';
                 this.message = "Invalid date!";
                 this.showModal = true;
             }
@@ -157,6 +158,9 @@ export default {
                 this.closeForm();
             }, (err) => {
                 console.log(err.body);
+                this.showModal = true;
+                this.title = 'Error';
+                this.message = err.body;
                 this.creating = false;
             });
         },

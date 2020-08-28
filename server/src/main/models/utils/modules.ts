@@ -7,6 +7,16 @@ import { Schema } from "mongoose"
 import { User, Project } from ".."
 import { DBProject } from "../db"
 
+/**
+ * Create a new module of a project
+ * 
+ * @param name of the module
+ * @param chiefID of the module
+ * @param projectName parent project
+ * @param description optional description
+ * @param deadline optional deadline
+ * @returns an object containing a code 200 if all goes well
+ */
 export async function newModule(
     name: string, chiefID: Schema.Types.ObjectId | string,
     projectName: string,
@@ -20,6 +30,13 @@ export async function newModule(
     return { code: 200, message: ''}
 }
 
+/**
+ * Get info about the module
+ * 
+ * @param projectName parent project
+ * @param moduleName name of the module to get
+ * @returns an object containing: module name, chief and developers emails and eventually deadline and description
+ */
 export async function getModuleInfo(projectName: string, moduleName: string) {
     let project = await Project.findByName(projectName)
     let module = project.modules().find(it => it.name() === moduleName)
@@ -37,6 +54,13 @@ export async function getModuleInfo(projectName: string, moduleName: string) {
     return result
 }
 
+/**
+ * Set a user as a developer of the module
+ * 
+ * @param projectName parent project
+ * @param moduleName name of the module
+ * @param userEmail email of the user to add
+ */
 export async function addDeveloper(projectName: string, moduleName: string, userEmail: string) {
     let user = await User.findByEmail(userEmail)
     let project = await Project.findByName(projectName)
@@ -45,6 +69,13 @@ export async function addDeveloper(projectName: string, moduleName: string, user
     module.addDeveloper(user._id())
 }
 
+/**
+ * Remove a user from the list of developers of the project
+ * 
+ * @param projectName parent project
+ * @param moduleName name of the module
+ * @param userEmail to remove from developers
+ */
 export async function removeDeveloper(projectName: string, moduleName: string, userEmail: string) {
     let user = await User.findByEmail(userEmail)
     let project = await Project.findByName(projectName)
@@ -53,7 +84,21 @@ export async function removeDeveloper(projectName: string, moduleName: string, u
     await module.removeDeveloper(user._id())
 }
 
-export async function getTasks(projectName: string, moduleName: string, skipFirst: number = 0, userID?: Schema.Types.ObjectId) {
+/**
+ * Get list of tasks from a module of a project
+ * 
+ * @param projectName parent project
+ * @param moduleName name of the module
+ * @param skipFirst number of task to skip
+ * @param userID returns only tasks in witch user is assignee
+ * @returns a list of task each containing: id, name, taskDescription, status and eventually the assignee email
+ */
+export async function getTasks(
+    projectName: string,
+    moduleName: string,
+    skipFirst: number = 0,
+    userID?: Schema.Types.ObjectId
+) {
     let query: any[] = [
         { $match: { name: projectName } },          // find the project
         { $project: { _id: 0, modules: 1 } },       // get only modules
@@ -85,6 +130,14 @@ export async function getTasks(projectName: string, moduleName: string, skipFirs
     return Promise.all(tasks)
 }
 
+/**
+ * Returns list of messages
+ * 
+ * @param projectName parent project
+ * @param moduleName name of the module
+ * @param skipFirst number of messages to skip
+ * @returns a list of messages in which each contains: date, sender email, message
+ */
 export async function getMessages(projectName: string, moduleName: string, skipFirst: number = 0) {
     let query: any[] = [
         { $match: { name: projectName } },          // find the project

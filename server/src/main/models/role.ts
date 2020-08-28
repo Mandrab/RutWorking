@@ -11,6 +11,12 @@ export enum Roles {
     USER = 'user'
 }
 export namespace Roles {
+
+    /**
+     * Convert a string to a role enum
+     * @param s string to convert
+     * @returns the corresponding role or throw exception if the string is not valid
+     */
     export function toRoles(s: string): Roles {
         if (s === Roles.ADMIN) return Roles.ADMIN
         if (s === Roles.USER) return Roles.USER

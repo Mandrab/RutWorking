@@ -1,12 +1,12 @@
 /**
  * Utilities function to send emails
- * TODO not yet tested
- *
+ * 
  * @author Paolo Baldini
  */
 import { createTransport } from 'nodemailer'
 import { config as emailConfig } from '../config/email'
 
+/** Setup of nodemailer */
 const transporter = createTransport({
     service: emailConfig.service,
     auth: {
