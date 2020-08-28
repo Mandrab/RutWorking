@@ -1,15 +1,18 @@
 /**
- * Tests project routes
+ * Tests module routes
  * 
  * @author Paolo Baldini
  */
+import { describe } from 'mocha'
+import assert from 'assert'
 import { connect } from 'mongoose'
 import { Roles, Project } from '../../main/models'
 import { config as dbConfig } from '../../main/config/db'
-import { TestProjectBuilders, TestProject } from './utils/TestProject'
-import { TestUser } from './utils/TestUser'
+import { TestProjectBuilders, TestProject } from '../utils/TestProject'
+import { TestUser } from '../utils/TestUser'
 import { States } from '../../main/models/db'
-import { TestClass } from './utils/TestClass'
+import { TestClass } from '../utils/TestClass'
+import { equals } from '../utils/Collection'
 
 const request = require('supertest')('http://localhost:8080')
 
@@ -55,7 +58,7 @@ describe('test modules\' operations', function() {
     MODULE CREATION
 **********************************************************************************************************************/
 
-    it('post module', async function() {
+    it('post', async function() {
         let chiefToken = await PROJECTS['post module'].chief.getToken()
         let userToken = await USER.getToken()
         let module1Name = 'module1'
@@ -79,9 +82,8 @@ describe('test modules\' operations', function() {
 
         let project = await Project.findByName(PROJECTS['post module'].name)
         let chief = await PROJECTS['post module'].chief.getUser()
-        if (!project.modules().some(it => it.name() === module1Name
-                && it.chiefID().toString() === chief._id().toString()))
-            throw 'A module is expected to be added'
+        assert(project.modules().some(it => it.name() === module1Name && equals(it.chiefID(), chief._id())),
+            'A module is expected to be added')
 
         // TODO: OK? -> NO ERROR TRYING TO ADD A NEW MODULE WITH EXISTING NAME
 
@@ -91,18 +93,15 @@ describe('test modules\' operations', function() {
 
         await project.refresh()
         let user = await USER.getUser()
-        if (!project.modules().some(it => it.name() === module2Name
-            && it.chiefID().toString() === user._id().toString()))
-            throw 'A module is expected to be added with a different chief'
-
-        return Promise.resolve()
+        assert(project.modules().some(it => it.name() === module2Name && equals(it.chiefID(), user._id())),
+            'A module is expected to be added with a different chief')
     })
 
 /**********************************************************************************************************************
     MODULE GET
 **********************************************************************************************************************/
 
-    it('get module', async function() {
+    it('get', async function() {
         let projectChiefToken = await PROJECTS['get module'].chief.getToken()
         let moduleChiefToken = await PROJECTS['get module'].modules[0].chief.getToken()
         let developerToken = await PROJECTS['get module'].modules[0].developers[0].getToken()
@@ -128,13 +127,13 @@ describe('test modules\' operations', function() {
         let response = await request.get('/projects/' + PROJECTS['get module'].name + '/modules/'
             + PROJECTS['get module'].modules[0].name).set({ 'Authorization': projectChiefToken }).expect(200)
             .expect('Content-Type', /json/)
-        if (response.body.name !== PROJECTS['get module'].modules[0].name) throw 'Error retrieving module informations!'
+        assert(response.body.name === PROJECTS['get module'].modules[0].name, 'Error retrieving module informations!')
 
         // valid token and module chief
         response = await request.get('/projects/' + PROJECTS['get module'].name + '/modules/'
             + PROJECTS['get module'].modules[0].name).set({ 'Authorization': moduleChiefToken }).expect(200)
             .expect('Content-Type', /json/)
-        if (response.body.name !== PROJECTS['get module'].modules[0].name) throw 'Error retrieving module informations!'
+        assert(response.body.name === PROJECTS['get module'].modules[0].name, 'Error retrieving module informations!')
 
         // valid token and non-developer user
         await request.get('/projects/' + PROJECTS['get module'].name + '/modules/' + PROJECTS['get module'].modules[0]
@@ -143,20 +142,18 @@ describe('test modules\' operations', function() {
         // valid token and developer
         response = await request.get('/projects/' + PROJECTS['get module'].name + '/modules/' + PROJECTS['get module']
             .modules[0].name).set({ 'Authorization': developerToken }).expect(200).expect('Content-Type', /json/)
-        if (response.body.name !== PROJECTS['get module'].modules[0].name) throw 'Error retrieving module informations!'
+        assert(response.body.name === PROJECTS['get module'].modules[0].name, 'Error retrieving module informations!')
 
-        if (response.body.developers.length < 1) throw 'Error retrieving module informations!'
-        if (response.body.developers === PROJECTS['get module'].modules[0].developers)
-            throw 'Error retrieving module informations!'
-
-        return Promise.resolve()
+        assert(response.body.developers.length >= 1, 'Error retrieving module informations!')
+        assert(response.body.developers !== PROJECTS['get module'].modules[0].developers,
+            'Error retrieving module informations!')
     })
 
 /**********************************************************************************************************************
     MODULE DELETION
 **********************************************************************************************************************/
 
-    it('delete module', async function() {
+    it('delete', async function() {
         let projectChiefToken = await PROJECTS['delete module'].chief.getToken()
         let moduleChiefToken = await PROJECTS['delete module'].modules[0].chief.getToken()
         let userToken = await USER.getToken()
@@ -181,10 +178,8 @@ describe('test modules\' operations', function() {
             .modules[0].name).set({ 'Authorization': moduleChiefToken }).expect(200)
         
         // valid token
-        /*await request.delete('/projects/' + PROJECTS['delete module'].name + '/modules/' + PROJECTS['delete module']
-            .modules[1].name).set({ 'Authorization': projectChiefToken }).expect(200)*/
-
-        return Promise.resolve()
+        await request.delete('/projects/' + PROJECTS['delete module'].name + '/modules/' + PROJECTS['delete module']
+            .modules[1].name).set({ 'Authorization': projectChiefToken }).expect(200)
     })
 
 /**********************************************************************************************************************
@@ -233,10 +228,8 @@ describe('test modules\' operations', function() {
         let module = project.modules().find(it => it.name() === PROJECTS['post developer'].modules[0].name)
 
         let user = await USER.getUser()
-        if (module.developersIDs().length !== 1 +2) throw 'Wrong number of developers!'
-        if (!module.developersIDs().some(it => it.toString() === user._id().toString())) throw 'Unexpected developer!'
-
-        return Promise.resolve()
+        assert(module.developersIDs().length === 3, 'Wrong number of developers!')
+        assert(module.developersIDs().some(it => equals(it, user._id())), 'Unexpected developer!')
     })
 
 /**********************************************************************************************************************
@@ -296,13 +289,9 @@ describe('test modules\' operations', function() {
 
         await module.refresh()
 
-        if (module.developersIDs().length !== 1) throw 'Wrong number of developers!'
-        if (module.kanbanItems().length !== 2) throw 'Wrong number of tasks!'
-        if (
-            !module.kanbanItems().some(it => it.status() === States.DONE)
-            && !module.kanbanItems().some(it => it.status() === States.TODO)
-        ) throw 'Wrong tasks states!'
-
-        return Promise.resolve()
+        assert(module.developersIDs().length === 1, 'Wrong number of developers!')
+        assert(module.kanbanItems().length === 2, 'Wrong number of tasks!')
+        assert(module.kanbanItems().some(it => it.status() === States.DONE)
+            || module.kanbanItems().some(it => it.status() === States.TODO), 'Wrong tasks states!')
     })
 })

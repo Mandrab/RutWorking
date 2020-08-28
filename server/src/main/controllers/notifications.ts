@@ -10,7 +10,8 @@ import { User, Project } from "../models"
 
 export enum Topics {
     CHAT_MESSAGE = 'chat_message',
-    TASK_COMPLETED = 'task_completed'
+    TASK_COMPLETED = 'task_completed',
+    DEVELOPER_ADDED = 'developer_added'
 }
 
 export async function setFirebaseCustomToken(request: any, result: any) {

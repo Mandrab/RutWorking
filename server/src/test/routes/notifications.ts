@@ -1,17 +1,22 @@
-import { User, register, Roles } from '../../main/models'
-import { secret } from '../../main/config/auth'
+/**
+ * Tests notifications routes
+ * 
+ * @author Paolo Baldini
+ */
+import { describe } from 'mocha'
+import { Roles } from '../../main/models'
 import { config as dbConfig } from '../../main/config/db'
 import { connect } from 'mongoose'
-import { DBUser } from '../../main/models/db'
-import { sign } from 'jsonwebtoken'
 import { _admin } from '../../main/config/firebase'
+<<<<<<< HEAD
 
+=======
+import { TestUser } from '../utils/TestUser'
+>>>>>>> develop
 
 const request = require('supertest')('http://localhost:8080')
 
-const USER: any = {
-    email: 'user@user.user'
-}
+const USER = new TestUser('user@user.user')
 
 describe('test notifications\' operations', function () {
     before(async function () {
@@ -23,32 +28,21 @@ describe('test notifications\' operations', function () {
 
         await clean()
 
-        // add an initial user
-        await _sign(USER, Roles.USER)
+        await USER.register(Roles.USER) // add an initial user
     })
 
     after(async function () { return clean() })
 
-    const _sign = async (user: any, role: Roles) => {
-        await register('x', 'y', user.email, 'z', role)
-        user.obj = await User.findByEmail(user.email)
-        user.token = sign({ id: user.obj._id() }, secret, { expiresIn: 86400 })
-    }
-
-    const clean = async () => {
-        try { await DBUser.deleteOne({ email: USER.email }) } catch (_) { }
-    }
+    const clean = async () => { await USER.delete() }
 
     it('basic', async function () {
         await request.put('/firebase/notification').expect(500)
 
         await request.put('/firebase/notification').set({ 'Authorization': 'John' }).expect(401)
 
-        await request.put('/firebase/notification').set({ 'Authorization': USER.token }).expect(409)
+        await request.put('/firebase/notification').set({ 'Authorization': await USER.getToken() }).expect(409)
 
-        await request.put('/firebase/notification').set({ 'Authorization': USER.token })
+        await request.put('/firebase/notification').set({ 'Authorization': await USER.getToken() })
             .send({ firebaseToken: '1234567890' }).expect(200)
-
-        return Promise.resolve()
     })
 })

@@ -9,7 +9,7 @@ import {
     register as _register,
     getUsers as _getUsers
 } from '../models'
-import { sendEmail } from './communication'
+import { sendEmail } from './mailer'
 
 export async function login(request: any, result: any) {
     try {
@@ -36,7 +36,9 @@ export async function register(request: any, result: any) {
             Roles.toRoles(request.body.role)
         )
 
-        sendEmail(request.params.userEmail, 'Registration', password, (_1: any,_2: any) => {})
+        sendEmail(request.params.userEmail, 'Registration',
+            'Your generated password is: ' + password + ' Change it as soon as possible!')
+            .catch((err: any) => { if (err) console.log(err) })
 
         result.status(201).send('Succesfully created!')
         console.log('Generated password: ' + password) // TODO remove.. only to debug
@@ -97,6 +99,10 @@ export async function blockUser(request: any, result: any) {
         let user = await User.findByEmail(request.params.userEmail)
         user.block()
         result.status(200).send('User has been blocked!')
+
+        sendEmail(request.params.userEmail, 'Block of account',
+            'Your account has been blocked. You will no longer be able to log into your account.')
+            .catch((err: any) => { if (err) console.log(err) })
     } catch(err) {
         if (err.code && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')

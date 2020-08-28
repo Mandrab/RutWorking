@@ -1,14 +1,16 @@
 /**
- * Tests project routes
+ * Tests chat routes
  * 
  * @author Paolo Baldini
  */
+import { describe } from 'mocha'
+import assert from 'assert'
 import { connect } from 'mongoose'
 import { Roles, Project } from '../../main/models'
 import { config as dbConfig } from '../../main/config/db'
-import { TestProjectBuilders } from './utils/TestProject'
-import { TestUser } from './utils/TestUser'
-import { TestClass } from './utils/TestClass'
+import { TestProjectBuilders } from '../utils/TestProject'
+import { TestUser } from '../utils/TestUser'
+import { TestClass } from '../utils/TestClass'
 
 const request = require('supertest')('http://localhost:8080')
 
@@ -83,8 +85,6 @@ describe('test chats\' operations', function() {
         // valid token developer
         await request.post('/projects/' + PROJECTS['post'].name + '/modules/' + PROJECTS['post'].modules[0].name
             + '/messages').set({ 'Authorization': developerToken }).send({ message: 'asd' }).expect(201)
-
-        return Promise.resolve()
     })
 
 /**********************************************************************************************************************
@@ -102,40 +102,35 @@ describe('test chats\' operations', function() {
         await module.newMessage((await PROJECTS['get'].chief.getUser())._id(), 'asd')
 
         // no token
-        await request.get('/projects/' + PROJECTS['get'].name + '/modules/' + PROJECTS['get'].modules[0].name + '/messages')
-            .expect(500).expect('Token has not been passed!')
+        await request.get('/projects/' + PROJECTS['get'].name + '/modules/' + PROJECTS['get'].modules[0].name
+            + '/messages').expect(500).expect('Token has not been passed!')
 
         // no developer
-        await request.get('/projects/' + PROJECTS['get'].name + '/modules/' + PROJECTS['get'].modules[0].name + '/messages')
-            .set({ 'Authorization': randomUserToken }).expect(403)
+        await request.get('/projects/' + PROJECTS['get'].name + '/modules/' + PROJECTS['get'].modules[0].name
+            + '/messages').set({ 'Authorization': randomUserToken }).expect(403)
         
         // no such project
-        await request.get('/projects/FAKE' + PROJECTS['get'].name + '/modules/' + PROJECTS['get'].modules[0].name + '/messages')
-            .set({ 'Authorization': developerToken }).expect(404)
+        await request.get('/projects/FAKE' + PROJECTS['get'].name + '/modules/' + PROJECTS['get'].modules[0].name
+            + '/messages').set({ 'Authorization': developerToken }).expect(404)
         
         // no such module
-        await request.get('/projects/' + PROJECTS['get'].name + '/modules/FAKE' + PROJECTS['get'].modules[0].name + '/messages')
-            .set({ 'Authorization': developerToken }).expect(404)
+        await request.get('/projects/' + PROJECTS['get'].name + '/modules/FAKE' + PROJECTS['get'].modules[0].name
+            + '/messages').set({ 'Authorization': developerToken }).expect(404)
 
-        let res = await request.get('/projects/' + PROJECTS['get'].name + '/modules/' + PROJECTS['get'].modules[0].name + '/messages')
-            .set({ 'Authorization': developerToken }).expect(200)
+        let res = await request.get('/projects/' + PROJECTS['get'].name + '/modules/' + PROJECTS['get'].modules[0].name
+            + '/messages').set({ 'Authorization': developerToken }).expect(200)
 
         let initialMessagesN = res.body.length
-        if (initialMessagesN < 2) throw 'Wrong number of messages returned'
-
-        if (!res.body.some((it: { message: string }) => it.message === 'qwerty'))
-            throw 'A message not appear in return!'
-        if (!res.body.some((it: { message: string }) => it.message === 'asd'))
-            throw 'A message not appear in return!'
+        assert(initialMessagesN >= 2, 'Wrong number of messages returned')
+        assert(res.body.some((it: { message: string }) => it.message === 'qwerty'), 'A message not appear in return!')
+        assert(res.body.some((it: { message: string }) => it.message === 'asd'), 'A message not appear in return!')
         
-        await request.get('/projects/' + PROJECTS['get'].name + '/modules/' + PROJECTS['get'].modules[0].name + '/messages')
-            .set({ 'Authorization': chiefToken }).expect(200)
+        await request.get('/projects/' + PROJECTS['get'].name + '/modules/' + PROJECTS['get'].modules[0].name
+            + '/messages').set({ 'Authorization': chiefToken }).expect(200)
 
         // skip first
-        res = await request.get('/projects/' + PROJECTS['get'].name + '/modules/' + PROJECTS['get'].modules[0].name + '/messages/1')
-            .set({ 'Authorization': developerToken }).expect(200)
-        if (res.body.length !== initialMessagesN -1) throw 'Wrong number of messages returned'
-
-        return Promise.resolve()
+        res = await request.get('/projects/' + PROJECTS['get'].name + '/modules/' + PROJECTS['get'].modules[0].name
+            + '/messages/1').set({ 'Authorization': developerToken }).expect(200)
+        assert(res.body.length === initialMessagesN -1, 'Wrong number of messages returned')
     })
 })
