@@ -32,14 +32,14 @@ export class TestUser {
     /**
      * Autonomously search for the user into mongo db
      * 
-     * @return the model's User class
+     * @returns the model's User class
      */
     async getUser() { return User.findByEmail(this.email) }
 
     /**
      * Autonomously generate a JWT for the user
      * 
-     * @return the token string
+     * @returns the token string
      */
     async getToken() { return sign({ id: (await this.getUser())._id() }, secret, { expiresIn: 86400 }) }
 }

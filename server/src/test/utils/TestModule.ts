@@ -17,14 +17,14 @@ export class TestModule {
     /**
      * Returns users of the module. It returns only the values given at instantiation time.
      * 
-     * @return the developers and chief as an array of TestUser
+     * @returns the developers and chief as an array of TestUser
      */
     users() { return this.developers.concat(this.chief) }
 
     /**
      * Returns the module retrieving the users' ids autonomously
      * 
-     * @return an object representing the module with users' ids already obtained
+     * @returns an object representing the module with users' ids already obtained
      */
     async document() {
         return {

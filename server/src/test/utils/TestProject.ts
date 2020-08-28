@@ -66,7 +66,7 @@ export class TestProjectBuilders {
     /**
      * Trasform the builder into a project
      * 
-     * @return the TestProject class
+     * @returns the TestProject class
      */
     build(): TestProject { return new TestProject(this.name, this.chief, this.modules) }
 
@@ -76,7 +76,7 @@ export class TestProjectBuilders {
      * @param name of the module
      * @param chief of the chief
      * @param developers assigned to the module
-     * @return the project-builder
+     * @returns the project-builder
      */
     addModule(name: string, chief?: string | TestUser, developers: string[] | TestUser[] = []): TestProjectBuilders {
         if (!chief) chief = this.chief
@@ -94,7 +94,7 @@ export class TestProjectBuilders {
      * 
      * @param name of the project
      * @param chief of the project
-     * @return the project-builder
+     * @returns the project-builder
      */
     static new(name: string, chief: string | TestUser): TestProjectBuilders {
         if (!(chief instanceof TestUser)) { chief = new TestUser(chief as any as string) }

@@ -10,7 +10,7 @@ export namespace TestClass {
      * 
      * @param keys keys array
      * @param strategy to generate the value based on the index
-     * @return array/map of key-value pairs
+     * @returns array/map of key-value pairs
      */
     export function associativeArray<T>(
         keys: string[],
