@@ -1,7 +1,7 @@
 import { Roles, User, register } from "../../main/models"
 import { DBUser } from "../../main/models/db"
 import { sign } from "jsonwebtoken"
-import { secret } from "../../main/config/auth"
+import { secret } from "../../main/config/jwt"
 
 /**
  * Class to simplify users use on tests.

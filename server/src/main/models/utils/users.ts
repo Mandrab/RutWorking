@@ -5,7 +5,7 @@
  */
 
 import { sign as jwtSign } from 'jsonwebtoken'
-import { secret as authSecret } from '../../config/auth'
+import { secret as authSecret } from '../../config/jwt'
 import { set as mongooseSet } from 'mongoose'
 import { DBUser } from '../db'
 import { Role, User } from '..'
