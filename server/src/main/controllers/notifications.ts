@@ -48,9 +48,8 @@ export async function sendNotification(
     let project = await Project.findByName(projectName)
     let module = project.modules().find(it => it.name() === moduleName)
 
-    let receivers = topic === Topics.CHAT_MESSAGE
-        ? await Promise.all(module.developers())
-        : [ await module.chief() ]
+    let receivers = topic === Topics.TASK_COMPLETED ? [ await module.chief() ]
+        : await Promise.all(module.developers())
 
     if (!module.developers().some(it => it.toString() == module.chiefID().toString()))
         receivers = receivers.concat(await module.chief())
