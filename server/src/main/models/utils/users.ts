@@ -89,11 +89,16 @@ export async function getUsers(skipN: number) {
  */
 export async function getUserNotification(userID: Schema.Types.ObjectId | string) {
     let user = await DBUser.findById(userID)
+    await DBUser.updateOne(
+        { "_id": userID, "notifications.seen": false },
+        { $set: { "notifications.$.seen": true } }
+    )
     if (user.notifications) { return user.notifications.map(it => { return {
         topic: it.topic,
         projectName: it.projectName,
         moduleName: it.moduleName,
         senderEmail: it.senderEmail,
-        message: it.message
+        message: it.message,
+        seen: it.seen
     }}) } else return []
 }

@@ -26,7 +26,8 @@ export interface IDBNotification extends Document {
     projectName: string,
     moduleName: string,
     message: string,
-    senderEmail: string
+    senderEmail: string,
+    seen: boolean
 }
 
 /**
@@ -70,6 +71,11 @@ const notificationSchema = new Schema({
     senderEmail: {
         type: String,
         required: true
+    },
+    seen: {
+        type: Boolean,
+        required: true,
+        default: false
     }
 })
 
