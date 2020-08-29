@@ -51,7 +51,7 @@ export async function sendNotification(
     let receivers = topic === Topics.TASK_COMPLETED ? [ await module.chief() ]
         : await Promise.all(module.developers())
 
-    if (!module.developers().some(it => it.toString() == module.chiefID().toString()))
+    if (!receivers.some(it => it._id().toString() === module.chiefID().toString()))
         receivers = receivers.concat(await module.chief())
     let tokens = receivers.filter(dev => dev.firebaseToken()).map(dev => dev.firebaseToken())
 
