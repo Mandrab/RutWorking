@@ -1,8 +1,20 @@
 <template>
   <div class="container-fluid">
+      <!--
     <nav class="navbar navbar-expand-lg navbar-light bg-light rounded">
         <a class="col-6 col-sm-6 col-md-6 col-xl-6 navbar-brand text-left mx-0 p-1" href="#">RutWorking</a>
-        <!-- collapse w-100 order-3 dual-collapse2 -->
+        
+
+        <div >
+            <b-dropdown class="d-sm-none d-none d-sm-block d-md-block d-lg-block float-right" right variant="light">
+                <template v-slot:button-content>
+                    <font-awesome-icon icon="user"/> {{ notificationsNumber }}
+                </template>
+                <div v-if="notificationsReady">
+                    <b-dropdown-item v-for="(n, index) in notificationsList" :key="index"> {{ n.topic }} {{ n.projectName }} {{ n.moduleName }} {{ n.projectName }} {{ n.senderEmail }} {{ n.message }} </b-dropdown-item>
+                </div>
+            </b-dropdown>
+        </div>
 
         <div class="col-6 col-sm-6 col-md-6 col-xl-6 mx-0 p-0">
             <b-dropdown class="d-none d-sm-block d-md-block d-lg-block float-right" right variant="light">
@@ -23,19 +35,11 @@
                 <b-dropdown-item @click="logout"><font-awesome-icon icon="sign-out-alt"/> Logout</b-dropdown-item>
             </b-dropdown>
 
-            <!--
-            <dropdownMenu class="navbar-nav ml-auto" v-model="showDropdownMenu" :right="true" :hover="true">
-                <a class="nav-link dropdown-toggle" v-bind:style="{ color: 'black' }">
-                    {{ username }}
-                </a>
-                <div slot="dropdown">
-                    <a class="dropdown-item" href="#" @click="openPersonalArea">Personal Area</a>
-                    <a class="dropdown-item" href="#" @click="logout">Logout</a>
-                </div>
-            </dropdownMenu>
-            -->
+            
         </div>
     </nav>
+-->
+    <navbar :firstDropdownItem="firstDropdownItem"></navbar>
 
     <div class="row mt-5">
 			<div class="col-12 col-sm-12 col-md-3 col-xl-3 mb-5">
@@ -58,7 +62,7 @@
 </template>
 
 <script>
-//import dropdownMenu from '../components/DropdownMenu.vue';
+import navbar from '../components/Navbar.vue';
 import projectsList from '../components/ProjectsList.vue'
 import createProjectForm from '../components/CreateProjectForm.vue';
 import projectDetail from '../components/ProjectDetail.vue';
@@ -67,21 +71,23 @@ export default {
     data () {
         return {
             username: '',
-            password: '',
+            firstDropdownItem: 'personal-area',
             submitted: false,
             creating: false,
             showDetail: false,
             projectsReady: false,
             projectsArr: [],
             isMember: [],
-            //isModulesMember: [],
             projectDetail: {},
             projectIndex: 0,
-            showDropdownMenu: false
+            showDropdownMenu: false,
+            //notificationsList: [],
+            //notificationsNumber: 0,
+            //notificationsReady: false
         }
     },
     components: {
-        //dropdownMenu,
+        navbar,
         projectsList,
         createProjectForm,
         projectDetail
@@ -161,11 +167,27 @@ export default {
             this.$router.push('/login');
         },
         init () {
+            //this.getNotificationsNumber();
             this.showUserName();
             this.getProjectList();
         },
         openPersonalArea () {
             this.$router.push('/personalarea');
+        },
+        getNotificationsNumber() {
+            this.notificationsReady = false;
+            var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
+
+            //TODO
+            this.$http.get(localStorage.getItem('path') + '/projects/0/' + this.username/*, json*/, tokenJson).then(function(response) {
+                console.log(response.body);
+                localStorage.setItem('notifications', response.body);
+                this.notificationsNumber = response.body;
+
+                this.notificationsReady = true;
+            }, (err) => {
+                console.log(err.body);
+            });
         }
     }
 };

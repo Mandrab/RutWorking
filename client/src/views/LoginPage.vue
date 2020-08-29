@@ -80,6 +80,9 @@ export default {
                 var role = response.body.userRole;
                 localStorage.removeItem('role');
                 localStorage.setItem('role', role);
+
+                localStorage.removeItem('notifications');
+                localStorage.setItem('notifications', 0);
                 if (role == "admin") {
                     this.$router.push('/adminpage');
                     

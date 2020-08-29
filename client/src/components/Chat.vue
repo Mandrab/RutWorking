@@ -71,17 +71,33 @@ export default {
   created() {
     this.init();
     messaging.onMessage(payload => {
-      console.log("MESSAGE PAYLOAD: ")
-      console.log(payload)
-      alert(payload.data.senderEmail, payload.data.message)
-      var username = JSON.parse(localStorage.getItem('user')).email;
-      if (payload.data.senderEmail != username) {
-          this.newMessagesCount = this.isChatOpen ? this.newMessagesCount : this.newMessagesCount + 1
-          this.messageList.push({"author": payload.data.senderEmail, "data": {"text": payload.data.message}, "id": Math.random(), "type": "text"});
+      var notifications = localStorage.getItem('notifications');
+      switch (payload) {
+        case "chat_message":
+          console.log("MESSAGE PAYLOAD: ")
+          console.log(payload)
+          alert(payload.data.senderEmail, payload.data.message)
+          var username = JSON.parse(localStorage.getItem('user')).email;
+          if (payload.data.senderEmail != username) {
+              this.newMessagesCount = this.isChatOpen ? this.newMessagesCount : this.newMessagesCount + 1
+              this.messageList.push({"author": payload.data.senderEmail, "data": {"text": payload.data.message}, "id": Math.random(), "type": "text"});
+              notifications++;
+              localStorage.setItem('notifications', notifications);
+          }
+          break;
+        case "developer_added":
+          notifications++;
+          localStorage.setItem('notifications', notifications);
+          break;
+        case "task_completed":
+          notifications++;
+          localStorage.setItem('notifications', notifications);
+          break;
       }
       
+      
     });
-    setTimeout(this.addCasualMsg, 5000);
+    //setTimeout(this.addCasualMsg, 5000);
     
   },
   methods: {
