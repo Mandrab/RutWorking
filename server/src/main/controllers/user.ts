@@ -8,7 +8,8 @@ import {
     login as _login,
     register as _register,
     getUsers as _getUsers,
-    getUserNotification as _getUserNotification
+    getUserNotification as _getUserNotification,
+    getUserNotificationCount as _getUserNotificationCount
 } from '../models'
 import { sendEmail } from './mailer'
 
@@ -92,6 +93,22 @@ export async function getUserNotifications(request: any, result: any) {
     try {
         let notifications = await _getUserNotification(request.userID)
         result.status(200).send(notifications)
+    } catch (err) {
+        if (err.code && err.code < 1000 && err.message) result.status(err.code).send(err.message)
+        else result.status(500).send('Internal error')
+    }
+}
+
+/**
+ * Allow a user to get the number of his unseen notifications
+ * 
+ * @param request web query
+ * @param result query result
+ */
+export async function getUserNotificationsCount(request: any, result: any) {
+    try {
+        let notifications = await _getUserNotificationCount(request.userID)
+        result.status(200).send({ unseenNotifications: notifications })
     } catch (err) {
         if (err.code && err.code < 1000 && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')

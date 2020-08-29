@@ -4,7 +4,7 @@
  * @author Paolo Baldini
  */
 export { User } from './user'
-export { login, register, getUsers, getUserNotification } from './utils/users'
+export { login, register, getUsers, getUserNotification, getUserNotificationCount } from './utils/users'
 
 export { Role, Roles } from './role'
 

@@ -1231,6 +1231,28 @@ paths:
                     senderEmail:
                       type: string
                       description: Email of the user whose actions have generated the notification
+                    seen:
+                      type: boolean
+                      description: True if the notification was seen
+        403:
+          description: Unauthorized
+  '/notifications/unseen/count':
+    get:
+      tags: [notifications]
+      summary: Get number of unseen notifications
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Number of unseen notifications
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  unseenNotifications:
+                    type: number
+                    description: Number of unseen notifications
         403:
           description: Unauthorized
 
