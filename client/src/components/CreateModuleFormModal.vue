@@ -204,6 +204,12 @@ export default {
   font-family: Helvetica, Arial, sans-serif;
 }
 
+@media (min-width: 992px) {
+  .modal-container {
+    width: 50%;
+  }
+}
+
 .modal-header h3 {
   margin-top: 0;
   color: #42b983;
@@ -243,5 +249,4 @@ export default {
 .modal-footer {
     padding: 10px 16px 0px 0px
 }
-
 </style>

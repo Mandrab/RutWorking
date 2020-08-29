@@ -88,6 +88,18 @@ export default {
   font-family: Helvetica, Arial, sans-serif;
 }
 
+@media (min-width: 768px) {
+  .modal-container {
+    width: 50%;
+  }
+}
+
+@media (min-width: 992px) {
+  .modal-container {
+    width: 40%;
+  }
+}
+
 .modal-header h3 {
   margin-top: 0;
   color: #42b983;

@@ -48,62 +48,63 @@
 import simpleModal from './SimpleModal.vue'
 
 export default {
-    data () {
-        return {
-            oldPassword: '',
-            newPassword: '',
-            newPassword2: '',
-            submitted: false,
-            changingPassword: false,
-            showModal: false,
-            title: '',
-            message: ''
-        }
+    data() {
+      return {
+          oldPassword: '',
+          newPassword: '',
+          newPassword2: '',
+          submitted: false,
+          changingPassword: false,
+          showModal: false,
+          title: '',
+          message: ''
+      }
     },
     components: {
       simpleModal
     },
     methods: {
-        handleSubmit() {
-            this.showModal = false;
-            if (this.newPassword != this.newPassword2) {
-              this.message = 'The new passwords do not match!';
+      handleSubmit() {
+          this.showModal = false;
+          if (this.newPassword != this.newPassword2) {
+            this.title = 'Password update';
+            this.message = 'The new passwords do not match!';
+            this.showModal = true;
+          }
+          this.submitted = true;
+          if (this.oldPassword && this.newPassword && this.newPassword2 && (this.newPassword == this.newPassword2)) {
+              this.changePassword();
+          }
+      },
+      changePassword() {
+          this.changingPassword = true;
+          var tokenjson = { headers: { Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
+          var json = {
+              "oldPassword": this.oldPassword,
+              "newPassword": this.newPassword,
+          }
+          var mail = JSON.parse(localStorage.getItem('user')).email;
+          
+          this.$http.put(localStorage.getItem('path') + '/user/' + mail, json, tokenjson).then(function(response) {
+              console.log(response.body);
+              this.title = 'Password update';
+              this.message = 'Password changed successfully!';
               this.showModal = true;
-            }
-            this.submitted = true;
-            if (this.oldPassword && this.newPassword && this.newPassword2 && (this.newPassword == this.newPassword2)) {
-                this.changePassword();
-            }
-        },
-        changePassword() {
-            this.changingPassword = true;
-            var tokenjson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
-            var json = {
-                "oldPassword": this.oldPassword,
-                "newPassword": this.newPassword,
-            }
-            var mail = JSON.parse(localStorage.getItem('user')).email;
-            
-            this.$http.put(localStorage.getItem('path') + '/user/' + mail, json, tokenjson).then(function(response) {
-                console.log(response.body);
-                this.title = 'Password update';
-                this.message = 'Password changed successfully!';
-                this.showModal = true;
-                this.closeForm();
-            }, (err) => {
-                this.changingPassword = false;
-                this.title = 'Error';
-                this.message = err.body;
-                this.showModal = true;
-            });
-        },
-        closeForm () {
-            this.changingPassword = false;
-            this.$emit('closeModal');
-        },
-        closeModal() {
-            this.showModal = false;
-        }
+              this.closeForm();
+          }, (err) => {
+              this.changingPassword = false;
+              this.title = 'Error';
+              this.message = err.body;
+              this.showModal = true;
+          });
+      },
+      closeForm() {
+          this.changingPassword = false;
+          this.$emit('closeModal');
+      },
+      closeModal() {
+          this.showModal = false;
+      }
     }
 }
 </script>
@@ -127,7 +128,7 @@ export default {
 }
 
 .modal-container {
-  width: 40%;
+  width: 80%;
   margin: 0px auto;
   padding: 20px 30px;
   background-color: #fff;
@@ -135,6 +136,12 @@ export default {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
   transition: all 0.3s ease;
   font-family: Helvetica, Arial, sans-serif;
+}
+
+@media (min-width: 992px) {
+  .modal-container {
+    width: 40%;
+  }
 }
 
 .modal-header h3 {
@@ -176,5 +183,4 @@ export default {
 .modal-footer {
     padding: 10px 16px 0px 0px
 }
-
 </style>

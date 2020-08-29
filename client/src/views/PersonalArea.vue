@@ -14,7 +14,7 @@
 
                 <b-dropdown class="d-sm-none float-right" id="dropdown-options" right variant="light">
                     <template v-slot:button-content>
-                        ...
+                        <font-awesome-icon icon="bars" size="lg"/>
                     </template>
                     <b-dropdown-header disabled> {{ username }} </b-dropdown-header>
                     <b-dropdown-divider></b-dropdown-divider>

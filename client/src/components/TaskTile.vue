@@ -1,7 +1,7 @@
 <template>
     <div>
         <div v-if="taskReady" class="row task-area rounded p-0 mt-1 mb-1">
-            <button v-if="!isLeftArrowDisabled"  class="btn btn-light left-arrow col-1 p-0 m-0"  @click="moveToPreviousStage"><font-awesome-icon icon="angle-left" size="lg" /></button>
+            <button v-if="!isLeftArrowDisabled"  class="btn btn-light left-arrow col-1 p-0 m-0"  @click="moveToPreviousStage"><font-awesome-icon icon="angle-left" size="lg"/></button>
             <div v-if="isLeftArrowDisabled"  class="col-1 p-0"></div>
             <div class="col-10">
                 <div class="row">
@@ -191,8 +191,8 @@ export default {
 
 .next {
     position: absolute;
-    top:0px;
-    right:0px;
+    top: 0px;
+    right: 0px;
     height: 100%;
     width: 15%;
     padding: 0px;
@@ -205,9 +205,9 @@ export default {
     top: 0px;
     left: 0px;
     height: 100%;
+    width: 15%;
     padding: 0px;
     margin: 0px;
-    width: 15%;
     font-size: auto;
 }
 

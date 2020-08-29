@@ -23,20 +23,11 @@
       @edit="editMessage"
       @remove="removeMessage"
     >
-      <!--<template v-slot:text-message-toolbox="scopedProps">
-        <button v-if="!scopedProps.me && scopedProps.message.type==='text'" @click.prevent="like(scopedProps.message.id)">
-          👍
-        </button>
-      </template>-->
       <template v-slot:text-message-body="scopedProps"> 
         <p class="p-0 m-0" style="color: #2e57ff;" v-if="scopedProps.message.author != 'me'">{{scopedProps.message.author}}:</p>
         
         <p class="sc-message--text-content p-1 m-0" style="float: left;" v-html="scopedProps.messageText"></p>
         <p v-if="scopedProps.message.data.meta" class='sc-message--meta' :style="{color: scopedProps.messageColors.color}">{{scopedProps.message.data.meta}}</p>
-        <!--<p v-if="scopedProps.message.isEdited || scopedProps.message.liked" class='sc-message--edited'>
-          <template v-if="scopedProps.message.isEdited">✎</template>
-          <template v-if="scopedProps.message.liked">👍</template>
-        </p>-->
       </template>
       <template v-slot:system-message-body="{ message }">
         [System]: {{message.text}}
@@ -82,7 +73,7 @@ export default {
     messaging.onMessage(payload => {
       console.log("MESSAGE PAYLOAD: ")
       console.log(payload)
-      alert(payload.data.sender, payload.data.message)
+      //alert(payload.data.senderEmail, payload.data.message)
     });
     setTimeout(this.addCasualMsg, 5000);
     
@@ -179,12 +170,6 @@ export default {
         m.data.text = 'This message has been removed';
       }
     },
-    /*like(id){
-      const m = this.messageList.findIndex(m => m.id === id);
-      var msg = this.messageList[m];
-      msg.liked = !msg.liked;
-      this.$set(this.messageList, m, msg);
-    },*/
     loadMessages() {
         this.messageHistoryReady = false;
         this.msgCount = 0;
@@ -199,9 +184,9 @@ export default {
 
             res.forEach(el => {
               var m = {}
-              if(el.sender == this.username){
+              if (el.sender == this.username) {
                 m.author = "me";
-              }else {
+              } else {
                 m.author = el.sender;
               }
               m.data = {
@@ -229,26 +214,21 @@ export default {
     },
     handleScrollToTop() {
       console.log("scrollTop")
-      if(this.msgCount % 100 == 0 ){
+      if (this.msgCount % 100 == 0){
         console.log("loadNewer")
         //TODOOOO
         var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
-        this.$http.get(localStorage.getItem('path') + '/projects/' + this.module.project + '/modules/' + this.module.name + '/messages/'+this.msgCount, tokenJson).then(function(response) {
+        this.$http.get(localStorage.getItem('path') + '/projects/' + this.module.project + '/modules/' + this.module.name + '/messages/' + this.msgCount, tokenJson).then(function(response) {
               console.log(response.body);
               var res = response.body;
-              try {//è un livello di sicurezza in più, potrebbe non servire try catch in futuro
-                  res = JSON.parse(res);
-              } catch (error) {
-                  console.log(error);
-              }
               var i = 0;
               var messagesFormatted = [];
 
               res.forEach(el => {
                 var m = {}
-                if(el.sender == this.username){
+                if (el.sender == this.username) {
                   m.author = "me";
-                }else {
+                } else {
                   m.author = el.sender;
                 }
                 m.data = {
@@ -275,7 +255,7 @@ export default {
               //mostrare errore nel componente contenitore dei tile magari con una scritta rossa
           });
         //provare a caricare ulteriori messaggi
-      }else{
+      } else {
         console.log("Nothing to load")
       }
       

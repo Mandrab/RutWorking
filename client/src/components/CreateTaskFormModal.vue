@@ -13,7 +13,6 @@
 
               <div class="modal-body">
                 <slot name="body">
-                    
                     <form @submit.prevent="handleSubmit">
                       <div class="form-group">
                           <label for="name">Name</label>
@@ -158,6 +157,12 @@ export default {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
   transition: all 0.3s ease;
   font-family: Helvetica, Arial, sans-serif;
+}
+
+@media (min-width: 992px) {
+  .modal-container {
+    width: 50%;
+  }
 }
 
 .modal-header h3 {
