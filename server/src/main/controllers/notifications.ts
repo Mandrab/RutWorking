@@ -48,13 +48,14 @@ export async function sendNotification(
     let project = await Project.findByName(projectName)
     let module = project.modules().find(it => it.name() === moduleName)
 
-    let receivers = topic === Topics.TASK_COMPLETED ? [ await module.chief() ]
-        : await Promise.all(module.developers())
+    let receivers = topic === Topics.CHAT_MESSAGE
+        ? await Promise.all(module.developers())
+        : [ await module.chief() ]
 
-    if (!receivers.some(it => it._id().toString() === module.chiefID().toString()))
+    if (!module.developers().some(it => it.toString() == module.chiefID().toString()))
         receivers = receivers.concat(await module.chief())
     let tokens = receivers.filter(dev => dev.firebaseToken()).map(dev => dev.firebaseToken())
-    console.log(tokens);
+
     let notification = {
         topic: topic.valueOf(),
         projectName: projectName,
