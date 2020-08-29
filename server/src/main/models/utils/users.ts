@@ -102,3 +102,13 @@ export async function getUserNotification(userID: Schema.Types.ObjectId | string
         seen: it.seen
     }}) } else return []
 }
+
+/**
+ * Returns user's unseen notifications count
+ * 
+ * @returns number of unseen notifications
+ */
+export async function getUserNotificationCount(userID: Schema.Types.ObjectId | string) {
+    let user = await DBUser.findById(userID)
+    if (user.notifications) { return user.notifications.filter(it => !it.seen).length } else return 0
+}
