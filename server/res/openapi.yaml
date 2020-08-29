@@ -477,6 +477,8 @@ paths:
           description: Account is blocked
         404:
           description: User-token not found
+        409:
+          description: Project with same name already exists
     get:
       tags: [projects]
       summary: Get project info (submodules). Needs to be a member of the project
@@ -581,6 +583,8 @@ paths:
           description: Not project-chief. Otherwise the account is blocked.
         404:
           description: Project or user not found
+        409:
+          description: Module with same name already exist inside the project
     get:
       tags: [modules]
       summary: Get info about a module
@@ -890,7 +894,7 @@ paths:
         404:
           description: Project, module or user-token not found
         409:
-          description: No task specified
+          description: No task specified or task with same name already exist inside the kanban
     get:
       tags: [kanbans]
       summary: Get first 100 tasks from the module kanban
@@ -1194,6 +1198,41 @@ paths:
           description: User not found
         409:
           description: Token not passed
+  
+  '/notifications':
+    get:
+      tags: [notifications]
+      summary: Get last 50 notifications
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Array of last 50 notifications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    topic:
+                      type: string
+                      enum: [chat_message, developer_added, task_completed]
+                      description: Topic of the notification
+                    projectName:
+                      type: string
+                      description: Name of the project
+                    moduleName:
+                      type: string
+                      description: Name of the module
+                    message:
+                      type: string
+                      description: Message of the notification
+                    senderEmail:
+                      type: string
+                      description: Email of the user whose actions have generated the notification
+        403:
+          description: Unauthorized
 
 components:
   schemas: {}
