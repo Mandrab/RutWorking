@@ -29,7 +29,7 @@ export async function newModule(request: any, result: any) {
         if (user.toString() !== project.chiefID().toString()) return result.status(403).send('Unauthorized!')
 
         if (project.modules().some(it => it.name() === request.params.moduleName))
-            throw { code: 409, message: 'Module with this name yet exists' }
+            throw { code: 409, message: 'Module with this name already exists' }
 
         await _newModule(
             request.params.moduleName,

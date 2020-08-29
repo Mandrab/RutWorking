@@ -7,17 +7,9 @@ import { _admin } from "../config/firebase"
 import { DBUser } from "../models/db"
 import { Schema } from "mongoose"
 import { User, Project } from "../models"
+import { IDBNotification, Topics } from "../models/db/user"
 
-/**
- * Possible notification topics
- * 
- * @author Paolo Baldini
- */
-export enum Topics {
-    CHAT_MESSAGE = 'chat_message',
-    TASK_COMPLETED = 'task_completed',
-    DEVELOPER_ADDED = 'developer_added'
-}
+export { Topics } from "../models/db/user"
 
 /**
  * Register the firebase token of a user to be used to send notifications
@@ -64,15 +56,21 @@ export async function sendNotification(
         receivers = receivers.concat(await module.chief())
     let tokens = receivers.filter(dev => dev.firebaseToken()).map(dev => dev.firebaseToken())
 
+    let notification = {
+        topic: topic.valueOf(),
+        projectName: projectName,
+        moduleName: moduleName,
+        senderEmail: user.email(),
+        message: message
+    }
+
+    await DBUser.updateMany(
+        { _id: { $in: receivers.map(it => it._id()) } },
+        { $push: { "notifications": { $each: [notification as IDBNotification], $slice: -50 } } })
+
     if (tokens.length > 0) {
         await _admin.messaging().sendMulticast({
-            data: {
-                topic: topic.valueOf(),
-                project: projectName,
-                module: moduleName,
-                sender: user.email(),
-                message: message
-            },
+            data: notification,
             tokens: tokens
         })
     }

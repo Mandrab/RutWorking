@@ -4,7 +4,15 @@
  * @author Paolo Baldini
  */
 import { isActive, isRole, or, _isRole } from '../auths/jwt'
-import { login, register, blockUser, changePassword, getUserInfo, getUsers } from '../controllers/user'
+import {
+    login,
+    register,
+    blockUser,
+    changePassword,
+    getUserInfo,
+    getUsers,
+    getUserNotifications
+} from '../controllers/user'
 import { Roles } from '../models'
 
 const isAdmin = isRole(Roles.ADMIN)
@@ -15,6 +23,9 @@ const _isUser = _isRole(Roles.USER)
 module.exports = function (app: any) {
     // login as an user and get a token
     app.post('/login', login)
+
+    // get info of a user
+    app.get('/user/notifications', [isActive, isUser], getUserNotifications)
 
     // Admins can register new users (we are in a corporate context)
     app.post('/user/:userEmail', [isActive, isAdmin], register)

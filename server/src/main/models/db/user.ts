@@ -6,6 +6,30 @@ export const SALT_WORK_FACTOR = 10     // to slow down brute force attacks (inc 
 mongooseSet('useCreateIndex', true)
 
 /**
+ * Possible notification topics
+ * 
+ * @author Paolo Baldini
+ */
+export enum Topics {
+    CHAT_MESSAGE = 'chat_message',
+    TASK_COMPLETED = 'task_completed',
+    DEVELOPER_ADDED = 'developer_added'
+}
+
+/**
+ * Interface of NOTIFICATION document in the DB
+ *
+ * @author Paolo Baldini
+ */
+export interface IDBNotification extends Document {
+    topic: string,
+    projectName: string,
+    moduleName: string,
+    message: string,
+    senderEmail: string
+}
+
+/**
  * Interface of USER document in the DB
  *
  * @author Paolo Baldini
@@ -17,8 +41,37 @@ export interface IDBUser extends Document {
     password: string,
     role: Schema.Types.ObjectId,    // only user or admin. Not both
     active: boolean,
-    firebaseToken: string
+    firebaseToken: string,
+    notifications: Array<IDBNotification>
 }
+
+const notificationSchema = new Schema({
+    topic: {
+        type: String,
+        enum: [
+            Topics.CHAT_MESSAGE,
+            Topics.DEVELOPER_ADDED,
+            Topics.TASK_COMPLETED
+        ],
+        required: true
+    },
+    projectName: {
+        type: String,
+        required: true
+    },
+    moduleName: {
+        type: String,
+        required: true
+    },
+    message: {
+        type: String,
+        required: true
+    },
+    senderEmail: {
+        type: String,
+        required: true
+    }
+})
 
 const userSchema = new Schema({
     name: {
@@ -51,7 +104,8 @@ const userSchema = new Schema({
     score: {
         type: Number
     },
-    firebaseToken: String
+    firebaseToken: String,
+    notifications: [ notificationSchema ]
 })
 
 /** Before save hash user password */
