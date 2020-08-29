@@ -4,11 +4,17 @@
  * @author Paolo Baldini
  */
 import { isActive, isRole, or, _isRole } from '../auths/jwt'
-import { login, register, blockUser, changePassword, getUserInfo, getUsers } from '../controllers/user'
+import {
+    login,
+    register,
+    blockUser,
+    changePassword,
+    getUserInfo,
+    getUsers
+} from '../controllers/user'
 import { Roles } from '../models'
 
 const isAdmin = isRole(Roles.ADMIN)
-const isUser = isRole(Roles.USER)
 const _isAdmin = _isRole(Roles.ADMIN)
 const _isUser = _isRole(Roles.USER)
 
@@ -20,7 +26,7 @@ module.exports = function (app: any) {
     app.post('/user/:userEmail', [isActive, isAdmin], register)
 
     // User can change his own password
-    app.put('/user/:userEmail', [isActive, isUser], changePassword)
+    app.put('/user/:userEmail', [isActive, or(_isAdmin, _isUser)], changePassword)
 
     // get info of a user
     app.get('/user/:userEmail', [isActive, or(_isAdmin, _isUser)], getUserInfo)

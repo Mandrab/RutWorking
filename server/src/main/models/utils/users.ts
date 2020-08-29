@@ -5,7 +5,7 @@
  */
 import { sign as jwtSign } from 'jsonwebtoken'
 import { secret as authSecret } from '../../config/jwt'
-import { set as mongooseSet } from 'mongoose'
+import { set as mongooseSet, Schema } from 'mongoose'
 import { DBUser } from '../db'
 import { Role, User } from '..'
 import { Roles } from '../role'
@@ -59,7 +59,7 @@ export async function register(name: string, surname: string, userEmail: string,
             password: password,
             role: roleSchema._id()
         }).save()
-    } catch (err) { throw { code: 406, message: 'User already existent!' } }
+    } catch (err) { throw { code: 406, message: 'E-mail already existent!' } }
 }
 
 /**
@@ -80,4 +80,20 @@ export async function getUsers(skipN: number) {
             blocked: !it.active
         }
     }))
+}
+
+/**
+ * Returns user's notifications (atm, at most 50)
+ * 
+ * @returns an collection in which each element contains: topic, projectName, moduleName, message, senderEmail
+ */
+export async function getUserNotification(userID: Schema.Types.ObjectId | string) {
+    let user = await DBUser.findById(userID)
+    if (user.notifications) { return user.notifications.map(it => { return {
+        topic: it.topic,
+        projectName: it.projectName,
+        moduleName: it.moduleName,
+        senderEmail: it.senderEmail,
+        message: it.message
+    }}) } else return []
 }

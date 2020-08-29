@@ -7,7 +7,8 @@ import {
     User, Roles,
     login as _login,
     register as _register,
-    getUsers as _getUsers
+    getUsers as _getUsers,
+    getUserNotification as _getUserNotification
 } from '../models'
 import { sendEmail } from './mailer'
 
@@ -75,6 +76,22 @@ export async function changePassword(request: any, result: any) {
             await user.changePassword(request.body.newPassword)
             result.status(200).send('Successfully updated!')
         } else result.status(401).send('Invalid password!')
+    } catch (err) {
+        if (err.code && err.code < 1000 && err.message) result.status(err.code).send(err.message)
+        else result.status(500).send('Internal error')
+    }
+}
+
+/**
+ * Allow a user to get his own notifications
+ * 
+ * @param request web query
+ * @param result query result
+ */
+export async function getUserNotifications(request: any, result: any) {
+    try {
+        let notifications = await _getUserNotification(request.userID)
+        result.status(200).send(notifications)
     } catch (err) {
         if (err.code && err.code < 1000 && err.message) result.status(err.code).send(err.message)
         else result.status(500).send('Internal error')

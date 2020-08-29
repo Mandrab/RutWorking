@@ -48,7 +48,7 @@ describe('test users\' operations', function() {
         await clean()
 
         await Promise.all([
-            // add an initial admin.. if yet exist ok!
+            // add an initial admin.. if already exist ok!
             register('x', 'y', ADMIN.email, ADMIN.password, Roles.ADMIN),
             // add an initial user
             register(USER.name, USER.surname, USER.email, 'z', USER.role),
