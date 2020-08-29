@@ -73,7 +73,13 @@ export default {
     messaging.onMessage(payload => {
       console.log("MESSAGE PAYLOAD: ")
       console.log(payload)
-      //alert(payload.data.senderEmail, payload.data.message)
+      alert(payload.data.senderEmail, payload.data.message)
+      var username = JSON.parse(localStorage.getItem('user')).email;
+      if (payload.data.senderEmail != username) {
+          this.newMessagesCount = this.isChatOpen ? this.newMessagesCount : this.newMessagesCount + 1
+          this.messageList.push({"author": payload.data.senderEmail, "data": {"text": payload.data.message}, "id": Math.random(), "type": "text"});
+      }
+      
     });
     setTimeout(this.addCasualMsg, 5000);
     
@@ -81,7 +87,7 @@ export default {
   methods: {
     addCasualMsg() {
       
-      this.messageList.push({"author":"me","data":{"text":"message added 5 sec after created component"},"id":18237,"type":"text"});
+      //this.messageList.push({"author":"me","data":{"text":"message added 5 sec after created component"},"id": Math.random(), "type":"text"});
       
     },
     init() {
@@ -110,7 +116,7 @@ export default {
     },
     onMessageWasSent(message) {
       if (message.data.text.length > 0) {
-        this.newMessagesCount = this.isChatOpen ? this.newMessagesCount : this.newMessagesCount + 1
+        this.newMessagesCount = this.isChatOpen ? this.newMessagesCount : this.newMessagesCount + 1;
 
         this.username = JSON.parse(localStorage.getItem('user')).email;
         var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };

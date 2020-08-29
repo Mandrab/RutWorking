@@ -17,6 +17,7 @@ let firebaseToken
 async function setToken() {
     try {
         let newToken = await messaging.getToken()
+        console.log(newToken);
         if (!newToken || newToken == firebaseToken) return
         firebaseToken = newToken
 
