@@ -71,7 +71,7 @@ export async function sendNotification(
     if (tokens.length > 0) {
         await _admin.messaging().sendMulticast({
             data: notification,
-            tokens: tokens
+            tokens: [...new Set(tokens)]
         })
     }
 }
