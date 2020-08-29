@@ -166,7 +166,7 @@ export default {
         },
         closeForm () {
             this.creating = false;
-            this.$emit('closeModal'); // notifico il padre
+            this.$emit('closeModal');
         },
         closeModal() {
             this.showModal = false;

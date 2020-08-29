@@ -1,4 +1,5 @@
 <template>
+  <div>
     <transition name="modal">
         <div class="modal-mask">
           <div class="modal-wrapper">
@@ -40,9 +41,14 @@
           </div>
         </div>
       </transition>
+
+      <simpleModal v-if="showModal" :title="title" :message="message" @closeModal="closeModal"></simpleModal>
+  </div>
 </template>
 
 <script>
+import simpleModal from './SimpleModal.vue'
+
 export default {
     data () {
         return {
@@ -54,7 +60,13 @@ export default {
             },
             submitted: false,
             creating: false,
+            showModal: false,
+            title: '',
+            message: ''
         }
+    },
+    components: {
+      simpleModal
     },
     props: {
     },
@@ -80,12 +92,18 @@ export default {
                 this.closeForm();
             }, (err) => {
                 console.log(err.body);
+                this.showModal = true;
+                this.title = 'Error';
+                this.message = err.body;
                 this.creating = false;
             });
         },
         closeForm() {
             this.creating = false;
-            this.$emit('closeModal'); // notifico il padre
+            this.$emit('closeModal');
+        },
+        closeModal() {
+            this.showModal = false;
         }
     }
 }

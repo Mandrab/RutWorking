@@ -56,7 +56,7 @@ export default {
             submitted: false,
             changingPassword: false,
             showModal: false,
-            title: 'Password update',
+            title: '',
             message: ''
         }
     },
@@ -82,23 +82,24 @@ export default {
                 "oldPassword": this.oldPassword,
                 "newPassword": this.newPassword,
             }
-            var mail = JSON.parse(localStorage.getItem('user')).email ;//ottieni mail dallo storage
+            var mail = JSON.parse(localStorage.getItem('user')).email;
             
             this.$http.put(localStorage.getItem('path') + '/user/' + mail, json, tokenjson).then(function(response) {
                 console.log(response.body);
-
+                this.title = 'Password update';
                 this.message = 'Password changed successfully!';
                 this.showModal = true;
                 this.closeForm();
             }, (err) => {
                 this.changingPassword = false;
+                this.title = 'Error';
                 this.message = err.body;
                 this.showModal = true;
             });
         },
         closeForm () {
             this.changingPassword = false;
-            this.$emit('closeModal'); // notifico il padre
+            this.$emit('closeModal');
         },
         closeModal() {
             this.showModal = false;

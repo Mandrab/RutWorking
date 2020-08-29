@@ -92,18 +92,21 @@ export default {
         addTask() {
             this.creating = true;
             var tokenjson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
-            var stat ;
-            if(this.insertUser){stat = "ASSIGNED"}else{stat = "TO-DO"}
+            var state;
+            if (this.insertUser) {
+              state = "ASSIGNED";
+            } else {
+              state = "TO-DO";
+            }
             
             var json = {
                 "name": this.t.taskName,
                 "description": this.t.description,
-                "status": stat,
+                "status": state,
                 "assignee": this.t.assignee
             }
-            console.log(localStorage.getItem('path') + '/projects/'+this.projectName+'/modules/' + this.moduleName + "/kanban" );
-
-            this.$http.post(localStorage.getItem('path') + '/projects/'+this.projectName+'/modules/' + this.moduleName + "/kanban" , json, tokenjson).then(function(response) {
+            
+            this.$http.post(localStorage.getItem('path') + '/projects/' + this.projectName + '/modules/' + this.moduleName + "/kanban" , json, tokenjson).then(function(response) {
                 console.log(response.body);
                 console.log(this.creating);
                 this.$emit('taskAdded');
