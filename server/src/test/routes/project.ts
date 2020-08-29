@@ -73,6 +73,9 @@ describe('test projects\' operations', function() {
         // valid token
         await request.post('/projects/project/' + NEW_PROJECT.name).set({ 'Authorization': newChiefToken }).expect(201)
 
+        // conflict name
+        await request.post('/projects/project/' + NEW_PROJECT.name).set({ 'Authorization': newChiefToken }).expect(409)
+
         // post with description
         await NEW_PROJECT.delete()
         await request.post('/projects/project/' + NEW_PROJECT.name).set({ 'Authorization': newChiefToken })

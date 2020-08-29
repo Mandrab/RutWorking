@@ -26,7 +26,9 @@ export async function newProject(name: string, chiefID: string, description?: st
     }
     if (description) obj.description = description
     if (deadline) obj.deadline = deadline
-    await new DBProject(obj).save()
+    await new DBProject(obj).save().catch(e => { if (e.code !== 11000) throw e
+        else throw { code: 409, message: 'A project with this name already exists' }
+    })
 
     return { code: 201, message: 'Created'}
 }
