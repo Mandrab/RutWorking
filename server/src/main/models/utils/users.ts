@@ -89,5 +89,11 @@ export async function getUsers(skipN: number) {
  */
 export async function getUserNotification(userID: Schema.Types.ObjectId | string) {
     let user = await DBUser.findById(userID)
-    if (user.notifications) { return user.notifications } else return []
+    if (user.notifications) { return user.notifications.map(it => { return {
+        topic: it.topic,
+        projectName: it.projectName,
+        moduleName: it.moduleName,
+        senderEmail: it.senderEmail,
+        message: it.message
+    }}) } else return []
 }
