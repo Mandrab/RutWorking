@@ -1,28 +1,6 @@
 <template>
   <div class="container-fluid">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light rounded">
-        <a class="col-6 col-sm-6 col-md-6 col-xl-6 navbar-brand text-left mx-0 p-1" href="#" @click="openHomePage">RutWorking</a>
-        <!-- collapse w-100 order-3 dual-collapse2 -->
-        <div class="col-6 col-sm-6 col-md-6 col-xl-6 mx-0 p-0">
-            <b-dropdown class="d-none d-sm-block d-md-block d-lg-block float-right" id="dropdown-options" right variant="light">
-                <template v-slot:button-content>
-                    {{ username }} 
-                </template>
-                <b-dropdown-item @click="openPersonalArea"><font-awesome-icon icon="user"/> Personal area</b-dropdown-item>
-                <b-dropdown-item @click="logout"><font-awesome-icon icon="sign-out-alt"/> Logout</b-dropdown-item>
-            </b-dropdown>
-
-            <b-dropdown class="d-sm-none float-right" id="dropdown-options" right variant="light">
-                <template v-slot:button-content>
-                    ...
-                </template>
-                <b-dropdown-header disabled> {{ username }} </b-dropdown-header>
-                <b-dropdown-divider></b-dropdown-divider>
-                <b-dropdown-item @click="openPersonalArea"><font-awesome-icon icon="user"/> Personal area</b-dropdown-item>
-                <b-dropdown-item @click="logout"><font-awesome-icon icon="sign-out-alt"/> Logout</b-dropdown-item>
-            </b-dropdown>
-        </div>
-    </nav>
+    <navbar :firstDropdownItem="firstDropdownItem"></navbar>
 
     <div v-if="moduleReady" class="mt-4"> 
         <div class="row pb-1">
@@ -42,7 +20,7 @@
         
     </div>
     <div v-else>
-        <!-- inserire img di loading (attraverso componente) -->
+        <font-awesome-icon icon="spinner" spin size="4x"/>
     </div>
 
     <div class="row">
@@ -54,14 +32,11 @@
         </div>
     </div>
 
-    
-
-    
   </div>
 </template>
 
-
 <script>
+import navbar from '../components/Navbar.vue';
 import kanban from '../components/Kanban.vue';
 import chat from '../components/Chat.vue';
 
@@ -69,15 +44,15 @@ export default {
     data () {
         return {
             username: '',
-            showDropdownMenu: false,
+            firstDropdownItem: 'personal-area',
             module: {},
             moduleReady: false,
             deadlineColor: 'black',
-            statuses: ['TO-DO', 'ASSIGNED', 'IN-PROGRESS', 'DONE'],
-            blocks: [] //
+            statuses: ['TO-DO', 'ASSIGNED', 'IN-PROGRESS', 'DONE']
         }
     },
     components: {
+        navbar,
         kanban,
         chat
     },

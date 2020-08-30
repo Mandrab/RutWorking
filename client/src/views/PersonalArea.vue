@@ -1,31 +1,9 @@
 <template>
     <div class="container-fluid">
-        <nav class="navbar navbar-expand-lg navbar-light bg-light rounded">
-            <a class="col-6 col-sm-6 col-md-6 col-xl-6 navbar-brand text-left mx-0 p-1" href="#" @click="openHomePage">RutWorking</a>
-            <!-- collapse w-100 order-3 dual-collapse2 -->
-            <div class="col-6 col-sm-6 col-md-6 col-xl-6 mx-0 p-0">
-                <b-dropdown class="d-none d-sm-block d-md-block d-lg-block float-right" id="dropdown-options" right variant="light">
-                    <template v-slot:button-content>
-                        {{ username }} 
-                    </template>
-                    <b-dropdown-item @click="openHomePage"><font-awesome-icon icon="home"/> Home page</b-dropdown-item>
-                    <b-dropdown-item @click="logout"><font-awesome-icon icon="sign-out-alt"/> Logout</b-dropdown-item>
-                </b-dropdown>
+        <navbar :firstDropdownItem="firstDropdownItem"></navbar>
 
-                <b-dropdown class="d-sm-none float-right" id="dropdown-options" right variant="light">
-                    <template v-slot:button-content>
-                        <font-awesome-icon icon="bars" size="lg"/>
-                    </template>
-                    <b-dropdown-header disabled> {{ username }} </b-dropdown-header>
-                    <b-dropdown-divider></b-dropdown-divider>
-                    <b-dropdown-item @click="openHomePage"><font-awesome-icon icon="home"/> Home page</b-dropdown-item>
-                    <b-dropdown-item @click="logout"><font-awesome-icon icon="sign-out-alt"/> Logout</b-dropdown-item>
-                </b-dropdown>
-            </div>
-        </nav>
-
-        <div class="row mt-5">
-            <div class="col-sm bg-light rounded p-5 mx-5 mb-5">
+        <div class="row mt-5 col-12 col-sm-12 col-md-12 col-lg-6 offset-lg-3">
+            <div class="col-12 col-sm-12 col-md-12 col-lg-12 bg-light rounded p-5 mx-3 mb-5">
                 <h2>User info</h2>
                 <div class="text-left p-2">
                     <a> <b>Name</b>: {{ name }} </a>
@@ -39,30 +17,17 @@
                 <div class="text-left p-2">
                     <a> <b>Role</b>: {{ role }} </a>
                 </div>
-            </div>
-            <div class="col-sm bg-light rounded p-5 mx-5 mb-5">
-                <div>
-                    <h2>Access management</h2>
-                </div>
-                <div class="mt-5">
+                <div class="text-center p-2">
                     <button @click.prevent="changePassword" class="btn btn-primary">Change password</button>
                 </div>
             </div>
         </div>
-    
-        <!--
-        <div class="row mt-5">
-            <div class="col-sm-6 offset-sm-3 bg-light rounded">
-                <h2>Statistics</h2>
-            </div>
-        </div>
-        -->
         
-        <div class="row mb-5 mx-5">
-            <div class="col-12 col-sm-12 col-md-12 col-lg-6 offset-lg-3 bg-light rounded pb-3">
+        <div class="row mb-5 col-12 col-sm-12 col-md-12 col-lg-6 offset-lg-3">
+            <div class="col-12 col-sm-12 col-md-12 col-lg-12 bg-light rounded mx-3 mb-5 pb-3">
                 <div class="row">
                     <div class="col-12 col-sm-12 col-md-12 col-xl-12 justify-content-center px-5 pt-3 pb-0">
-                        <h2>Gamification</h2>
+                        <h2>Contest</h2>
                     </div>
                 </div>
                 <div v-if="role == 'admin'" class="row">
@@ -73,18 +38,18 @@
                 <div class="row" v-if="scoreReady">
                     <div class="col-md-12 m-0 p-0" v-for="(score, index) in firstTenScores" :key="index">
                         <div v-if="indexInScoreArray == index" class=" row scoreTile  m-1 p-0">
-                            <div class="col-sm-6 text-left text-primary"> <b>{{index+1}}) ME</b> </div>
-                            <div class="col-sm-6  text-right">Score: {{score.score}}</div>
+                            <div class="col-sm-6 text-left text-primary"> <b> {{ index + 1 }}) ME </b> </div>
+                            <div class="col-sm-6  text-right">Score: {{ score.score }} </div>
                         </div>
                         <div v-else class=" row scoreTile  m-1 p-0">
-                            <div class="col-sm-6 text-left">{{index+1}})  {{score.email}}</div>
-                            <div class="col-sm-6  text-right">Score: {{score.score}}</div>
+                            <div class="col-sm-6 text-left"> {{ index+1 }})  {{ score.email }} </div>
+                            <div class="col-sm-6  text-right">Score: {{ score.score }} </div>
                         </div>
                     </div>
-                    <div class="col-md-12 m-0 p-0" v-if="indexInScoreArray>10">
+                    <div class="col-md-12 m-0 p-0" v-if="indexInScoreArray > 10">
                         <div class=" row scoreTile  m-1 p-0">
-                            <div class="col-sm-6 text-left text-primary"> <b>{{indexInScoreArray+1}}) ME</b> </div>
-                            <div class="col-sm-6  text-right">Score: {{scores[indexInScoreArray].score}}</div>
+                            <div class="col-sm-6 text-left text-primary"> <b> {{ indexInScoreArray + 1 }}) ME </b> </div>
+                            <div class="col-sm-6  text-right">Score: {{ scores[indexInScoreArray].score }} </div>
                         </div>
                     </div>
                 </div>
@@ -99,6 +64,7 @@
 
 
 <script>
+import navbar from '../components/Navbar.vue';
 import changePasswordFormModal from '../components/ChangePasswordFormModal.vue';
 import simpleModal from '../components/SimpleModal.vue'
 
@@ -109,7 +75,7 @@ export default {
             surname: '',
             username: '',
             role: '',
-            showDropdownMenu: false,
+            firstDropdownItem: 'home-page',
             showModalPasswordChange: false,
             indexInScoreArray: null,
             scores: [],
@@ -121,6 +87,7 @@ export default {
         }
     },
     components: {
+        navbar,
         changePasswordFormModal,
         simpleModal
     },

@@ -1,26 +1,24 @@
 <template>
     <nav class="navbar navbar-expand-lg navbar-light bg-light rounded">
         <a class="col-6 col-sm-6 col-md-6 col-xl-6 navbar-brand text-left mx-0 p-1" href="#">RutWorking</a>
-        <!-- collapse w-100 order-3 dual-collapse2 -->
 
-        <div >
-            <b-dropdown class="d-sm-none d-none d-sm-block d-md-block d-lg-block float-right" right variant="light">
+        <div class="col-3 col-sm-3 col-md-3 col-xl-3 mx-0 p-0">
+            <b-dropdown class="d-block d-sm-block d-md-block d-lg-block float-right" right variant="light">
                 <template v-slot:button-content>
                     <div @click="getNotificationsList">
-                        <font-awesome-icon icon="user"/> {{ notificationsNumber }}
+                        <font-awesome-icon icon="bell" size="lg"/> {{ notificationsNumber }}
                     </div>
-                    
                 </template>
                 <div v-if="notificationsReady">
                     <b-dropdown-item v-for="(n, index) in notificationsList" :key="index"> {{ n.topic }} {{ n.projectName }} {{ n.moduleName }} {{ n.projectName }} {{ n.senderEmail }} {{ n.message }} </b-dropdown-item>
                 </div>
                 <div v-else>
-                    <font-awesome-icon icon="user" spin size="4x"/> <!-- rotella -->
+                    <font-awesome-icon icon="spinner" spin size="2x"/>
                 </div>
             </b-dropdown>
         </div>
 
-        <div class="col-6 col-sm-6 col-md-6 col-xl-6 mx-0 p-0">
+        <div class="col-3 col-sm-3 col-md-3 col-xl-3 mx-0 p-0">
             <b-dropdown class="d-none d-sm-block d-md-block d-lg-block float-right" right variant="light">
                 <template v-slot:button-content>
                     {{ username }} 
@@ -39,7 +37,6 @@
                 <b-dropdown-item @click="openPersonalArea"><font-awesome-icon icon="user"/> Personal area</b-dropdown-item>
                 <b-dropdown-item @click="logout"><font-awesome-icon icon="sign-out-alt"/> Logout</b-dropdown-item>
             </b-dropdown>
-
         </div>
     </nav>
 </template>
@@ -64,53 +61,48 @@ export default {
         }
     },
     methods: {
-        showUserName () {
+        init() {
+            this.showUserName();
+            this.getNotificationsNumber();
+        },
+        showUserName() {
             this.username = JSON.parse(localStorage.getItem('user')).email;
         },
-        logout() {
-            this.$router.push('/login');
-        },
-        init () {
-            //this.getNotificationsNumber();
-            this.showUserName();
-        },
-        openPersonalArea () {
-            this.$router.push('/personalarea');
-        },
-        openHomePage() {
-            this.$router.push('/');
-        },
         getNotificationsNumber() {
-            
             var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
 
-            //TODO
             this.$http.get(localStorage.getItem('path') + '/notifications/unseen/count', tokenJson).then(function(response) {
-                console.log(response.body);
-                localStorage.setItem('notifications', response.body);
-                this.notificationsNumber = response.body;
-
-                
+                var res = response.body.unseenNotifications;
+                this.notificationsNumber = res;
+                localStorage.setItem('notifications', res);
             }, (err) => {
                 console.log(err.body);
             });
         },
         getNotificationsList() {
-            alert("CIAO");
-            /*
             this.notificationsReady = false;
-            var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
+            var tokenJson = { headers: { Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
 
             this.$http.get(localStorage.getItem('path') + '/notifications', tokenJson).then(function(response) {
                 console.log(response.body);
                 this.notificationsList = response.body;
                 this.notificationsReady = true;
-                
             }, (err) => {
                 console.log(err.body);
             });
-            */
-
+        },
+        openPersonalArea() {
+            this.$router.push('/personalarea');
+        },
+        openHomePage() {
+            if (localStorage.getItem('role') == 'user') {
+                this.$router.push('/');
+            } else {
+                this.$router.push('/adminpage');
+            }
+        },
+        logout() {
+            this.$router.push('/login');
         }
     }
 };
@@ -133,5 +125,4 @@ export default {
     }
 }
 */
-
 </style>

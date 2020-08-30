@@ -1,46 +1,7 @@
 <template>
   <div class="container-fluid">
-      <!--
-    <nav class="navbar navbar-expand-lg navbar-light bg-light rounded">
-        <a class="col-6 col-sm-6 col-md-6 col-xl-6 navbar-brand text-left mx-0 p-1" href="#">RutWorking</a>
-        
-
-        <div >
-            <b-dropdown class="d-sm-none d-none d-sm-block d-md-block d-lg-block float-right" right variant="light">
-                <template v-slot:button-content>
-                    <font-awesome-icon icon="user"/> {{ notificationsNumber }}
-                </template>
-                <div v-if="notificationsReady">
-                    <b-dropdown-item v-for="(n, index) in notificationsList" :key="index"> {{ n.topic }} {{ n.projectName }} {{ n.moduleName }} {{ n.projectName }} {{ n.senderEmail }} {{ n.message }} </b-dropdown-item>
-                </div>
-            </b-dropdown>
-        </div>
-
-        <div class="col-6 col-sm-6 col-md-6 col-xl-6 mx-0 p-0">
-            <b-dropdown class="d-none d-sm-block d-md-block d-lg-block float-right" right variant="light">
-                <template v-slot:button-content>
-                    {{ username }} 
-                </template>
-                <b-dropdown-item @click="openPersonalArea"><font-awesome-icon icon="user"/> Personal area</b-dropdown-item>
-                <b-dropdown-item @click="logout"><font-awesome-icon icon="sign-out-alt"/> Logout</b-dropdown-item>
-            </b-dropdown>
-
-            <b-dropdown class="d-sm-none float-right" right variant="light">
-                <template v-slot:button-content>
-                    <font-awesome-icon icon="bars" size="lg"/>
-                </template>
-                <b-dropdown-header disabled> {{ username }} </b-dropdown-header>
-                <b-dropdown-divider></b-dropdown-divider>
-                <b-dropdown-item @click="openPersonalArea"><font-awesome-icon icon="user"/> Personal area</b-dropdown-item>
-                <b-dropdown-item @click="logout"><font-awesome-icon icon="sign-out-alt"/> Logout</b-dropdown-item>
-            </b-dropdown>
-
-            
-        </div>
-    </nav>
--->
     <navbar :firstDropdownItem="firstDropdownItem"></navbar>
-
+    
     <div class="row mt-5">
 			<div class="col-12 col-sm-12 col-md-3 col-xl-3 mb-5">
                 <projectsList v-if="projectsReady" @showCreationForm="showProjectCreationForm" @detail="showProjectDetail" @projectDeleted="deleteProject" :projects="projectsArr" :isMember="isMember"></projectsList>
@@ -80,10 +41,6 @@ export default {
             isMember: [],
             projectDetail: {},
             projectIndex: 0,
-            showDropdownMenu: false,
-            //notificationsList: [],
-            //notificationsNumber: 0,
-            //notificationsReady: false
         }
     },
     components: {
