@@ -23,7 +23,7 @@
         <font-awesome-icon icon="spinner" spin size="4x"/>
     </div>
 
-    <div class="row">
+    <div class="row mt-3">
         <div class="col-sm-12 col-md-12 col-xl-12">
             <kanban :stages="statuses" :module="module"></kanban>
         </div>
