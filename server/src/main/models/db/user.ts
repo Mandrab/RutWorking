@@ -42,6 +42,7 @@ export interface IDBUser extends Document {
     password: string,
     role: Schema.Types.ObjectId,    // only user or admin. Not both
     active: boolean,
+    score: number,
     firebaseToken: string,
     notifications: Array<IDBNotification>
 }
@@ -97,7 +98,6 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
-    // a.t.m., only user or admin. Not both
     role: {
         type: Schema.Types.ObjectId,
         ref: "Role",
