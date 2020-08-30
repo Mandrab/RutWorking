@@ -30,33 +30,45 @@
                         <h2>Contest</h2>
                     </div>
                 </div>
-                <div v-if="role == 'admin'" class="row">
+                <div v-if="scoreReady && role == 'admin'" class="row">
                     <div class="col-12 col-sm-12 col-md-12 col-xl-12 justify-content-center px-3 pt-0 pb-3">
                         <button @click.prevent="resetRanking" class="btn btn-primary">Reset</button>
                     </div>
-                </div>
-                <div class="row" v-if="scoreReady">
-                    <div class="col-md-12 m-0 p-0" v-for="(score, index) in firstTenScores" :key="index">
-                        <div v-if="indexInScoreArray == index" class=" row scoreTile  m-1 p-0">
-                            <div class="col-sm-6 text-left text-primary"> <b> {{ index + 1 }}) ME </b> </div>
-                            <div class="col-sm-6  text-right">Score: {{ score.score }} </div>
-                        </div>
-                        <div v-else class=" row scoreTile  m-1 p-0">
+                    <div class="col-md-12 m-0 p-0" v-for="(score, index) in scores" :key="index">
+                        <div v-if="indexInScoreArray != index" class="row scoreTile m-1 p-0">
                             <div class="col-sm-6 text-left"> {{ index+1 }})  {{ score.email }} </div>
-                            <div class="col-sm-6  text-right">Score: {{ score.score }} </div>
+                            <div class="col-sm-6 text-right">Score: {{ score.score }} </div>
                         </div>
                     </div>
-                    <div class="col-md-12 m-0 p-0" v-if="indexInScoreArray > 10 && ranked">
-                        <div class=" row scoreTile  m-1 p-0">
-                            <div class="col-sm-6 text-left text-primary"> <b> {{ indexInScoreArray + 1 }}) ME </b> </div>
-                            <div class="col-sm-6  text-right">Score: {{ scores[indexInScoreArray].score }} </div>
+                    <infinite-loading v-if="moreRankings" @infinite="showMoreRankings($event)"></infinite-loading>
+                </div>
+                <div v-else>
+                    <div v-if="scoreReady" class="row">
+                        <div class="col-md-12 m-0 p-0" v-for="(score, index) in firstTenScores" :key="index">
+                            <div v-if="indexInScoreArray == index && role != 'admin'" class="row scoreTile m-1 p-0">
+                                <div class="col-sm-6 text-left text-primary"> <b> {{ index + 1 }}) ME </b> </div>
+                                <div class="col-sm-6 text-right">Score: {{ score.score }} </div>
+                            </div>
+                            <div v-if="indexInScoreArray != index" class=" row scoreTile m-1 p-0">
+                                <div class="col-sm-6 text-left"> {{ index+1 }})  {{ score.email }} </div>
+                                <div class="col-sm-6 text-right">Score: {{ score.score }} </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 m-0 p-0" v-if="indexInScoreArray > 10 && ranked && role != 'admin'">
+                            <div class=" row scoreTile m-1 p-0">
+                                <div class="col-sm-6 text-left text-primary"> <b> {{ indexInScoreArray + 1 }}) ME </b> </div>
+                                <div class="col-sm-6  text-right">Score: {{ scores[indexInScoreArray].score }} </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 m-0 p-0" v-if="indexInScoreArray > 10 && !ranked && role != 'admin'">
+                            <div class=" row scoreTile m-1 p-0">
+                                <div class="col-sm-6 text-left text-primary"> <b> ME </b> </div>
+                                <div class="col-sm-6 text-right">Score: {{ scores[indexInScoreArray].score }} </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-12 m-0 p-0" v-if="indexInScoreArray > 10 && !ranked">
-                        <div class=" row scoreTile  m-1 p-0">
-                            <div class="col-sm-6 text-left text-primary"> <b> ME </b> </div>
-                            <div class="col-sm-6  text-right">Score: {{ scores[indexInScoreArray].score }} </div>
-                        </div>
+                    <div v-else>
+                        <font-awesome-icon style="color: gray;" icon="spinner" size="2x" pulse/>
                     </div>
                 </div>
             </div>
@@ -68,11 +80,13 @@
     </div>
 </template>
 
+<script src="https://unpkg.com/vue-infinite-loading@^2/dist/vue-infinite-loading.js"></script>
 
 <script>
-import navbar from '../components/Navbar.vue';
-import changePasswordFormModal from '../components/ChangePasswordFormModal.vue';
+import navbar from '../components/Navbar.vue'
+import changePasswordFormModal from '../components/ChangePasswordFormModal.vue'
 import simpleModal from '../components/SimpleModal.vue'
+import infiniteLoading from 'vue-infinite-loading'
 
 export default {
     data () {
@@ -90,19 +104,22 @@ export default {
             showModal: false,
             title: 'Users ranking',
             message: '',
+            moreRankings: false,
+            skipN: 100,
             ranked: false
         }
     },
     components: {
         navbar,
         changePasswordFormModal,
-        simpleModal
+        simpleModal,
+        infiniteLoading
     },
     created () {
         this.init();
     },
     methods: {
-        init () {
+        init() {
             this.username = JSON.parse(localStorage.getItem('user')).email;
 
             var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
@@ -115,38 +132,81 @@ export default {
                 this.role = res.role;
             }, (err) => {
                 console.log(err.body);
-                //mostrare errore nel componente contenitore dei tile magari con una scritta rossa
             });
 
             this.getContestRanking();
-
         },
         getContestRanking() {
+            this.scoreReady = false;
             this.ranked = false;
-            var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
+            var tokenJson = { headers: { Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
             this.$http.get(localStorage.getItem('path') + '/contest/ranking', tokenJson).then(function(response) {
-                this.scoreReady= false;
                 console.log(response.body);
                 var res = response.body;
                 this.scores = res;
-                this.firstTenScores = res.slice(0, 10)
-                if(res.length >0){
-                    for(var i = 0; i<res.length; i++){
+
+                if (this.role == 'admin') {
+                    for(var i = 0; i < res.length; i++) {
                         if(res[i].email == this.username){
-                            this.indexInScoreArray = i;
-                            if(i<res.length-1){
-                                this.ranked = true;
-                            } else{
-                                this.ranked = false;
-                            }
-                            
+                            this.scores.splice(i, 1);
+                            break;
                         }
                     }
                 }
-                this.scoreReady= true;
+
+                if (this.scores.length >= 100) {
+                    this.moreRankings = true;
+                } else {
+                    this.moreRankings = false; 
+                }
+
+                this.firstTenScores = res.slice(0, 10)
+                if (res.length > 0){
+                    for (var i = 0; i < res.length; i++){
+                        if (res[i].email == this.username) {
+                            this.indexInScoreArray = i;
+                            if (i < res.length - 1) {
+                                this.ranked = true;
+                            } else {
+                                this.ranked = false;
+                            }
+                        }
+                    }
+                }
+                this.scoreReady = true;
             }, (err) => {
                 console.log(err.body);
-                //mostrare errore nel componente contenitore dei tile magari con una scritta rossa
+            });
+        },
+        showMoreRankings($state) {
+            var tokenJson = { headers: { Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
+            
+            this.$http.get(localStorage.getItem('path') + '/contest/ranking/' + this.skipN, tokenJson).then(function(response) {
+                console.log(response.body);
+                var res = response.body;
+                this.scores = this.scores.concat(res);
+
+                if (this.role == 'admin') {
+                    for (var i = 0; i < this.scores.length; i++) {
+                        if (this.scores[i].email == this.username) {
+                            this.scores.splice(i, 1);
+                            break;
+                        }
+                    }
+                }
+
+                $state.loaded();
+
+                if (res.legnth >= 100) {
+                    this.moreRankings = true;
+                } else {
+                    this.moreRankings = false; 
+                    $state.complete();
+                }
+
+                this.skipN += 100;
+            }, (err) => {
+                console.log(err.body);
             });
         },
         changePassword() {
@@ -156,7 +216,7 @@ export default {
             this.showModalPasswordChange = false;
         },
         resetRanking() {
-            var tokenjson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
+            var tokenjson = { headers: { Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
 
             this.$http.put(localStorage.getItem('path') + '/contest/reset', {}, tokenjson).then(function(response) {
                 console.log(response.body);
@@ -170,7 +230,7 @@ export default {
         closeModal() {
             this.showModal = false;
         },
-        openHomePage () {
+        openHomePage() {
             if (this.role == "user") {
                 this.$router.push('/');
             } else {
@@ -189,7 +249,4 @@ export default {
     border-radius:  0.25rem;
     background-color: #DDDDDD;
 }
-
-
-
 </style>
