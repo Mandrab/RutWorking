@@ -5,7 +5,7 @@
     <div class="row mt-5">
 			<div class="col-12 col-sm-12 col-md-3 col-xl-3 mb-5">
                 <projectsList v-if="projectsReady" @showCreationForm="showProjectCreationForm" @detail="showProjectDetail" @projectDeleted="deleteProject" :projects="projectsArr" :isMember="isMember"></projectsList>
-                <font-awesome-icon v-if="!projectsReady" style="color: gray;" icon="circle-notch" pulse size="2x"/>
+                <font-awesome-icon v-if="!projectsReady" style="color: gray;" icon="spinner" pulse size="2x"/>
 			</div>
 			<div class="col-12 col-sm-12 col-md-9 col-xl-9">
 				<div>

@@ -20,7 +20,7 @@
         
     </div>
     <div v-else>
-        <font-awesome-icon icon="spinner" spin size="4x"/>
+        <font-awesome-icon style="color: gray;" icon="spinner" pulse size="4x"/>
     </div>
 
     <div class="row mt-3">
