@@ -28,7 +28,19 @@
                         <font-awesome-icon icon="bell" size="lg"/><div v-if="notificationsNumber != 0" style=" border-radius: 10px; background-color: #f33d3d; position: absolute; top: 18px; right: 17px; height: 15px; width: 15px; padding: 0px; margin: 0px; font-size: 10px;">{{notificationsNumber}}</div><!--{{notificationsNumber}}--></span>
                 </template>
                 <div v-if="notificationsReady">
-                    <b-dropdown-item v-for="(n, index) in notificationsList" :key="index"> {{ n.topic }} {{ n.projectName }} {{ n.moduleName }} {{ n.projectName }} {{ n.senderEmail }} {{ n.message }} </b-dropdown-item>
+                    <b-dropdown-item v-for="(n, index) in notificationsList" :key="index"> 
+                        <div class="row" style="font-size: 12px">
+                            <div class="col-md-12" v-if="n.topic == 'chat_message'">
+                                <b style="color: #0069D9;"> {{ n.senderEmail }} </b> <br/> sent a message in {{ n.moduleName }} of {{ n.projectName }} 
+                            </div>
+                            <div class="col-md-12" v-if="n.topic == 'developer_added'">
+                                <b style="color: #0069D9;"> {{ n.senderEmail }} </b> <br/> added you in {{ n.moduleName }} of {{ n.projectName }} 
+                            </div>
+                            <div class="col-md-12" v-if="n.topic == 'task_completed'">
+                                <b style="color: #0069D9;"> {{ n.senderEmail }} </b> <br/> completed a task in {{ n.moduleName }} of {{ n.projectName }} 
+                            </div>
+                        </div>
+                    </b-dropdown-item>
                 </div>
                 <div v-else>
                     <font-awesome-icon icon="spinner" spin size="2x"/>
@@ -39,6 +51,7 @@
 </template>
 
 <script>
+import { messaging } from '../../firebase'
 
 export default {
     data () {
@@ -52,15 +65,55 @@ export default {
     created () {
         this.init();
     },
+    watch: {
+        chatNotifications: function() {
+            this.notificationsNumber = this.chatNotifications;
+        }
+    },
     props: {
         firstDropdownItem: {
             type: String
+        },
+        chatNotifications: {
+            type: Number
         }
     },
     methods: {
         init() {
             this.showUserName();
             this.getNotificationsNumber();
+
+            messaging.onMessage(payload => {
+                var notifications = localStorage.getItem('notifications');
+                console.log("PAYLOAD");
+                console.log(payload);
+                console.log(payload.data.topic);
+                switch (payload.data.topic) {
+                    case "chat_message":
+                        console.log("MESSAGE PAYLOAD: ")
+                        console.log(payload)
+                        alert(payload.data.senderEmail, payload.data.message)
+                        var username = JSON.parse(localStorage.getItem('user')).email;
+                        if (payload.data.senderEmail != username) {
+                            notifications++;
+                            localStorage.removeItem('notifications');
+                            localStorage.setItem('notifications', notifications);
+                        }
+                        break;
+                    case "developer_added":
+                        notifications++;
+                        localStorage.removeItem('notifications');
+                        localStorage.setItem('notifications', notifications);
+                        break;
+                    case "task_completed":
+                        notifications++;
+                        localStorage.removeItem('notifications');
+                        localStorage.setItem('notifications', notifications);
+                        break;
+                }
+                
+                this.notificationsNumber = notifications;
+            });
         },
         showUserName() {
             this.username = JSON.parse(localStorage.getItem('user')).email;
@@ -82,8 +135,11 @@ export default {
 
             this.$http.get(localStorage.getItem('path') + '/notifications', tokenJson).then(function(response) {
                 console.log(response.body);
-                this.notificationsList = response.body;
+                this.notificationsList = response.body.reverse().slice(0, 10);
                 this.notificationsReady = true;
+
+                this.notificationsNumber = 0;
+                localStorage.setItem('notifications', 0);
             }, (err) => {
                 console.log(err.body);
             });

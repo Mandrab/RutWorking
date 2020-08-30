@@ -1,6 +1,6 @@
 <template>
   <div class="container-fluid">
-    <navbar :firstDropdownItem="firstDropdownItem"></navbar>
+    <navbar :firstDropdownItem="firstDropdownItem" :chatNotifications="notificationsNumber"></navbar>
 
     <div v-if="moduleReady" class="mt-4"> 
         <div class="row pb-1">
@@ -27,8 +27,8 @@
         <div class="col-sm-12 col-md-12 col-xl-12">
             <kanban :stages="statuses" :module="module"></kanban>
         </div>
-        <div >
-            <chat :module="module"></chat>
+        <div style="z-index: 2;">
+            <chat :module="module" @notificationsNumber="updateNavbarNotificationsCount"></chat>
         </div>
     </div>
 
@@ -45,6 +45,7 @@ export default {
         return {
             username: '',
             firstDropdownItem: 'personal-area',
+            notificationsNumber: 0,
             module: {},
             moduleReady: false,
             deadlineColor: 'black',
@@ -89,6 +90,9 @@ export default {
                 this.deadlineColor = 'green';
             }
             this.moduleReady = true;
+        },
+        updateNavbarNotificationsCount($event) {
+            this.notificationsNumber = Number.parseInt($event);
         },
         openPersonalArea () {
             this.$router.push('/personalarea');
