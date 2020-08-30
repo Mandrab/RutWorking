@@ -28,10 +28,10 @@ Vue.use(Chat)
 
 
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faUserSecret, faUser, faUserPlus, faTimes, faTrashAlt, faAngleLeft, faAngleRight, faPlus, faBars, faEllipsisH, faBan, faSignOutAlt, faHome, faBell, faSpinner } from '@fortawesome/free-solid-svg-icons'
+import { faUserSecret, faUser, faUserPlus, faTimes, faTrashAlt, faAngleLeft, faAngleRight, faPlus, faBars, faEllipsisH, faBan, faSignOutAlt, faHome, faBell, faSpinner, faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-library.add(faUserSecret, faUser, faUserPlus, faTimes, faTrashAlt, faAngleLeft, faAngleRight, faPlus, faBars, faEllipsisH, faBan, faSignOutAlt, faHome, faBell, faSpinner)
+library.add(faUserSecret, faUser, faUserPlus, faTimes, faTrashAlt, faAngleLeft, faAngleRight, faPlus, faBars, faEllipsisH, faBan, faSignOutAlt, faHome, faBell, faSpinner, faCircleNotch)
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 

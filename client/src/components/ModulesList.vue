@@ -28,6 +28,7 @@ export default {
         }
     },
     created () {
+        console.log("rrrrrrrrrr");
         console.log(this.modules);
         this.showModule();
 

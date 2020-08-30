@@ -43,7 +43,7 @@
                     </b-dropdown-item>
                 </div>
                 <div v-else>
-                    <font-awesome-icon icon="spinner" spin size="2x"/>
+                    <font-awesome-icon style="color: gray;" icon="circle-notch" pulse size="2x"/>
                 </div>
             </b-dropdown>
         </div>

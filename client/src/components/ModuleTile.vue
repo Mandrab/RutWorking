@@ -120,6 +120,9 @@ export default {
     },
     methods: {
         init () {
+            console.log("ààààààààà")
+            console.log(this.item);
+            console.log(this.projectInfo);
             this.developersReady = false;
             var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
             console.log(localStorage.getItem('path') + '/projects/' + this.projectInfo.projectName + '/modules/' + this.item.name);
@@ -127,7 +130,8 @@ export default {
             console.log(this.projectInfo);
             console.log("OBJECT");
             console.log(this.item);
-            this.$http.get(localStorage.getItem('path') + '/projects/' + this.projectInfo.projectName + '/modules/' + this.item.name, tokenJson).then(function(response) {
+            if (this.isMember) {
+                this.$http.get(localStorage.getItem('path') + '/projects/' + this.projectInfo.projectName + '/modules/' + this.item.name, tokenJson).then(function(response) {
                 console.log(response.body);
                 var res = response.body;
                 this.developers = res.developers;
@@ -156,6 +160,8 @@ export default {
                 console.log(err.body);
                 this.developersReady = false;
             });
+            }
+            
         },
         toggleDesc() {
         this.isDescHide = !this.isDescHide;
