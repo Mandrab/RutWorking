@@ -8,7 +8,7 @@
                     <div style="font-size: 18px; font-weight: bold; " class="crop-title text-left col-12">
                         {{ item.name }}
                     </div>
-                    <div style="font-size: 11px;" class=" crop text-left col-12">
+                    <div style="font-size: 11px;" class="crop text-left col-12">
                         {{ item.assignee }}
                     </div>
                     <div style="font-size: 14px; line-height: normal; text-align: justify;" class="col-12 col-sm-12 col-md-12 col-xl-12 p-2">
@@ -258,7 +258,7 @@ export default {
     width: 100%;
 }
 
-.crop-title{
+.crop-title {
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow-x: hidden;

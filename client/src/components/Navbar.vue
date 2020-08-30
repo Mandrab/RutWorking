@@ -1,8 +1,8 @@
 <template>
     <nav class="navbar navbar-expand-lg navbar-light bg-light rounded">
-        <a class="col-8 col-xs-6 col-sm-6 col-md-6 col-xl-6 navbar-brand text-left mx-0 p-1" href="#">RutWorking</a>
+        <a class="col-6 col-xs-6 col-sm-6 col-md-6 col-xl-6 navbar-brand text-left mx-0 p-1" href="#">RutWorking</a>
 
-        <div class="col-4 col-xs-6 col-sm-6 col-md-6 col-xl-6 mx-0 p-0">
+        <div class="col-6 col-xs-6 col-sm-6 col-md-6 col-xl-6 mx-0 p-0">
             <b-dropdown class="d-none d-sm-block d-md-block d-lg-block float-right" right variant="light">
                 <template v-slot:button-content>
                     {{ username }} 
@@ -25,7 +25,7 @@
             <b-dropdown class="d-block d-sm-block d-md-block d-lg-block float-right" style="z-index:2; padding" right variant="light">
                 <template v-slot:button-content>
                     <span @click="getNotificationsList">
-                        <font-awesome-icon icon="bell" size="lg"/><div v-if="notificationsNumber!=0" style=" border-radius: 10px; background-color: #f33d3d; position: absolute; top: 18px; right: 17px; height: 15px; width: 15px; padding: 0px; margin: 0px; font-size: 10px;">{{notificationsNumber}}</div><!--{{notificationsNumber}}--></span>
+                        <font-awesome-icon icon="bell" size="lg"/><div v-if="notificationsNumber != 0" style=" border-radius: 10px; background-color: #f33d3d; position: absolute; top: 18px; right: 17px; height: 15px; width: 15px; padding: 0px; margin: 0px; font-size: 10px;">{{notificationsNumber}}</div><!--{{notificationsNumber}}--></span>
                 </template>
                 <div v-if="notificationsReady">
                     <b-dropdown-item v-for="(n, index) in notificationsList" :key="index"> {{ n.topic }} {{ n.projectName }} {{ n.moduleName }} {{ n.projectName }} {{ n.senderEmail }} {{ n.message }} </b-dropdown-item>
