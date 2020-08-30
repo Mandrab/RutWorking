@@ -85,18 +85,20 @@ describe('test contest\' operations', function () {
         let res_2 = await request.get('/contest/ranking').set({ 'Authorization': await ADMIN.getToken() }).expect(200)
 
         assert(res_1.body.length === res_2.body.length, 'Admin & user should get same contest ranking')
-        assert(res_1.body.length === 0, 'Ranking should not contains users')
+        assert(res_1.body.length === 1 && res_1.body[0].score === 0,
+            'Ranking should contains only the requesting user with score 0')
 
         await DBUser.updateOne({ email: USER_1.email }, { $set: { score: 100 } })
 
         res_1 = await request.get('/contest/ranking').set({ 'Authorization': await USER_1.getToken() }).expect(200)
         res_2 = await request.get('/contest/ranking').set({ 'Authorization': await ADMIN.getToken() }).expect(200)
 
-        assert(res_1.body.length === res_2.body.length, 'Admin & user should get same contest ranking')
+        assert(res_1.body.length === res_2.body.length -1,
+            'Being the second user not in the 100, his score is appended at the end')
         assert(res_1.body.length === 1, 'Ranking should contains one user')
 
         res_2 = await request.get('/contest/ranking/1').set({ 'Authorization': await ADMIN.getToken() }).expect(200)
-        assert(res_2.body.length === 0, 'With skip 1 ranking should be empty')
+        assert(res_2.body.length === 1, 'With skip 1 ranking should contains only the requesting user')
     })
 
 /**********************************************************************************************************************

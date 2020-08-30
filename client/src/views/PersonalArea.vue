@@ -46,9 +46,15 @@
                             <div class="col-sm-6  text-right">Score: {{ score.score }} </div>
                         </div>
                     </div>
-                    <div class="col-md-12 m-0 p-0" v-if="indexInScoreArray > 10">
+                    <div class="col-md-12 m-0 p-0" v-if="indexInScoreArray > 10 && ranked">
                         <div class=" row scoreTile  m-1 p-0">
                             <div class="col-sm-6 text-left text-primary"> <b> {{ indexInScoreArray + 1 }}) ME </b> </div>
+                            <div class="col-sm-6  text-right">Score: {{ scores[indexInScoreArray].score }} </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 m-0 p-0" v-if="indexInScoreArray > 10 && !ranked">
+                        <div class=" row scoreTile  m-1 p-0">
+                            <div class="col-sm-6 text-left text-primary"> <b> ME </b> </div>
                             <div class="col-sm-6  text-right">Score: {{ scores[indexInScoreArray].score }} </div>
                         </div>
                     </div>
@@ -83,7 +89,8 @@ export default {
             scoreReady: false,
             showModal: false,
             title: 'Users ranking',
-            message: ''
+            message: '',
+            ranked: false
         }
     },
     components: {
@@ -115,6 +122,7 @@ export default {
 
         },
         getContestRanking() {
+            this.ranked = false;
             var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
             this.$http.get(localStorage.getItem('path') + '/contest/ranking', tokenJson).then(function(response) {
                 this.scoreReady= false;
@@ -126,6 +134,12 @@ export default {
                     for(var i = 0; i<res.length; i++){
                         if(res[i].email == this.username){
                             this.indexInScoreArray = i;
+                            if(i<res.length-1){
+                                this.ranked = true;
+                            } else{
+                                this.ranked = false;
+                            }
+                            
                         }
                     }
                 }

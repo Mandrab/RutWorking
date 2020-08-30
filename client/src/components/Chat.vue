@@ -70,33 +70,43 @@ export default {
   },
   created() {
     this.init();
+
     messaging.onMessage(payload => {
-      var notifications = localStorage.getItem('notifications');
-      switch (payload) {
-        case "chat_message":
-          console.log("MESSAGE PAYLOAD: ")
-          console.log(payload)
-          alert(payload.data.senderEmail, payload.data.message)
-          var username = JSON.parse(localStorage.getItem('user')).email;
-          if (payload.data.senderEmail != username) {
-              this.newMessagesCount = this.isChatOpen ? this.newMessagesCount : this.newMessagesCount + 1
-              this.messageList.push({"author": payload.data.senderEmail, "data": {"text": payload.data.message}, "id": Math.random(), "type": "text"});
-              notifications++;
-              localStorage.setItem('notifications', notifications);
-          }
-          break;
-        case "developer_added":
-          notifications++;
-          localStorage.setItem('notifications', notifications);
-          break;
-        case "task_completed":
-          notifications++;
-          localStorage.setItem('notifications', notifications);
-          break;
-      }
-      
-      
-    });
+            var notifications = localStorage.getItem('notifications');
+            console.log("PAYLOAD");
+            console.log(payload);
+            console.log(payload.data.topic);
+            switch (payload.data.topic) {
+                case "chat_message":
+                    console.log("MESSAGE PAYLOAD: ")
+                    console.log(payload)
+                    var username = JSON.parse(localStorage.getItem('user')).email;
+
+                    if (payload.data.senderEmail != username) {
+                      this.newMessagesCount = this.isChatOpen ? this.newMessagesCount : this.newMessagesCount + 1
+                      this.messageList.push({"author": payload.data.senderEmail, "data": {"text": payload.data.message}, "id": Math.random(), "type": "text"});
+                      notifications++;
+                      localStorage.removeItem('notifications');
+                      localStorage.setItem('notifications', notifications);
+                    }
+                    break;
+                case "developer_added":
+                    notifications++;
+                    localStorage.removeItem('notifications');
+                    localStorage.setItem('notifications', notifications);
+                    break;
+                case "task_completed":
+                    notifications++;
+                    localStorage.removeItem('notifications');
+                    localStorage.setItem('notifications', notifications);
+                    break;
+            }
+            
+            //this.notificationsNumber = notifications;
+            this.$emit('notificationsNumber', notifications);
+
+            
+        });
     //setTimeout(this.addCasualMsg, 5000);
     
   },
