@@ -50,6 +50,7 @@
     </nav>
 </template>
 
+
 <script>
 import { messaging } from '../../firebase'
 
