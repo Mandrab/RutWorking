@@ -33,7 +33,7 @@ export async function getStatus(request: any, result: any) {
     try {
         let skipUsers = request.params.skipN ? parseInt(request.params.skipN, 10) : 0
 
-        let users = await _getStatus(skipUsers)
+        let users = await _getStatus(skipUsers, request.userID)
 
         result.status(200).send(users)
     } catch (err) {
