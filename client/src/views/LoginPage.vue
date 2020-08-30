@@ -1,5 +1,5 @@
 <template>
-    <div class="col-sm-4 col-md-4 col-xl-4 offset-sm-4 offset-md-4 offset-xl-4">
+    <div class="col-sm-4 col-md-4 col-xl-4 offset-sm-4 offset-md-4 offset-xl-4" style="padding: 60px 0px; height: 80vh;">
         <h2>Login</h2>
         <form @submit.prevent="handleSubmit">
             <div class="form-group">
