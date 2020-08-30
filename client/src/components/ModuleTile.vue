@@ -3,7 +3,7 @@
         <li v-if="isModuleMember" class="list-group-item" id="member" @click="openModule">
             <div>
                 <div class="row">
-                     <div v-if="ready" style="position: absolute; top: 15px; right: 15px; font-size: 12px;" v-bind:style="{ color: deadlineColor }">
+                    <div v-if="ready" style="position: absolute; top: 15px; right: 15px; font-size: 12px;" v-bind:style="{ color: deadlineColor }">
                         {{ new Date(item.deadline).getDate() }}/{{ new Date(item.deadline).getMonth() + 1 }}/{{ new Date(item.deadline).getFullYear() }}
                     </div>
                     <div class="col-12 text-left font-weight-bold h5 pb-0 mb-0">
@@ -43,10 +43,8 @@
 
                                 <div class="form-group">
                                     <button @click="handleSubmit" class="btn btn-primary" :disabled="adding">Add user</button>
-                                    <img v-show="adding" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+                                    <font-awesome-icon v-if="adding" style="color: gray;" icon="spinner" pulse size="2x"/>
                                 </div>
-                                
-                                <!--<simpleModal v-if="showModal" :mess="loginResponse" @closeModal="closeModal" ></simpleModal>-->
                             </form>
                         </div>
                     </div>
@@ -74,9 +72,8 @@
 
 <script>
 
-
 export default {
-    data () {
+    data() {
         return {
             ready: false,
             deadlineColor: 'black',
@@ -88,19 +85,17 @@ export default {
             moduleInfo: {},
             isDescHide: true,
             isUserCreationHide: true,
-            email: "",
+            email: '',
             submitted: false,
             adding: false
         }
     },
-    created () {
+    created() {
         console.log(this.item);
         this.init();
         this.checkDeadline();
 
         this.isModuleMember = this.isMember;
-        console.log("...---...");
-        console.log(this.isModuleMember);
     },
     props: {
         item: {
@@ -120,16 +115,12 @@ export default {
     },
     methods: {
         init () {
-            console.log("ààààààààà")
             console.log(this.item);
             console.log(this.projectInfo);
             this.developersReady = false;
             var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
             console.log(localStorage.getItem('path') + '/projects/' + this.projectInfo.projectName + '/modules/' + this.item.name);
-            console.log("PROJECTINFO");
-            console.log(this.projectInfo);
-            console.log("OBJECT");
-            console.log(this.item);
+
             if (this.isMember) {
                 this.$http.get(localStorage.getItem('path') + '/projects/' + this.projectInfo.projectName + '/modules/' + this.item.name, tokenJson).then(function(response) {
                 console.log(response.body);

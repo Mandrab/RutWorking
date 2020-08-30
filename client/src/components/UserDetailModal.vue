@@ -53,7 +53,7 @@ export default {
     },
     methods: {
         closeForm () {
-            this.$emit('closeModal'); // notifico il padre
+            this.$emit('closeModal');
         }
     }
 }

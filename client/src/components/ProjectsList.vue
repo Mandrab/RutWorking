@@ -16,8 +16,6 @@
 		    </ul>
         <pagination v-if="ready" :array="projectsArr" limit="6" @displayChanged="dispatchedPagination($event)" shown="8" :bottom="true"></pagination>
         </div>
-		
-
 	</div>
 </template>
 

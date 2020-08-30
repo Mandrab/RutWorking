@@ -122,7 +122,7 @@ export default {
         init() {
             this.username = JSON.parse(localStorage.getItem('user')).email;
 
-            var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
+            var tokenJson = { headers: { Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
             this.$http.get(localStorage.getItem('path') + '/user/' + this.username, tokenJson).then(function(response) {
                 console.log(response.body);
                 var res = response.body;
@@ -162,7 +162,7 @@ export default {
 
                 this.firstTenScores = res.slice(0, 10)
                 if (res.length > 0){
-                    for (var i = 0; i < res.length; i++){
+                    for (var i = 0; i < res.length; i++) {
                         if (res[i].email == this.username) {
                             this.indexInScoreArray = i;
                             if (i < res.length - 1) {

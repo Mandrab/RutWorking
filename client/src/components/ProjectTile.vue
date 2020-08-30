@@ -60,21 +60,17 @@ export default {
         }
     },
     methods: {
-        checkDeadline () {
+        checkDeadline() {
             this.ready = false;
             
-            console.log(this.item);
-            var ProjectDline = new Date(this.item.deadline);
-            
-            
+            var date = new Date(this.item.deadline);
+            var weekLater = new Date();
             var today = new Date();
-            var weekLater = new Date(today);
-            weekLater.setDate(today.getDate()+7);
+            weekLater.setDate(date.getDate() + 7);
 
-            if (ProjectDline >= today && ProjectDline <= weekLater ) {
+            if (date >= today && date <= weekLater) {
                 this.deadlineColor = 'orange';
-            }
-            else if(ProjectDline < today) {
+            } else if(date < today) {
                 this.deadlineColor = 'red';
             } else { 
                 this.deadlineColor = 'green';

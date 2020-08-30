@@ -17,7 +17,7 @@
                 <div class="col-12 col-sm-10 col-md-10 col-xl-10 text-left pl-0">
                     <h2>{{ project.name }}</h2>
                 </div>
-                <div class="col-12 col-sm-2 col-md-2 col-xl-2 text-left pl-0" v-bind:style="{ color: deadlineColor }">
+                <div v-if="deadlineReady" class="col-12 col-sm-2 col-md-2 col-xl-2 text-left pl-0" v-bind:style="{ color: deadlineColor }">
                     Deadline: {{ new Date(project.deadline).getDate() }}/{{ new Date(project.deadline).getMonth() + 1}}/{{ new Date(project.deadline).getFullYear() }}
                 </div>
             </div>
@@ -27,6 +27,9 @@
                     {{ project.description }}
                 </div>
             </div>
+        </div>
+        <div v-else>
+            <font-awesome-icon style="color: gray;" icon="spinner" pulse size="2x"/>
         </div>
 
         <modulesList v-if="projectReady" @clickModule="openModule" @refreshModulesList="updateList" :modules="modulesArr" :projectInfo="projectInfo" :isModulesMember="isModulesMember"></modulesList>
@@ -50,6 +53,7 @@ export default {
             modulesArr: [],
             isModulesMember: [],
             projectReady: false,
+            deadlineReady: false,
             deadlineColor: 'black',
             projectInfo: {}
         }
@@ -66,7 +70,7 @@ export default {
             type: Array
         }
     },
-    created () {
+    created() {
         this.getProjectInfo();
         this.checkDeadline();
         if (JSON.parse(localStorage.getItem('user')).email == this.project.chief) {
@@ -75,11 +79,6 @@ export default {
         this.projectInfo = {'projectName': this.project.name, 'isProjectChief': this.isProjectChief };
 
         this.isModulesMember = this.isMember;
-
-        console.log("PD");
-        console.log(this.isMember);
-        
-
     },
     watch: {
         project: function () {
@@ -92,11 +91,8 @@ export default {
             this.checkDeadline();
             this.getProjectInfo();
             this.projectInfo = {'projectName': this.project.name, 'isProjectChief': this.isProjectChief }
-
-            
         },
         isMember: function () {
-            //aggiornamento is member
             this.isModulesMember = this.isMember;
         }
     },
@@ -107,11 +103,9 @@ export default {
         closeModal () {
             this.showModal = false;
         },
-
         updateList(){
             this.$emit('getModulesInfo');
         },
-
         getProjectInfo() {
             this.projectReady = false;
 
@@ -127,11 +121,11 @@ export default {
             localStorage.setItem('isProjectChief', this.isProjectChief); ///////
             
             
-            var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
+            var tokenJson = { headers: { Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
             console.log(localStorage.getItem('path') + '/projects/project/'+this.project.name);
 
 
-            this.$http.get(localStorage.getItem('path') + '/projects/project/'+localStorage.getItem('projectName'), tokenJson).then(function(response) {
+            this.$http.get(localStorage.getItem('path') + '/projects/project/' + localStorage.getItem('projectName'), tokenJson).then(function(response) {
                 console.log(response.body);
                 var res = response.body;
                 
@@ -147,27 +141,24 @@ export default {
                 this.projectReady = true;
             });
         },
-        checkDeadline () {
-            //this.projectReady = false;
-            console.log("____________ ________________ _______________")
-            console.log(this.project);
+        checkDeadline() {
+            this.deadlineReady = false;
+
             var date = new Date(this.project.deadline);
-            
             var weekLater = new Date();
             var today = new Date();
-            weekLater.setDate(date.getDate()+7);
+            weekLater.setDate(date.getDate() + 7);
 
-            if (date >= today && date <= weekLater ) {
+            if (date >= today && date <= weekLater) {
                 this.deadlineColor = 'orange';
-            }
-            else if(date < today) {
+            } else if(date < today) {
                 this.deadlineColor = 'red';
             } else { 
                 this.deadlineColor = 'green';
             }
-            this.ready = true;
+            this.deadlineReady = true;
         },
-        openModule (event) {
+        openModule(event) {
             console.log(event);
             //if (JSON.parse(localStorage.getItem('module'))) {
                 //alert("errore: c'è già qualcosa dentro al localstorage");
