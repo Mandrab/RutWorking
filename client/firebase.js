@@ -1,13 +1,13 @@
 import { initializeApp } from 'firebase'
 
 const app = initializeApp({
-    apiKey: "AIzaSyBlQXIMxfjDcCQZsVR7d752X2TaXXJrc_M",
-    authDomain: "rutworking-fb3b3.firebaseapp.com",
-    databaseURL: "https://rutworking-fb3b3.firebaseio.com",
-    projectId: "rutworking-fb3b3",
-    storageBucket: "rutworking-fb3b3.appspot.com",
-    messagingSenderId: "936912710994",
-    appId: "1:936912710994:web:6a3c55ae351665f2da5e8b"
+    apiKey: "AIzaSyD0JvtDU737L2QjlEWhkUYd446v2G5FvTQ",
+    authDomain: "rutworking-f724c.firebaseapp.com",
+    databaseURL: "https://rutworking-f724c.firebaseio.com",
+    projectId: "rutworking-f724c",
+    storageBucket: "rutworking-f724c.appspot.com",
+    messagingSenderId: "531000857071",
+    appId: "1:531000857071:web:178bfa6e4e173e5a66261a"
 })
 
 export const messaging = app.messaging()
@@ -28,7 +28,11 @@ async function setToken() {
             method: 'PUT',
             body: JSON.stringify({ firebaseToken: newToken })
         })
-    } catch(e) { console.log(e) }
+    } catch (e) { 
+        if (JSON.parse(localStorage.getItem('user')) != null) {
+            console.log(e);
+        }
+    }
 }
 
 setToken()

@@ -136,8 +136,7 @@ export default {
             weekLater.setDate(today.getDate()+7);
             if (date >= today && date <= weekLater ) {
                 this.deadlineColor = 'orange';
-            }
-            else if(date < today) {
+            } else if (date < today) {
                 this.deadlineColor = 'red';
             } else { 
                 this.deadlineColor = 'green';

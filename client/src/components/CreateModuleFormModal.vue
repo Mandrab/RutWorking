@@ -72,7 +72,11 @@ export default {
   },
   watch: {
     deadline: function () {
+      if (this.deadline == '') {
+        return;
+      }
       var date = new Date(this.deadline.toString());
+      date.setHours(23, 59, 59, 999);
       var today = new Date();
       var projectDeadline = new Date(this.project.deadline);
       if (date > projectDeadline) {

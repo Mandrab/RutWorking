@@ -13,7 +13,7 @@
                 <div v-show="submitted && !password" class="invalid-feedback">Password is required</div>
             </div>
             <div class="form-group">
-                <button v-if="!loggingIn" @click.prevent="handleSubmit" class="btn btn-primary" :disabled="loggingIn">Sign in</button>
+                <button v-if="!loggingIn && !showModal" @click.prevent="handleSubmit" class="btn btn-primary" :disabled="loggingIn">Sign in</button>
                 <font-awesome-icon v-if="loggingIn" style="color: gray;" icon="spinner" size="2x" pulse/>
             </div>
 
