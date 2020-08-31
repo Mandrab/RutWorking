@@ -14,17 +14,21 @@
                     <div style="font-size: 14px; line-height: normal; text-align: justify;" class="col-12 col-sm-12 col-md-12 col-xl-12 p-2">
                         {{ item.taskDescription }}
                     </div>
-                    <div v-if="isModuleChief" @click="deleteTask" class="d-none d-sm-block d-md-block d-lg-block delete-btn"><font-awesome-icon class="delete-icon" icon="trash-alt" size="sm"/></div>
-                    <div v-if="isModuleChief" @click="deleteTask" class="d-sm-none delete-btn"><font-awesome-icon class="delete-icon" icon="trash-alt" size="lg"/></div>
+                    <div v-if="isModuleChief" @click="askConfirmation" class="d-none d-sm-block d-md-block d-lg-block delete-btn"><font-awesome-icon class="delete-icon" icon="trash-alt" size="sm"/></div>
+                    <div v-if="isModuleChief" @click="askConfirmation" class="d-sm-none delete-btn"><font-awesome-icon class="delete-icon" icon="trash-alt" size="lg"/></div>
                 </div>
             </div>
             <div v-if="isRightArrowDisabled" class="col-1 p-0"></div>
             <button v-if="!isRightArrowDisabled" class="btn btn-light right-arrow col-1 p-0 m-0" @click="moveToNextStage"><font-awesome-icon icon="angle-right" size="lg"/></button>
         </div>
+
+        <confirmationModal v-if="showConfirmationModal" :title="title" :message="message" @proceed="proceed" @cancel="cancel"></confirmationModal>
     </div>
 </template>
 
 <script>
+import confirmationModal from './ConfirmationModal.vue'
+
 export default {
     data() {
         return {
@@ -36,8 +40,14 @@ export default {
             isLeftArrowDisabled: false,
             isRightArrowDisabled: false,
             taskReady: false,
-            initialized: false
+            initialized: false,
+            showConfirmationModal: false,
+            title: '',
+            message: ''
         }
+    },
+    components: {
+        confirmationModal
     },
     props: {
         item: {
@@ -138,6 +148,18 @@ export default {
             }, (err) => {
                 console.log(err.body);
             });
+        },
+        askConfirmation() {
+            this.title = 'Delete task';
+            this.message = 'Do you want to delete this task?';
+            this.showConfirmationModal = true;
+        },
+        proceed() {
+            this.showConfirmationModal = false;
+            this.deleteTask();
+        },
+        cancel() {
+            this.showConfirmationModal = false;
         },
         deleteTask() {
             var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };

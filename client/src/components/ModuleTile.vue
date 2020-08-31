@@ -25,7 +25,7 @@
                                 <b-dropdown-item v-if="isModuleChief && isUserCreationHide" @click.stop="expandUserCreation"><font-awesome-icon icon="user-plus"/> Add user</b-dropdown-item>
                                 <b-dropdown-item v-if="isModuleChief && !isUserCreationHide" @click.stop="reduceUserCreation"><font-awesome-icon icon="times"/> Close user</b-dropdown-item>
                                 <b-dropdown-divider></b-dropdown-divider>
-                                <b-dropdown-item v-if="isModuleChief" @click.stop="deleteModule" ><font-awesome-icon icon="trash-alt"/> <a href="#" class="r">Delete module</a></b-dropdown-item>
+                                <b-dropdown-item v-if="isModuleChief" @click.stop="askConfirmation" ><font-awesome-icon icon="trash-alt"/> <a href="#" class="r">Delete module</a></b-dropdown-item>
                             </b-dropdown>
                         </div>
                     </div>
@@ -66,10 +66,13 @@
                 </div>
             </div>  
         </li>
+
+        <confirmationModal v-if="showConfirmationModal" :title="title" :message="message" @proceed="proceed" @cancel="cancel"></confirmationModal>
     </div>
 </template>
 
 <script>
+import confirmationModal from './ConfirmationModal.vue'
 
 export default {
     data() {
@@ -86,8 +89,14 @@ export default {
             isUserCreationHide: true,
             email: '',
             submitted: false,
-            adding: false
+            adding: false,
+            showConfirmationModal: false,
+            title: '',
+            message: ''
         }
+    },
+    components: {
+        confirmationModal
     },
     props: {
         item: {
@@ -163,6 +172,18 @@ export default {
             localStorage.setItem('developers', this.developers);
 
             this.$emit('openModule', this.item);
+        },
+        askConfirmation() {
+            this.title = 'Delete module';
+            this.message = 'Do you want to delete this module?';
+            this.showConfirmationModal = true;
+        },
+        proceed() {
+            this.showConfirmationModal = false;
+            this.deleteModule();
+        },
+        cancel() {
+            this.showConfirmationModal = false;
         },
         deleteModule() {
             var tokenJson = { headers: { Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };

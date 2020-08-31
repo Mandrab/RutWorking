@@ -9,34 +9,52 @@ const routes = [
   {
     path: "/",
     name: "HomePage",
-    component: HomePage
+    component: HomePage,
+    meta: {
+      title: 'Home Page | RutWorking',
+    }
   },
   {
     path: "/login",
     name: "LoginPage",
-    component: LoginPage
+    component: LoginPage,
+    meta: {
+      title: 'Login | RutWorning',
+    }
   },
   {
     path: "/personalarea",
     name: "PersonalArea",
+    meta: {
+      title: 'Personal Area | RutWorking',
+    },
     component: () =>
       import(/* webpackChunkName: "register" */ "../views/PersonalArea.vue") // lazy loading
   },
   {
     path: "/workingarea",
     name: "WorkingArea",
+    meta: {
+      title: 'Kanban | RutWorking',
+    },
     component: () =>
       import(/* webpackChunkName: "register" */ "../views/WorkingArea.vue") // lazy loading
   },
   {
     path: "/adminpage",
     name: "AdminPage",
+    meta: {
+      title: 'Home Page | RutWorking',
+    },
     component: () =>
       import(/* webpackChunkName: "register" */ "../views/AdminPage.vue") // lazy loading
   },
   {
     path: "/404",
     name: "PageNotFound",
+    meta: {
+      title: 'Page Not Found | RutWorking',
+    },
     component: () =>
       import(/* webpackChunkName: "register" */ "../views/PageNotFound.vue") // lazy loading
   },
@@ -59,6 +77,8 @@ router.beforeEach((to, from, next) => {
   if (authRequired && !loggedIn) {
     return next('/login');
   }
+
+  document.title = to.meta.title;
 
   next();
 })

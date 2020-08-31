@@ -1,19 +1,19 @@
 <template>
 <ul class="pagination margin-bottom-none" v-if="pages > 1" :class="{'bottom': bottom == true, 'doFloat': doNotFloat != true}">
-  <!-- freccia sx disabilitata se il primo tag è attivo -->
-  <li :class="{disabled: this.active==0}" @click.prevent="checkArrows(false)"><a href="#">&laquo;</a></li>
-  <!-- il primo e l'ultimo tag vengono sempre mostrati, anche quando si specifica di visualizzare un massimo numero di tag -->
+  <!-- Left arrow disabled if the first tag is active -->
+  <li :class="{disabled: this.active == 0}" @click.prevent="checkArrows(false)"><a href="#">&laquo;</a></li>
+  <!-- The first and last tags are always shown, even when you specify to display a maximum number of tags -->
   <li v-if="!firstCovered" @click.prevent="showProjects(0)"><a href="#">1</a></li>
-  <!-- appaiono i punti di sospensione se il primo tag non è immediatamente prima del frame di tag mostrati -->
+  <!-- The suspension points appear if the first tag is not immediately before the frame of tags shown -->
   <li v-if="firstUnreached"><a @click.prevent="showProjects(firstDisplayed - 1)">...</a></li>
-  <!-- itera i tag da mostrare (tutti se la prop shown non è valoraizzata) -->
-  <li v-for="(showed,index) in displayed" :key="index" @click.prevent="showProjects(showed)" :class="{active: showed==active}"><a href="#">{{ showed+1 }}</a></li>
-  <!-- appaiono i punti di sospensione se l'ultimo tag non è immediatamente dopo il frame di tag mostrati -->
+  <!-- Iterates the tags to show (all tags if the shown prop is not valued) -->
+  <li v-for="(showed, index) in displayed" :key="index" @click.prevent="showProjects(showed)" :class="{active: showed==active}"><a href="#">{{ showed + 1 }}</a></li>
+  <!-- The suspension points appear if the last tag is not immediately after the frame of tags shown -->
   <li v-if="lastUnreached"><a @click.prevent="showProjects(lastDisplayed + 1)">...</a></li>
-  <!-- ultimo tag sempre visibile -->
+  <!-- Last tag always visible -->
   <li v-if="!lastCovered" @click.prevent="showProjects(pages - 1)"><a href="#">{{pages}}</a></li>
-  <!-- freccia dx disabilitata se l'ultimo tag è attivo -->
-  <li :class="{disabled: this.active==pages-1}" @click.prevent="checkArrows(true)"><a href="#">&raquo;</a></li>
+  <!-- Right arrow disabled if the last tag is active -->
+  <li :class="{disabled: this.active == pages - 1}" @click.prevent="checkArrows(true)"><a href="#">&raquo;</a></li>
 </ul>
 </template>
 <script>
@@ -35,14 +35,14 @@ export default {
     }
   },
   methods: {
-    // calcola il numero di tag in cui suddividere l'array
+    // Compute the number of tags to divide the array into
     handleProjects: function() {
       if (this.array.length > 0) {
         this.pages = Math.ceil(this.array.length / this.limit);
       }
     },
+    // Select the fraction of array to show, and update the active index
     showProjects: function(index) {
-      //seleziona la frazione di array da mostrare, e aggiorna l'indice attivo
       this.active = index;
       var displayProjects;
       if (index != this.pages - 1) {
@@ -52,10 +52,8 @@ export default {
       }
       this.$emit("displayChanged", displayProjects);
 
-      //elaboro quale tag mostrare
       this.displayed = [];
       if (this.shown == null || this.pages <= this.shown) {
-        //se la prop shown non è definita o è maggiore dell'effetivo numero di pagine, mostro tutto
         for (var i = 0; i < this.pages; i++) {
           this.displayed.push(i);
         }

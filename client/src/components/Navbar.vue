@@ -142,24 +142,14 @@ export default {
         openHomePage() {
             if (localStorage.getItem('role') == 'user') {
                 this.$router.push('/').catch(err => {
-                    // Ignore the vuex err regarding navigating to the page they are already on
-                    if (
-                    err.name !== 'NavigationDuplicated' &&
-                    !err.message.includes('Avoided redundant navigation to current location')
-                    ) {
-                    // But print any other errors to the console
-                    console.log(err);
+                    if (err.name !== 'NavigationDuplicated' && !err.message.includes('Avoided redundant navigation to current location')) {
+                        console.log(err);
                     }
                 });
             } else {
                 this.$router.push('/adminpage').catch(err => {
-                    // Ignore the vuex err regarding navigating to the page they are already on
-                    if (
-                    err.name !== 'NavigationDuplicated' &&
-                    !err.message.includes('Avoided redundant navigation to current location')
-                    ) {
-                    // But print any other errors to the console
-                    console.log(err);
+                    if (err.name !== 'NavigationDuplicated' && !err.message.includes('Avoided redundant navigation to current location')) {
+                        console.log(err);
                     }
                 });
             }

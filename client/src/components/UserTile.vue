@@ -6,7 +6,7 @@
                 {{ item.email }}
             </div>
             <div class="col-3 col-sm-3 col-md-3 col-xl-3 text-right">
-                <button @click.stop="blockUser" class="btn btn-danger"><font-awesome-icon icon="ban"/></button>
+                <button @click.stop="askConfirmation" class="btn btn-danger"><font-awesome-icon icon="ban"/></button>
             </div>
         </div>
         <div v-if="isBlocked" class="row">
@@ -20,12 +20,13 @@
     </li>
 
     <userDetailModal v-if="showUserDetail" :item="item" @closeModal="closeDetail"></userDetailModal>
-
+    <confirmationModal v-if="showConfirmationModal" :title="title" :message="message" @proceed="proceed" @cancel="cancel"></confirmationModal>
     </div>
 </template>
 
 <script>
 import userDetailModal from '../components/UserDetailModal.vue'
+import confirmationModal from './ConfirmationModal.vue'
 
 export default {
     data() {
@@ -33,11 +34,15 @@ export default {
             username: '',
             isBlocked: false,
             ready: false,
-            showUserDetail: false
+            showUserDetail: false,
+            showConfirmationModal: false,
+            title: '',
+            message: ''
         }
     },
     components: {
-        userDetailModal
+        userDetailModal,
+        confirmationModal
     },
     props: {
         item: {
@@ -53,6 +58,18 @@ export default {
         },
         closeDetail() {
             this.showUserDetail = false;
+        },
+        askConfirmation() {
+            this.title = 'Block user';
+            this.message = 'Do you want to block this user?';
+            this.showConfirmationModal = true;
+        },
+        proceed() {
+            this.showConfirmationModal = false;
+            this.blockUser();
+        },
+        cancel() {
+            this.showConfirmationModal = false;
         },
         blockUser() {
             var tokenJson = { headers: { Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };

@@ -5,16 +5,20 @@
                 {{ item.name }}
             </div>
             <div class="col-3 col-sm-3 col-md-3 col-xl-3 text-right">
-                <div v-if="isProjectChief" @click="deleteProject" class="delete-btn"><font-awesome-icon class="delete-icon" icon="trash-alt" size="lg"/></div>
+                <div v-if="isProjectChief" @click="askConfirmation" class="delete-btn"><font-awesome-icon class="delete-icon" icon="trash-alt" size="lg"/></div>
             </div>
         </div>
         <div v-if="ready" class="row float-right small" v-bind:style="{ color: deadlineColor }">
             {{ new Date(item.deadline).getDate() }}/{{ new Date(item.deadline).getMonth() + 1 }}/{{ new Date(item.deadline).getFullYear() }}
         </div>
-    </li>		
+
+        <confirmationModal v-if="showConfirmationModal" :title="title" :message="message" @proceed="proceed" @cancel="cancel"></confirmationModal>
+    </li>
 </template>
 
 <script>
+import confirmationModal from './ConfirmationModal.vue'
+
 export default {
     data() {
         return {
@@ -22,8 +26,14 @@ export default {
             deadlineColor: 'black',
             isProjectChief: false,
             isModulesMember: [],
-            projectIndexInList: 0
+            projectIndexInList: 0,
+            showConfirmationModal: false,
+            title: '',
+            message: ''
         }
+    },
+    components: {
+        confirmationModal
     },
     props: {
         item: {
@@ -66,6 +76,18 @@ export default {
         },
         open() {
             this.$emit('openDetail', this.item, this.projectIndexInList + this.page);
+        },
+        askConfirmation() {
+            this.title = 'Delete project';
+            this.message = 'Do you want to delete this project?';
+            this.showConfirmationModal = true;
+        },
+        proceed() {
+            this.showConfirmationModal = false;
+            this.deleteProject();
+        },
+        cancel() {
+            this.showConfirmationModal = false;
         },
         deleteProject() {
             var tokenJson = { headers: { Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
