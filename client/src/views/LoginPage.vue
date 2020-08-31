@@ -26,7 +26,7 @@
 import simpleModal from '../components/SimpleModal.vue'
 
 export default {
-    data () {
+    data() {
         return {
             username: '',
             password: '',
@@ -42,18 +42,7 @@ export default {
     components: {
         simpleModal
     },
-    computed: {
-
-    },
-    created() {
-        // reset login status
-        this.logout();
-    },
     methods: {
-        closeModal() {
-            this.showModal = false;
-            this.closed = false;
-        },
         handleSubmit() {
             this.submitted = true;
             this.showModal = false;
@@ -68,25 +57,18 @@ export default {
             localStorage.setItem('path', path);
             this.loggingIn = true;
             var json = { 'userEmail': username, 'password': password };
+
             this.$http.post(localStorage.getItem('path') + '/login', json).then(function(response) {
-                console.log(response.body);
-                console.log(response.body.accessToken); //
                 var obj = { email: username, token: response.body.accessToken };
                 localStorage.removeItem('user');
                 localStorage.setItem('user', JSON.stringify(obj));
-                var user = JSON.parse(localStorage.getItem('user')); //
-                console.log("USER LOGGED-IN"); //
-                console.log(user); //
-
                 var role = response.body.userRole;
                 localStorage.removeItem('role');
                 localStorage.setItem('role', role);
-
                 localStorage.removeItem('notifications');
                 localStorage.setItem('notifications', 0);
                 if (role == "admin") {
                     this.$router.push('/adminpage');
-                    
                 } else {
                     this.$router.push('/');
                 }
@@ -98,7 +80,14 @@ export default {
         },
         logout() {
             localStorage.removeItem('user');
+        },
+        closeModal() {
+            this.showModal = false;
+            this.closed = false;
         }
+    },
+    created() {
+        this.logout();
     }
 };
 </script>

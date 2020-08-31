@@ -13,24 +13,24 @@
                 <slot name="body">
                     <form @submit.prevent="handleSubmit">
                       <div class="form-group">
-                          <label for="name">Name</label>
-                          <input type="text" v-model="mod.moduleName" name="name" class="form-control" :class="{ 'is-invalid': submitted && !mod.moduleName }" />
-                          <div v-show="submitted && !mod.moduleName" class="invalid-feedback">Name is required</div>
+                        <label for="name">Name</label>
+                        <input type="text" v-model="mod.moduleName" name="name" class="form-control" :class="{ 'is-invalid': submitted && !mod.moduleName }" />
+                        <div v-show="submitted && !mod.moduleName" class="invalid-feedback">Name is required</div>
                       </div>
                       <div class="form-group">
-                          <label for="description">Description</label>
-                          <textarea rows=5 columns=10 v-model="mod.description" name="description" class="form-control" :class="{ 'is-invalid': submitted && !mod.description }" />
-                          <div v-show="submitted && !mod.description" class="invalid-feedback">Description is required</div>
+                        <label for="description">Description</label>
+                        <textarea rows=5 columns=10 v-model="mod.description" name="description" class="form-control" :class="{ 'is-invalid': submitted && !mod.description }" />
+                        <div v-show="submitted && !mod.description" class="invalid-feedback">Description is required</div>
                       </div>
                       <div class="form-group">
-                          <label for="deadline">Deadline</label>
-                          <input type="date" v-model="deadline" name="deadline" class="form-control" :class="{ 'is-invalid': submitted && !deadline }" />
-                          <div v-show="submitted && !deadline" class="invalid-feedback">Deadline is required</div>
+                        <label for="deadline">Deadline</label>
+                        <input type="date" v-model="deadline" name="deadline" class="form-control" :class="{ 'is-invalid': submitted && !deadline }" />
+                        <div v-show="submitted && !deadline" class="invalid-feedback">Deadline is required</div>
                       </div>
                       <div class="form-group">
-                          <button v-if="!creating" @click.prevent="handleSubmit" class="btn btn-primary" :disabled="creating">Confirm</button>
-                          <button v-if="!creating" @click.prevent="closeForm" class="btn btn-link">Cancel</button>
-                          <font-awesome-icon v-if="creating" style="color: gray;" icon="spinner" pulse size="2x"/>
+                        <button v-if="!creating" @click.prevent="handleSubmit" class="btn btn-primary" :disabled="creating">Confirm</button>
+                        <button v-if="!creating" @click.prevent="closeForm" class="btn btn-link">Cancel</button>
+                        <font-awesome-icon v-if="creating" style="color: gray;" icon="spinner" pulse size="2x"/>
                       </div>
                     </form>
                 </slot>
@@ -51,8 +51,8 @@ export default {
   data() {
     return {
       mod: {
-          moduleName: '',
-          description: '',
+        moduleName: '',
+        description: '',
       },
       deadline: '',
       submitted: false,
@@ -66,109 +66,62 @@ export default {
     simpleModal
   },
   props: {
-      project: {
-          type: Object
-      }
+    project: {
+      type: Object
+    }
   },
   watch: {
-      deadline: function () {
-          console.log(this.deadline.toString())
-          var date = new Date(this.deadline.toString());
-          var today = new Date();
-          var projectDline = new Date(this.project.deadline);
-          if (date > projectDline) {
-            
-            //alert("oppala")
-            //alert(this.deadline);
-            //this.deadline = new Date(projectDline.getFullYear()+"-"+projectDline.getMonth()+1+"-"+projectDline.getDate());
-            
-            
-
-            var day = ("0" + projectDline.getDate()).slice(-2);
-            var month = ("0" + (projectDline.getMonth() + 1)).slice(-2);
-
-            var newDate = projectDline.getFullYear() + "-" + (month) + "-" + (day) ;
-
-            this.deadline = newDate;
-            //alert(this.deadline);
-
-            //var date = new Date('2011', '01', '18');
-            //alert('the original date is ' + date);
-            //alert(date.getDate());
-
-            /*
-            var newdate = new Date(date);
-            newdate.setDate(newdate.getDate() - (date.getDate()-1)); // minus the date
-
-            */
-
-            //var nd = new Date(newdate);
-            //alert('the new date is ' + nd);
-
-            /*
-            if(newdate>=projectDline){
-              //qui sei nel mese proprio sbagliato
-              alert("Invalid date!");
-              this.deadline = new Date(projectDline)
-            }else{
-              this.deadline = new Date(projectDline)
-            }
-
-            */
-
-            /*
-            var firstDayMonth = new Date();
-            console.log(date)
-            console.log(date.getDate())
-            console.log(date.getDate())
-            console.log("§§§§§§§§§§§§§§§§§§§")
-            firstDayMonth.setDate(date.getDate()-(date.getDate()+1));
-            console.log(firstDayMonth.getDate())
-            console.log(firstDayMonth)
-            */
-          }
-          if (date < today) {
-              this.deadline = '';
-              this.title = 'Choose a date';
-              this.message = "Invalid date!";
-              this.showModal = true;
-          }
+    deadline: function () {
+      var date = new Date(this.deadline.toString());
+      var today = new Date();
+      var projectDeadline = new Date(this.project.deadline);
+      if (date > projectDeadline) {
+        var day = ("0" + projectDeadline.getDate()).slice(-2);
+        var month = ("0" + (projectDeadline.getMonth() + 1)).slice(-2);
+        var newDate = projectDeadline.getFullYear() + "-" + (month) + "-" + (day) ;
+        this.deadline = newDate;
       }
+      if (date < today) {
+        this.deadline = '';
+        this.title = 'Choose a date';
+        this.message = "Invalid date!";
+        this.showModal = true;
+      }
+    }
   },
   methods: {
-      handleSubmit() {
-          this.submitted = true;
-          if (this.mod.moduleName && this.mod.description && this.deadline) {
-              this.addModule();
-          }
-      },
-      addModule() {
-          this.creating = true;
-          var tokenjson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
-          var json = {
-              "description": this.mod.description,
-              "deadline": this.deadline.toString()
-          }
-          
-          this.$http.post(localStorage.getItem('path') + '/projects/' + this.project.name+'/modules/' + this.mod.moduleName, json, tokenjson).then(function(response) {
-              console.log(response.body);
-              this.$emit('moduleAdded');
-              this.closeForm();
-          }, (err) => {
-              console.log(err.body);
-              this.showModal = true;
-              this.title = 'Error';
-              this.message = err.body;
-              this.creating = false;
-          });
-      },
-      closeForm () {
-          this.creating = false;
-          this.$emit('closeModal');
-      },
-      closeModal() {
-          this.showModal = false;
+    handleSubmit() {
+      this.submitted = true;
+      if (this.mod.moduleName && this.mod.description && this.deadline) {
+          this.addModule();
       }
+    },
+    addModule() {
+      this.creating = true;
+      var tokenjson = { headers: { Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
+      var json = {
+        "description": this.mod.description,
+        "deadline": this.deadline.toString()
+      }
+      
+      this.$http.post(localStorage.getItem('path') + '/projects/' + this.project.name+'/modules/' + this.mod.moduleName, json, tokenjson).then(function() {
+        this.$emit('moduleAdded');
+        this.closeForm();
+      }, (err) => {
+        console.log(err.body);
+        this.showModal = true;
+        this.title = 'Error';
+        this.message = err.body;
+        this.creating = false;
+      });
+    },
+    closeForm () {
+      this.creating = false;
+      this.$emit('closeModal');
+    },
+    closeModal() {
+      this.showModal = false;
+    }
   }
 }
 </script>

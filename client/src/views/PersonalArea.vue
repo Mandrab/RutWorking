@@ -74,7 +74,7 @@
             </div>
         </div>
 
-        <changePasswordFormModal v-if="this.showModalPasswordChange" @closeModal="closeModalPwd"></changePasswordFormModal>
+        <changePasswordFormModal v-if="this.showModalPasswordChange" @closeModal="closeModalPassword"></changePasswordFormModal>
     
         <simpleModal v-if="showModal" :title="title" :message="message" @closeModal="closeModal"></simpleModal>
     </div>
@@ -89,7 +89,7 @@ import simpleModal from '../components/SimpleModal.vue'
 import infiniteLoading from 'vue-infinite-loading'
 
 export default {
-    data () {
+    data() {
         return {
             name: '',
             surname: '',
@@ -115,53 +115,44 @@ export default {
         simpleModal,
         infiniteLoading
     },
-    created () {
-        this.init();
-    },
     methods: {
         init() {
             this.username = JSON.parse(localStorage.getItem('user')).email;
-
             var tokenJson = { headers: { Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
+            
             this.$http.get(localStorage.getItem('path') + '/user/' + this.username, tokenJson).then(function(response) {
-                console.log(response.body);
                 var res = response.body;
-                
                 this.name = res.name;
                 this.surname = res.surname;
                 this.role = res.role;
             }, (err) => {
                 console.log(err.body);
             });
-
             this.getContestRanking();
         },
         getContestRanking() {
             this.scoreReady = false;
             this.ranked = false;
             var tokenJson = { headers: { Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
+            
             this.$http.get(localStorage.getItem('path') + '/contest/ranking', tokenJson).then(function(response) {
-                console.log(response.body);
                 var res = response.body;
                 this.scores = res;
-
                 if (this.role == 'admin') {
-                    for(var i = 0; i < res.length; i++) {
+                    for (var i = 0; i < res.length; i++) {
                         if(res[i].email == this.username){
                             this.scores.splice(i, 1);
                             break;
                         }
                     }
                 }
-
                 if (this.scores.length >= 100) {
                     this.moreRankings = true;
                 } else {
                     this.moreRankings = false; 
                 }
-
                 this.firstTenScores = res.slice(0, 10)
-                if (res.length > 0){
+                if (res.length > 0) {
                     for (var i = 0; i < res.length; i++) {
                         if (res[i].email == this.username) {
                             this.indexInScoreArray = i;
@@ -182,10 +173,8 @@ export default {
             var tokenJson = { headers: { Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
             
             this.$http.get(localStorage.getItem('path') + '/contest/ranking/' + this.skipN, tokenJson).then(function(response) {
-                console.log(response.body);
                 var res = response.body;
                 this.scores = this.scores.concat(res);
-
                 if (this.role == 'admin') {
                     for (var i = 0; i < this.scores.length; i++) {
                         if (this.scores[i].email == this.username) {
@@ -194,16 +183,13 @@ export default {
                         }
                     }
                 }
-
                 $state.loaded();
-
                 if (res.legnth >= 100) {
                     this.moreRankings = true;
                 } else {
                     this.moreRankings = false; 
                     $state.complete();
                 }
-
                 this.skipN += 100;
             }, (err) => {
                 console.log(err.body);
@@ -212,14 +198,13 @@ export default {
         changePassword() {
             this.showModalPasswordChange = true;
         },
-        closeModalPwd() {
+        closeModalPassword() {
             this.showModalPasswordChange = false;
         },
         resetRanking() {
             var tokenjson = { headers: { Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
 
-            this.$http.put(localStorage.getItem('path') + '/contest/reset', {}, tokenjson).then(function(response) {
-                console.log(response.body);
+            this.$http.put(localStorage.getItem('path') + '/contest/reset', {}, tokenjson).then(function() {
                 this.message = 'General ranking of users successfully reset!';
                 this.showModal = true;
                 this.getContestRanking();
@@ -237,9 +222,12 @@ export default {
                 this.$router.push('/adminpage');
             }
         },
-        logout () {
+        logout() {
             this.$router.push('/login');
         }
+    },
+    created () {
+        this.init();
     }
 };
 </script>

@@ -49,33 +49,20 @@ export default {
         createProjectForm,
         projectDetail
     },
-    created() {
-        this.init();
-    },
     methods: {
-        init () {
+        init() {
             this.showUserName();
             this.getProjectList();
         },
-        addProject () {
-            this.getProjectList();
-        },
-        deleteProject () {
-            this.getProjectList();
-            this.showDetail = false;
-        },
-        showUserName () {
+        showUserName() {
             this.username = JSON.parse(localStorage.getItem('user')).email;
         },
         getProjectList() {
             this.projectsReady = false;
-            var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
+            var tokenJson = { headers: { Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
 
-            this.$http.get(localStorage.getItem('path') + '/projects/0/' + this.username/*, json*/, tokenJson).then(function(response) {
-                console.log(response.body);
-                this.projectsArr = response.body;//lo memorizzo nei data di questa view per poi poterlo passare al componente container (tramite props) che lo userà per creare i componenti tiles
-                //alert("prova");//l'ho messo per farti vedere che viene mostrata l'iconcina di cariacmento(in futuro metteremo una iconcina più bella, ovviamente sarà un componente )
-                
+            this.$http.get(localStorage.getItem('path') + '/projects/0/' + this.username, tokenJson).then(function(response) {
+                this.projectsArr = response.body;
                 for (var i = 0; i < this.projectsArr.length; i++) {
                     if (this.projectsArr[i].modules.length != 0) {
                         var isModulesMember = [];
@@ -87,65 +74,57 @@ export default {
                         this.isMember[i] = [];
                     }
                 }
-
                 this.projectsReady = true;
             }, (err) => {
                 console.log(err.body);
-                //mostrare errore nel componente contenitore dei tile magari con una scritta rossa
-                this.projectsReady = true;//?????? gestiamo bene la logica
+                this.projectsReady = true;
             });
-
-            
         },
-        showProjectCreationForm () {
+        addProject() {
+            this.getProjectList();
+        },
+        deleteProject() {
+            this.getProjectList();
+            this.showDetail = false;
+        },
+        showProjectCreationForm() {
             this.creating = true;
             this.hideProjectDetail();
         },
-        hideProjectCreationForm () {
+        hideProjectCreationForm() {
             this.creating = false;
         },
-        showProjectDetail (event1, event2) {//event2 dovrebbe essere l'indice di isMember così da passarlo correttamente al detail
-            //alert("aggiornamento project and member detail"+ event1 +" "+ event2+ "  e is member con indice giusto: "+ this.isMember[event2])
-            
+        showProjectDetail(event1, event2) {
             this.projectDetail = event1;
             this.projectIndex = event2;
-            console.log("EVENT2");
-            console.log(this.projectIndex);
-
-            console.log("____________________________")
-            console.log(this.projectIndex)
-            console.log(this.isMember);
-            console.log(this.isMember[this.projectIndex])
-
-
             this.showDetail = true;
             this.hideProjectCreationForm()
         },
-        hideProjectDetail () {
+        hideProjectDetail() {
             this.showDetail = false;
-        },
-        logout () {
-            this.$router.push('/login');
-        },
-        openPersonalArea () {
-            this.$router.push('/personalarea');
         },
         getNotificationsNumber() {
             this.notificationsReady = false;
-            var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
+            var tokenJson = { headers: { Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
 
-            //TODO
-            this.$http.get(localStorage.getItem('path') + '/projects/0/' + this.username/*, json*/, tokenJson).then(function(response) {
-                console.log(response.body);
+            this.$http.get(localStorage.getItem('path') + '/projects/0/' + this.username, tokenJson).then(function(response) {
                 localStorage.removeItem('notifications');
                 localStorage.setItem('notifications', response.body);
                 this.notificationsNumber = response.body;
-
                 this.notificationsReady = true;
             }, (err) => {
                 console.log(err.body);
             });
+        },
+        openPersonalArea() {
+            this.$router.push('/personalarea');
+        },
+        logout() {
+            this.$router.push('/login');
         }
+    },
+    created() {
+        this.init();
     }
 };
 </script>
@@ -158,14 +137,4 @@ export default {
 .b-dropdown:hover {
     background-color: #F8F9FA;
 }
- 
-/*
-@media (max-width: 576px) {
-    .detail {
-      padding: 0px !important;
-      margin: 0px !important;
-    }
-}
-*/
-
 </style>

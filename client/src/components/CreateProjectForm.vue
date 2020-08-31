@@ -32,7 +32,7 @@
 import simpleModal from './SimpleModal.vue'
 
 export default {
-    data () {
+    data() {
         return {
             project: {
                 projectName: '',
@@ -61,8 +61,6 @@ export default {
             }
         }
     },
-    computed: {
-    },
     methods: {
         handleSubmit() {
             this.submitted = true;
@@ -70,16 +68,15 @@ export default {
                 this.addProject(this.project);
             }
         },
-        addProject (project) {
+        addProject(project) {
             this.creating = true;
             var tokenjson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
             var json = {
                 "description": this.project.description,
                 "deadline": this.deadline.toString(),
             }
-            this.$http.post(localStorage.getItem('path') + '/projects/project/' + project.projectName, json, tokenjson).then(function(response) {
-                console.log(response.body);
 
+            this.$http.post(localStorage.getItem('path') + '/projects/project/' + project.projectName, json, tokenjson).then(function() {
                 this.$emit('projectAdded');
                 this.closeForm();
             }, (err) => {

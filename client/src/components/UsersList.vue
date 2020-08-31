@@ -38,12 +38,6 @@ export default {
             skipN: 100,
         }
     },
-    props: {
-    },
-    created() {
-        this.showUsersList();
-        this.ready = true;
-    },
     components: {
         userTile,
         registerUserFormModal,
@@ -53,10 +47,9 @@ export default {
         showUsersList() {
             this.isUsersListReady = false;
             this.skipN = 100;
-            var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
+            var tokenJson = { headers: { Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
             
-            this.$http.get(localStorage.getItem('path') + '/users', tokenJson).then(function(response) {
-                console.log(response.body);
+            this.$http.get(localStorage.getItem('path') + '/users', tokenJson).then(function() {
                 var res = response.body;
                 this.usersArr = res;
                 if (this.usersArr.length == 100) {
@@ -70,24 +63,18 @@ export default {
             });
         },
         showMoreUsers($state) {
-            var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
+            var tokenJson = { headers: { Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
             
             this.$http.get(localStorage.getItem('path') + '/users/' + this.skipN, tokenJson).then(function(response) {
-                console.log(response.body);
                 var res = response.body;
                 this.usersArr = this.usersArr.concat(res);
-
-                console.log(this.usersArr); //
-
                 $state.loaded();
-
                 if (res.legnth == 100) {
                     this.moreUsers = true;
                 } else {
                     this.moreUsers = false;
                     $state.complete();
                 }
-
                 this.skipN += 100;
             }, (err) => {
                 console.log(err.body);
@@ -99,7 +86,11 @@ export default {
         closeUserRegistration() {
             this.registerUser = false;
         }
-    }
+    },
+    created() {
+        this.showUsersList();
+        this.ready = true;
+    },
 };
 </script>
 

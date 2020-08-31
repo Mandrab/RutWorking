@@ -13,7 +13,7 @@
             <b> {{ title }} </b>
             <font-awesome-icon v-if="title != 'DONE'" class="float-right" style="color: gray;" icon="angle-right" size="lg"/>
             <font-awesome-icon v-if="title != 'TO-DO'" class="float-left" style="color: gray;" icon="angle-left" size="lg"/>
-            <kanbanStage v-if="areTasksReady" :title="title" :tasks="groupedTasks[index + 1]" @addTask="showModalTaskForm" @updateTask="getTasks"></kanbanStage> <!-- passo direttamente i task giusti da visualizzare nella colonna specifica -->
+            <kanbanStage v-if="areTasksReady" :title="title" :tasks="groupedTasks[index + 1]" @addTask="showModalTaskForm" @updateTask="getTasks"></kanbanStage>
           </swiper-slide>
           <div class="swiper-pagination" slot="pagination"></div>
         </swiper>
@@ -31,110 +31,93 @@ import { vueWindowSize } from 'vue-window-size';
 vueWindowSize.init();
 
 export default {
-    data () {
-        return {
-            swiperOptions: {
-              pagination: {
-                el: '.swiper-pagination'
-              },
-            // Some Swiper option/callback...
-            },
-            module: {},
-            tasksArr: [],
-            groupedTasks: [this.stages.length],
-            areTasksReady: false,
-            window: {
-                width: 0,
-                height: 0
-            },
-            showModalFormTask: false,
-            isUserRequired: false
-        }
+  data() {
+    return {
+      swiperOptions: {
+        pagination: {
+          el: '.swiper-pagination'
+        },
+      },
+      module: {},
+      tasksArr: [],
+      groupedTasks: [this.stages.length],
+      areTasksReady: false,
+      window: {
+        width: 0,
+        height: 0
+      },
+      showModalFormTask: false,
+      isUserRequired: false
+    }
+  },
+  components:{
+    kanbanStage,
+    createTaskFormModal
+  },
+  props: {
+    stages: {
+      type: Array,
+      required: true,
+    }
+  },
+  methods: {
+    init() {
+      window.addEventListener('resize', this.handleResize);
+      this.handleResize();
+      this.module = JSON.parse(localStorage.getItem('module'));
     },
-    components:{
-      kanbanStage,
-      createTaskFormModal
+    isSwiper(){
+      return this.window.width >= 768;
     },
-    computed: {
+    handleResize() {
+      console.log(this.window.width);
+      this.window.width = window.innerWidth;
+      this.window.height = window.innerHeight;
+    },
+    getTasks() {
+      this.areTasksReady = false;
+      var tokenJson = { headers: { Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
       
+      this.$http.get(localStorage.getItem('path') + '/projects/' + this.module.project + '/modules/' + this.module.name + '/kanban', tokenJson).then(function(response) {
+        this.tasksArr = response.body;
+        this.groupTasksByStage();
+        this.areTasksReady = true;
+      }, (err) => {
+        console.log(err.body);
+      });
     },
-    mounted() {
-      
-    },
-    created () {
-        this.init();
-        this.getTasks();
-    },
-    destroyed() {
-        window.removeEventListener('resize', this.handleResize);
-        //resetto gli elementi del local storage per consistenza
-        localStorage.removeItem('projectName');
-        localStorage.removeItem('moduleName');
-        localStorage.removeItem('isProjectChief');
-        localStorage.removeItem('isModuleChief');
-    },
-    props: {
-        stages: {
-          type: Array,
-          required: true,
+    groupTasksByStage() {
+      this.groupedTasks = [this.stages.length];
+      for (var i = 0; i < this.stages.length; i++) {
+        var stage = [];
+        this.tasksArr.forEach(t => {
+          if (t.status == this.stages[i]) {
+            stage.push(t);
+          }
+        });
+        this.groupedTasks.push(stage);
       }
     },
-    watch: {
+    showModalTaskForm(user) {
+      this.isUserRequired = user;
+      this.showModalFormTask = true;
     },
-    methods: {
-        init () {
-          window.addEventListener('resize', this.handleResize);
-          this.handleResize();
-
-          this.module = JSON.parse(localStorage.getItem('module'));
-        },
-        getTasks () {
-            this.areTasksReady = false;
-            var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
-            this.$http.get(localStorage.getItem('path') + '/projects/' + this.module.project + '/modules/' + this.module.name + '/kanban', tokenJson).then(function(response) {
-                console.log(response.body);
-                this.tasksArr = response.body;
-
-                this.groupTasksByStage();
-
-                this.areTasksReady = true;
-
-            }, (err) => {
-                console.log(err.body);
-            });
-        },
-        groupTasksByStage () {
-          this.groupedTasks = [this.stages.length];
-          for (var i = 0; i < this.stages.length; i++) {
-            var stage = [];
-            console.log(this.groupedTasks);
-            this.tasksArr.forEach(t => {
-              if (t.status == this.stages[i]) {
-                stage.push(t);
-              }
-            });
-            this.groupedTasks.push(stage);
-          }
-          console.log("++++++");
-          console.log(this.groupedTasks);
-        },
-        isSwiper(){
-          return this.window.width>=768;
-        },
-        handleResize() {
-          console.log(this.window.width);
-            this.window.width = window.innerWidth;
-            this.window.height = window.innerHeight;
-        },
-        showModalTaskForm(user){
-          this.isUserRequired = user;
-          this.showModalFormTask = true;
-        },
-        hideModalTaskForm(){
-          this.getTasks();
-            this.showModalFormTask = false;
-        }
+    hideModalTaskForm() {
+      this.getTasks();
+      this.showModalFormTask = false;
     }
+  },
+  created() {
+    this.init();
+    this.getTasks();
+  },
+  destroyed() {
+    window.removeEventListener('resize', this.handleResize);
+    localStorage.removeItem('projectName');
+    localStorage.removeItem('moduleName');
+    localStorage.removeItem('isProjectChief');
+    localStorage.removeItem('isModuleChief');
+  }
 };
 </script>
 

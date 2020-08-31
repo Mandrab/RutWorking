@@ -3,13 +3,11 @@
         <div class="modal-mask">
           <div class="modal-wrapper">
             <div class="modal-container">
-
               <div class="modal-header text-secondary">
                 <slot name="header">
                   {{ title }}
                 </slot>
               </div>
-
               <div class="modal-body text-danger">
                 <slot name="body">
                     <strong>
@@ -21,7 +19,6 @@
                         </div> 
                 </slot>
               </div>
-
               <div class="modal-footer">
                 <slot name="footer">
                   <button class="modal-default-button btn btn-primary" @click="$emit('closeModal')">
@@ -37,24 +34,22 @@
 
 <script>
 export default {
-    data () {
-        return {
-            showModal: false
-        }
-    },
-    props: {
-        title: {
-            type: String
-        },
-        message: {
-            type: String
-        },
-        secondaryMessage: {
-            type: String
-        }
-    },
-    methods: {
+  data() {
+    return {
+      showModal: false
     }
+  },
+  props: {
+    title: {
+      type: String
+    },
+    message: {
+      type: String
+    },
+    secondaryMessage: {
+      type: String
+    }
+  }
 };
 </script>
 
@@ -92,22 +87,9 @@ export default {
   color: #42b983;
 }
 
-.modal-body {
-  /*margin: 20px 0;*/
-}
-
 .modal-default-button {
   float: right;
 }
-
-/*
- * The following styles are auto-applied to elements with
- * transition="modal" when their visibility is toggled
- * by Vue.js.
- *
- * You can easily play with the modal transition by editing
- * these styles.
- */
 
 .modal-enter {
   opacity: 0;

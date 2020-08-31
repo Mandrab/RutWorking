@@ -33,17 +33,8 @@ export default {
             username: '',
             isBlocked: false,
             ready: false,
-            //userIndexInList: 0,
             showUserDetail: false
         }
-    },
-    created () {
-        console.log(this.item);
-        this.ready = false;
-        this.username = JSON.parse(localStorage.getItem('user')).email;
-        this.isBlocked = this.item.blocked;
-        this.userIndexInList = this.index;
-        this.ready = true;
     },
     components: {
         userDetailModal
@@ -59,21 +50,26 @@ export default {
     methods: {
         openDetail() {
             this.showUserDetail = true;
-            //this.$emit('openDetail', this.item, this.userIndexInList+this.page);
         },
         closeDetail() {
             this.showUserDetail = false;
         },
         blockUser() {
-            var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
+            var tokenJson = { headers: { Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
             
-            this.$http.delete(localStorage.getItem('path') + '/user/' + this.item.email, tokenJson).then(function(response) {
-                console.log(response.body);
+            this.$http.delete(localStorage.getItem('path') + '/user/' + this.item.email, tokenJson).then(function() {
                 this.$emit('userBlocked');
             }, (err) => {
                 console.log(err.body);
             });
         }
+    },
+    created() {
+        this.ready = false;
+        this.username = JSON.parse(localStorage.getItem('user')).email;
+        this.isBlocked = this.item.blocked;
+        this.userIndexInList = this.index;
+        this.ready = true;
     }
 };
 </script>

@@ -19,12 +19,6 @@
 <script>
 
 export default {
-  mounted: function() {
-    this.$nextTick(function() {
-      this.handleProjects();
-      this.showProjects(this.active);
-    })
-  },
   data: function() {
     return {
       active: 0,
@@ -33,33 +27,11 @@ export default {
     }
   },
   props: ["array", "limit", "large", "bottom", "shown", "doNotFloat"],
-  created: function() {
-  },
   watch: {
     'array': function() {
       this.pages = 0;
       this.handleProjects();
       this.showProjects(0);
-    }
-  },
-  computed: {
-    firstCovered: function() {
-      return this.firstDisplayed == 0;
-    },
-    lastCovered: function() {
-      return this.lastDisplayed == this.pages - 1;
-    },
-    firstUnreached: function() {
-      return this.firstDisplayed > 1;
-    },
-    lastUnreached: function() {
-      return this.lastDisplayed < this.pages - 2;
-    },
-    firstDisplayed: function() {
-      return this.displayed[0];
-    },
-    lastDisplayed: function() {
-      return this.displayed[this.displayed.length - 1];
     }
   },
   methods: {
@@ -89,8 +61,7 @@ export default {
         }
       } else {
         var half = Math.floor(this.shown / 2);
-        var starting,
-          ending;
+        var starting, ending;
         if (this.active <= half) {
           starting = 0;
           ending = this.shown;
@@ -107,10 +78,8 @@ export default {
           this.displayed.push(ii);
         }
       }
-
     },
     checkArrows: function(isRight) {
-
       if (isRight) {
         if (this.active < this.pages - 1) {
           this.showProjects(this.active + 1);
@@ -119,6 +88,32 @@ export default {
         this.showProjects(this.active - 1);
       }
     }
+  },
+  computed: {
+    firstCovered: function() {
+      return this.firstDisplayed == 0;
+    },
+    lastCovered: function() {
+      return this.lastDisplayed == this.pages - 1;
+    },
+    firstUnreached: function() {
+      return this.firstDisplayed > 1;
+    },
+    lastUnreached: function() {
+      return this.lastDisplayed < this.pages - 2;
+    },
+    firstDisplayed: function() {
+      return this.displayed[0];
+    },
+    lastDisplayed: function() {
+      return this.displayed[this.displayed.length - 1];
+    }
+  },
+  mounted: function() {
+    this.$nextTick(function() {
+    this.handleProjects();
+    this.showProjects(this.active);
+    })
   }
 }
 </script>

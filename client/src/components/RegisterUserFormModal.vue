@@ -4,35 +4,33 @@
         <div class="modal-mask">
           <div class="modal-wrapper">
             <div class="modal-container">
-            
               <div class="modal-header text-secondary">
                 <slot name="header">
                   Register a new user
                 </slot>
               </div>
-
               <div class="modal-body">
                 <slot name="body">
                     <form @submit.prevent="handleSubmit">
                       <div class="form-group">
-                          <label for="name">Name</label>
-                          <input type="text" v-model="user.name" name="name" class="form-control" :class="{ 'is-invalid': submitted && !user.name }" />
-                          <div v-show="submitted && !user.name" class="invalid-feedback">Name is required</div>
+                        <label for="name">Name</label>
+                        <input type="text" v-model="user.name" name="name" class="form-control" :class="{ 'is-invalid': submitted && !user.name }" />
+                        <div v-show="submitted && !user.name" class="invalid-feedback">Name is required</div>
                       </div>
                       <div class="form-group">
-                          <label for="surname">Surname</label>
-                          <input type="text" v-model="user.surname" name="surname" class="form-control" :class="{ 'is-invalid': submitted && !user.surname }" />
-                          <div v-show="submitted && !user.surname" class="invalid-feedback">Surname is required</div>
+                        <label for="surname">Surname</label>
+                        <input type="text" v-model="user.surname" name="surname" class="form-control" :class="{ 'is-invalid': submitted && !user.surname }" />
+                        <div v-show="submitted && !user.surname" class="invalid-feedback">Surname is required</div>
                       </div>
                       <div class="form-group">
-                          <label for="email">E-mail</label>
-                          <input type="email" v-model="user.email" name="email" class="form-control" :class="{ 'is-invalid': submitted && !user.email }" />
-                          <div v-show="submitted && !user.email" class="invalid-feedback">E-mail is required</div>
+                        <label for="email">E-mail</label>
+                        <input type="email" v-model="user.email" name="email" class="form-control" :class="{ 'is-invalid': submitted && !user.email }" />
+                        <div v-show="submitted && !user.email" class="invalid-feedback">E-mail is required</div>
                       </div>
                       <div class="form-group">
-                          <button v-if="!creating" @click.prevent="handleSubmit" class="btn btn-primary" :disabled="creating">Confirm</button>
-                          <button v-if="!creating" @click.prevent="closeForm" class="btn btn-link">Cancel</button>
-                          <font-awesome-icon v-if="creating" style="color: gray;" icon="spinner" pulse size="2x"/>
+                        <button v-if="!creating" @click.prevent="handleSubmit" class="btn btn-primary" :disabled="creating">Confirm</button>
+                        <button v-if="!creating" @click.prevent="closeForm" class="btn btn-link">Cancel</button>
+                        <font-awesome-icon v-if="creating" style="color: gray;" icon="spinner" pulse size="2x"/>
                       </div>
                     </form>
                 </slot>
@@ -50,62 +48,59 @@
 import simpleModal from './SimpleModal.vue'
 
 export default {
-    data () {
-        return {
-            user: {
-                name: '',
-                surname: '',
-                email: '',
-                role: '',
-            },
-            submitted: false,
-            creating: false,
-            showModal: false,
-            title: '',
-            message: ''
-        }
-    },
-    components: {
-      simpleModal
-    },
-    props: {
-    },
-    methods: {
-        handleSubmit() {
-            this.submitted = true;
-            if (this.user.name && this.user.surname && this.user.email) {
-                this.addUser();
-            }
+  data() {
+    return {
+        user: {
+          name: '',
+          surname: '',
+          email: '',
+          role: '',
         },
-        addUser() {
-            this.creating = true;
-            var tokenjson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
-            var json = {
-                "role": "user",
-                "name": this.user.name,
-                "surname": this.user.surname
-            }
-            
-            this.$http.post(localStorage.getItem('path') + '/user/' + this.user.email, json, tokenjson).then(function(response) {
-                console.log(response.body);
-                this.$emit('userAdded');
-                this.closeForm();
-            }, (err) => {
-                console.log(err.body);
-                this.showModal = true;
-                this.title = 'Error';
-                this.message = err.body;
-                this.creating = false;
-            });
-        },
-        closeForm() {
-            this.creating = false;
-            this.$emit('closeModal');
-        },
-        closeModal() {
-            this.showModal = false;
-        }
+        submitted: false,
+        creating: false,
+        showModal: false,
+        title: '',
+        message: ''
     }
+  },
+  components: {
+    simpleModal
+  },
+  methods: {
+      handleSubmit() {
+        this.submitted = true;
+        if (this.user.name && this.user.surname && this.user.email) {
+          this.addUser();
+        }
+      },
+      addUser() {
+        this.creating = true;
+        var tokenjson = { headers: { Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
+        var json = {
+          "role": "user",
+          "name": this.user.name,
+          "surname": this.user.surname
+        }
+        
+        this.$http.post(localStorage.getItem('path') + '/user/' + this.user.email, json, tokenjson).then(function() {
+          this.$emit('userAdded');
+          this.closeForm();
+        }, (err) => {
+          console.log(err.body);
+          this.showModal = true;
+          this.title = 'Error';
+          this.message = err.body;
+          this.creating = false;
+        });
+      },
+      closeForm() {
+        this.creating = false;
+        this.$emit('closeModal');
+      },
+      closeModal() {
+        this.showModal = false;
+      }
+  }
 }
 </script>
 
@@ -149,22 +144,9 @@ export default {
   color: #42b983;
 }
 
-.modal-body {
-  /*margin: 20px 0;*/
-}
-
 .modal-default-button {
   float: right;
 }
-
-/*
- * The following styles are auto-applied to elements with
- * transition="modal" when their visibility is toggled
- * by Vue.js.
- *
- * You can easily play with the modal transition by editing
- * these styles.
- */
 
 .modal-enter {
   opacity: 0;
@@ -183,5 +165,4 @@ export default {
 .modal-footer {
     padding: 10px 16px 0px 0px
 }
-
 </style>

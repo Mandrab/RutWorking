@@ -26,22 +26,18 @@
 
 <script>
 export default {
-    data () {
+    data() {
         return {
-          username: '',
-          projectName: '',
-          moduleName: '',
-          isProjectChief: false,
-          isModuleChief: false,
-          isLeftArrowDisabled: false,
-          isRightArrowDisabled: false,
-          taskReady: false,
-          initialized: false
+            username: '',
+            projectName: '',
+            moduleName: '',
+            isProjectChief: false,
+            isModuleChief: false,
+            isLeftArrowDisabled: false,
+            isRightArrowDisabled: false,
+            taskReady: false,
+            initialized: false
         }
-    },
-    created () {
-        console.log(this.item);
-        this.init();
     },
     props: {
         item: {
@@ -49,48 +45,34 @@ export default {
         }
     },
     methods: {
-        init () {
+        init() {
             this.username = JSON.parse(localStorage.getItem('user')).email;
             this.projectName = localStorage.getItem('projectName');
             this.moduleName = localStorage.getItem('moduleName');
-            
-            
             var value = localStorage.getItem('isModuleChief');
-            if (value == "true"){
+            if (value == "true") {
                 this.isModuleChief = true;
-            }else{
-            this.isModuleChief = false;
+            } else {
+                this.isModuleChief = false;
             }
-
             value = localStorage.getItem('isProjectChief');
-            if (value == "true"){
+            if (value == "true") {
                 this.isProjectChief = true;
-            }else{
+            } else {
                 this.isProjectChief = false;
             }
-
-            console.log("-----");
-            console.log(this.username);
-            console.log(this.projectName);
-            console.log(this.moduleName);
-            console.log(this.isProjectChief);
-            console.log(this.isModuleChief);
-
             if (this.item.status == "DONE" || (this.item.assignee != this.username && this.item.status != "TO-DO")) {
                 this.isRightArrowDisabled = true;
             }
-            if(this.isModuleChief && (this.item.status != "DONE" )){
-                //ABILITO
+            if (this.isModuleChief && (this.item.status != "DONE")) {
                 this.isRightArrowDisabled = false;
             }
             if (this.item.status == "TO-DO" || this.item.assignee != this.username) {
                 this.isLeftArrowDisabled = true;
             }
-            if(this.isModuleChief && (this.item.status != "TO-DO" )){
-                //ABILITO
+            if (this.isModuleChief && (this.item.status != "TO-DO" )) {
                 this.isLeftArrowDisabled = false;
             }
-
             this.taskReady = true;
         },
         moveToNextStage () {
@@ -112,8 +94,7 @@ export default {
                 default:
                     nextStage = this.item.status;
             }
-
-            // se il task non e' assegnato a nessuno, l'assegnatario diventa colui che preme il pulsante "right" (passando da TO-DO a ASSIGNED)
+            // If the task has not been assigned yet, who presses the "right" button becomes the assignee (passing from 'TO-DO' to 'ASSIGNED')
             if (this.item.assignee == null) {
                 this.item.assignee = this.username;
             }
@@ -122,17 +103,14 @@ export default {
                 "assignee": this.item.assignee
             }
 
-            this.$http.put(localStorage.getItem('path') + '/projects/' + this.projectName + '/modules/' + this.moduleName + '/kanban/' + this.item.id, json, tokenJson).then(function(response) {
-                console.log(response.body);
-                
+            this.$http.put(localStorage.getItem('path') + '/projects/' + this.projectName + '/modules/' + this.moduleName + '/kanban/' + this.item.id, json, tokenJson).then(function() {
                 this.$emit('updateTask');
-
             }, (err) => {
                 console.log(err.body);
             });
         },
-        moveToPreviousStage () {
-            var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
+        moveToPreviousStage() {
+            var tokenJson = { headers: { Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
             var nextStage = '';
             switch (this.item.status) {
                 case "ASSIGNED":
@@ -154,27 +132,25 @@ export default {
                 "newState": nextStage,
                 "assignee": this.item.assignee
             }
-            this.$http.put(localStorage.getItem('path') + '/projects/' + this.projectName + '/modules/' + this.moduleName + '/kanban/' + this.item.id, json, tokenJson).then(function(response) {
-                console.log(response.body);
- 
+            
+            this.$http.put(localStorage.getItem('path') + '/projects/' + this.projectName + '/modules/' + this.moduleName + '/kanban/' + this.item.id, json, tokenJson).then(function() {
                 this.$emit('updateTask');
-
             }, (err) => {
                 console.log(err.body);
             });
-
         },
         deleteTask() {
             var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
 
-            this.$http.delete(localStorage.getItem('path') + '/projects/' + this.projectName + '/modules/' + this.moduleName + '/kanban/' + this.item.id, tokenJson).then(function(response) {
-                console.log(response.body);
-
+            this.$http.delete(localStorage.getItem('path') + '/projects/' + this.projectName + '/modules/' + this.moduleName + '/kanban/' + this.item.id, tokenJson).then(function() {
                 this.$emit('updateTask');
             }, (err) => {
                 console.log(err.body);
             }); 
         }
+    },
+    created() {
+        this.init();
     }
 };
 </script>

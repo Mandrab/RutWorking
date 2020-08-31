@@ -41,7 +41,7 @@ import kanban from '../components/Kanban.vue';
 import chat from '../components/Chat.vue';
 
 export default {
-    data () {
+    data() {
         return {
             username: '',
             firstDropdownItem: 'personal-area',
@@ -57,34 +57,24 @@ export default {
         kanban,
         chat
     },
-    created () {
-        this.init();
-        this.checkDeadline();
-    },
     methods: {
-        showUserName () {
-            this.username = JSON.parse(localStorage.getItem('user')).email;
-        },
-        logout () {
-            this.$router.push('/login');
-        },
-        init () {
+        init() {
             this.showUserName();
             this.module = JSON.parse(localStorage.getItem('module'));
             this.moduleReady = true;
-            console.log(this.module);
         },
-        checkDeadline () {
+        showUserName() {
+            this.username = JSON.parse(localStorage.getItem('user')).email;
+        },
+        checkDeadline() {
             this.moduleReady = false;
             var date = new Date(this.module.deadline);
             var weekLater = new Date();
             var today = new Date();
             weekLater.setDate(date.getDate()+7);
-
             if (date >= today && date <= weekLater ) {
                 this.deadlineColor = 'orange';
-            }
-            else if(date < today) {
+            } else if (date < today) {
                 this.deadlineColor = 'red';
             } else { 
                 this.deadlineColor = 'green';
@@ -94,12 +84,19 @@ export default {
         updateNavbarNotificationsCount($event) {
             this.notificationsNumber = Number.parseInt($event);
         },
-        openPersonalArea () {
+        openPersonalArea() {
             this.$router.push('/personalarea');
         },
-        openHomePage () {
+        openHomePage() {
             this.$router.push('/');
-        }
+        },
+        logout() {
+            this.$router.push('/login');
+        },
+    },
+    created () {
+        this.init();
+        this.checkDeadline();
     }
 };
 </script>

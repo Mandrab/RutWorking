@@ -63,20 +63,17 @@ export default {
             notificationsReady: false
         }
     },
-    created () {
-        this.init();
-    },
-    watch: {
-        chatNotifications: function() {
-            this.notificationsNumber = this.chatNotifications;
-        }
-    },
     props: {
         firstDropdownItem: {
             type: String
         },
         chatNotifications: {
             type: Number
+        }
+    },
+    watch: {
+        chatNotifications: function() {
+            this.notificationsNumber = this.chatNotifications;
         }
     },
     methods: {
@@ -87,14 +84,8 @@ export default {
 
             messaging.onMessage(payload => {
                 var notifications = localStorage.getItem('notifications');
-                console.log("PAYLOAD");
-                console.log(payload);
-                console.log(payload.data.topic);
                 switch (payload.data.topic) {
                     case "chat_message":
-                        console.log("MESSAGE PAYLOAD: ")
-                        console.log(payload)
-                        alert(payload.data.senderEmail, payload.data.message)
                         var username = JSON.parse(localStorage.getItem('user')).email;
                         if (payload.data.senderEmail != username) {
                             notifications++;
@@ -113,7 +104,6 @@ export default {
                         localStorage.setItem('notifications', notifications);
                         break;
                 }
-                
                 this.notificationsNumber = notifications;
             });
         },
@@ -121,7 +111,7 @@ export default {
             this.username = JSON.parse(localStorage.getItem('user')).email;
         },
         getNotificationsNumber() {
-            var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
+            var tokenJson = { headers: { Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
 
             this.$http.get(localStorage.getItem('path') + '/notifications/unseen/count', tokenJson).then(function(response) {
                 var res = response.body.unseenNotifications;
@@ -137,10 +127,8 @@ export default {
             var tokenJson = { headers: { Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
 
             this.$http.get(localStorage.getItem('path') + '/notifications', tokenJson).then(function(response) {
-                console.log(response.body);
                 this.notificationsList = response.body.reverse().slice(0, 10);
                 this.notificationsReady = true;
-
                 this.notificationsNumber = 0;
                 localStorage.removeItem('notifications');
                 localStorage.setItem('notifications', 0);
@@ -179,6 +167,9 @@ export default {
         logout() {
             this.$router.push('/login');
         }
+    },
+    created () {
+        this.init();
     }
 };
 </script>
@@ -191,13 +182,4 @@ export default {
 .b-dropdown:hover {
     background-color: #F8F9FA;
 }
- 
-/*
-@media (max-width: 576px) {
-    .detail {
-      padding: 0px !important;
-      margin: 0px !important;
-    }
-}
-*/
 </style>

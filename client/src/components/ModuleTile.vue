@@ -10,11 +10,11 @@
                         {{ item.name }}
                     </div>
                      <div v-if="!isModuleChief" class="col-12 text-left">
-                        <div class="hovered" @click.stop="toggleDesc" v-bind:class="{ 'hide-desc': isDescHide }"> {{ item.description }}</div>  
+                        <div class="hovered" @click.stop="toggleDesc" v-bind:class="{ 'hide-desc': isDescHide }"> {{ item.description }} </div>  
                     </div>
 
                     <div v-if="isModuleChief" class="col-9 col-sm-9 col-md-10 col-lg-11 text-left">
-                        <div class="hovered" @click.stop="toggleDesc" v-bind:class="{ 'hide-desc': isDescHide }"> {{ item.description }}</div>  
+                        <div class="hovered" @click.stop="toggleDesc" v-bind:class="{ 'hide-desc': isDescHide }"> {{ item.description }} </div>  
                     </div>
                     <div v-if="ready && isModuleChief" class="col-3 col-sm-3 col-md-2 col-lg-1 text-right float-right small px-0">
                         <div v-if="isModuleChief">
@@ -40,7 +40,6 @@
                                     <input type="email" v-model="email" name="email" class="form-control" :class="{ 'is-invalid': submitted && !email }" />
                                     <div v-show="submitted && !email" class="invalid-feedback">E-mail is required</div>
                                 </div>
-
                                 <div class="form-group">
                                     <button @click="handleSubmit" class="btn btn-primary" :disabled="adding">Add user</button>
                                     <font-awesome-icon v-if="adding" style="color: gray;" icon="spinner" pulse size="2x"/>
@@ -62,7 +61,7 @@
                         {{ item.name }}
                     </div>
                      <div class="col-12 text-left text-secondary">
-                        <div> {{ item.description }}</div>  
+                        <div> {{ item.description }} </div>  
                     </div>
                 </div>
             </div>  
@@ -90,13 +89,6 @@ export default {
             adding: false
         }
     },
-    created() {
-        console.log(this.item);
-        this.init();
-        this.checkDeadline();
-
-        this.isModuleMember = this.isMember;
-    },
     props: {
         item: {
             type: Object
@@ -114,57 +106,29 @@ export default {
         }
     },
     methods: {
-        init () {
-            console.log(this.item);
-            console.log(this.projectInfo);
+        init() {
             this.developersReady = false;
-            var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
-            console.log(localStorage.getItem('path') + '/projects/' + this.projectInfo.projectName + '/modules/' + this.item.name);
-
+            var tokenJson = { headers: { Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
+           
             if (this.isMember) {
                 this.$http.get(localStorage.getItem('path') + '/projects/' + this.projectInfo.projectName + '/modules/' + this.item.name, tokenJson).then(function(response) {
-                console.log(response.body);
-                var res = response.body;
-                this.developers = res.developers;
-                
-
-                console.log(this.item);
-
-                console.log("PRIMA DEL CONTROLLO");
-                console.log(this.isModuleChief);
-                if (JSON.parse(localStorage.getItem('user')).email == this.item.chief) {
-                    this.isModuleChief = true;
-                }
-                if (JSON.parse(localStorage.getItem('user')).email == this.projectInfo.isProjectChief) {
-                    this.isProjectChief = true;
-                }
-                console.log("DOPO IL CONTROLLO");
-                console.log(this.isModuleChief);
-
-                this.moduleInfo = { 'moduleName': this.item.name, 'isModuleChief': this.isModuleChief };
-                //localStorage.setItem('isModuleChief', this.isModuleChief); // SBAGLIATO, così sovrascrivo
-                //localStorage.setItem('moduleName', this.item.name); ////////
-
-                this.developersReady = true;
-
-            }, (err) => {
-                console.log(err.body);
-                this.developersReady = false;
-            });
+                    var res = response.body;
+                    this.developers = res.developers;
+                    if (JSON.parse(localStorage.getItem('user')).email == this.item.chief) {
+                        this.isModuleChief = true;
+                    }
+                    if (JSON.parse(localStorage.getItem('user')).email == this.projectInfo.isProjectChief) {
+                        this.isProjectChief = true;
+                    }
+                    this.moduleInfo = { 'moduleName': this.item.name, 'isModuleChief': this.isModuleChief };
+                    this.developersReady = true;
+                }, (err) => {
+                    console.log(err.body);
+                    this.developersReady = false;
+                });
             }
-            
         },
-        toggleDesc() {
-        this.isDescHide = !this.isDescHide;
-        //this.$forceUpdate();
-        },
-        reduceUserCreation () {
-            this.isUserCreationHide = true;
-        },
-        expandUserCreation () {
-            this.isUserCreationHide = false;
-        },
-        checkDeadline () {
+        checkDeadline() {
             this.ready = false;
             var date = new Date(this.item.deadline);
             var weekLater = new Date();
@@ -180,8 +144,16 @@ export default {
             }
             this.ready = true;
         },
+        toggleDesc() {
+            this.isDescHide = !this.isDescHide;
+        },
+        expandUserCreation () {
+            this.isUserCreationHide = false;
+        },
+        reduceUserCreation() {
+            this.isUserCreationHide = true;
+        },
         openModule() {
-            // PROVARE QUI
             localStorage.removeItem('isModuleChief');
             localStorage.setItem('isModuleChief', this.isModuleChief);
 
@@ -194,31 +166,26 @@ export default {
             this.$emit('openModule', this.item);
         },
         deleteModule() {
-            var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
-            this.$http.delete(localStorage.getItem('path') + '/projects/' + this.projectInfo.projectName + '/modules/' + this.item.name, tokenJson).then(function(response) {
-                console.log(response.body);
+            var tokenJson = { headers: { Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
 
+            this.$http.delete(localStorage.getItem('path') + '/projects/' + this.projectInfo.projectName + '/modules/' + this.item.name, tokenJson).then(function() {
                 this.$emit('refreshModulesList', this.item);
             }, (err) => {
                 console.log(err.body);
             });
-            
         },
         handleSubmit() {
             this.submitted = true;
-            //this.showModal=false;
             if (this.email) {
                 this.addUser(this.email);
             }
         },
         addUser(email) {
             this.adding = true;
-            var tokenjson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
+            var tokenjson = { headers: { Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
         
-            this.$http.post(localStorage.getItem('path') + '/projects/'+this.projectInfo.projectName+'/modules/' + this.item.name + "/developers/" + email, {}, tokenjson).then(function(response) {
-                console.log(response.body);
-                console.log(this.adding);
-                this.adding=false;
+            this.$http.post(localStorage.getItem('path') + '/projects/' + this.projectInfo.projectName + '/modules/' + this.item.name + "/developers/" + email, {}, tokenjson).then(function() {
+                this.adding = false;
                 this.reduceUserCreation();
                 this.email = '';
                 this.submitted = false;
@@ -226,11 +193,12 @@ export default {
                 console.log(err.body);
                 this.adding = false;
             });
-
-
-
-            
         }
+    },
+    created() {
+        this.init();
+        this.checkDeadline();
+        this.isModuleMember = this.isMember;
     }
 };
 </script>
@@ -257,8 +225,8 @@ export default {
     cursor: pointer;
     text-decoration-line: underline;
 }
+
 .r{
     color:red;
 }
-
 </style>

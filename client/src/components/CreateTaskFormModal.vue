@@ -4,35 +4,33 @@
         <div class="modal-mask">
           <div class="modal-wrapper">
             <div class="modal-container">
-            
               <div class="modal-header text-secondary">
                 <slot name="header">
                   Create task
                 </slot>
               </div>
-
               <div class="modal-body">
                 <slot name="body">
                     <form @submit.prevent="handleSubmit">
                       <div class="form-group">
-                          <label for="name">Name</label>
-                          <input type="text" v-model="t.taskName" name="name" class="form-control" :class="{ 'is-invalid': submitted && !t.taskName }" />
-                          <div v-show="submitted && !t.taskName" class="invalid-feedback">Name is required</div>
+                        <label for="name">Name</label>
+                        <input type="text" v-model="t.taskName" name="name" class="form-control" :class="{ 'is-invalid': submitted && !t.taskName }" />
+                        <div v-show="submitted && !t.taskName" class="invalid-feedback">Name is required</div>
                       </div>
                       <div class="form-group">
-                          <label for="description">Description</label>
-                          <textarea rows=5 columns=10 v-model="t.description" name="description" class="form-control" :class="{ 'is-invalid': submitted && !t.description }" />
-                          <div v-show="submitted && !t.description" class="invalid-feedback">Description is required</div>
+                        <label for="description">Description</label>
+                        <textarea rows=5 columns=10 v-model="t.description" name="description" class="form-control" :class="{ 'is-invalid': submitted && !t.description }" />
+                        <div v-show="submitted && !t.description" class="invalid-feedback">Description is required</div>
                       </div>
                       <div v-if="insertUser" class="form-group">
-                          <label for="assignee">Assignee</label>
-                          <input type="text" v-model="t.assignee" name="assignee" class="form-control" :class="{ 'is-invalid': submitted && !t.assignee }" />
-                          <div v-show="submitted && !t.assignee" class="invalid-feedback">Assignee is required</div>
+                        <label for="assignee">Assignee</label>
+                        <input type="text" v-model="t.assignee" name="assignee" class="form-control" :class="{ 'is-invalid': submitted && !t.assignee }" />
+                        <div v-show="submitted && !t.assignee" class="invalid-feedback">Assignee is required</div>
                       </div>
                       <div class="form-group">
-                          <button v-if="!creating" @click.prevent="handleSubmit" class="btn btn-primary" :disabled="creating">Confirm</button>
-                          <button v-if="!creating" @click.prevent="closeForm" class="btn btn-link">Cancel</button>
-                          <font-awesome-icon v-if="creating" style="color: gray;" icon="spinner" pulse size="2x"/>
+                        <button v-if="!creating" @click.prevent="handleSubmit" class="btn btn-primary" :disabled="creating">Confirm</button>
+                        <button v-if="!creating" @click.prevent="closeForm" class="btn btn-link">Cancel</button>
+                        <font-awesome-icon v-if="creating" style="color: gray;" icon="spinner" pulse size="2x"/>
                       </div>
                     </form>
                 </slot>
@@ -51,82 +49,76 @@
 import simpleModal from './SimpleModal.vue'
 
 export default {
-    data () {
-        return {
-            t: {
-                taskName: '',
-                description: '',
-                assignee: '',
-            },
-            submitted: false,
-            creating: false,
-            projectName: localStorage.getItem('projectName'),
-            moduleName: localStorage.getItem('moduleName'),
-            showModal: false,
-            title: '',
-            message: ''
-        }
-    },
-    components: {
-      simpleModal
-    },
-    props: {
-        insertUser: {
-            type: Boolean
-        }
-    },
-    watch: {
-    },
-    mounted() {
-        this.projectName = localStorage.getItem('projectName');
-        this.moduleName = localStorage.getItem('moduleName');
-    },
-    methods: {
-        handleSubmit() {
-            this.submitted = true;
-            if (this.t.taskName && this.t.description && ((this.insertUser && this.t.assignee) || !this.insertUser)) {
-                this.addTask();
-            }
-        },
-        addTask() {
-            this.creating = true;
-            var tokenjson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
-            var state;
-            if (this.insertUser) {
-              state = "ASSIGNED";
-            } else {
-              state = "TO-DO";
-            }
-            
-            var json = {
-                "name": this.t.taskName,
-                "description": this.t.description,
-                "status": state,
-                "assignee": this.t.assignee
-            }
-            
-            this.$http.post(localStorage.getItem('path') + '/projects/' + this.projectName + '/modules/' + this.moduleName + "/kanban" , json, tokenjson).then(function(response) {
-                console.log(response.body);
-                console.log(this.creating);
-                this.$emit('taskAdded');
-                this.closeForm();
-            }, (err) => {
-                console.log(err.body);
-                this.showModal = true;
-                this.title = 'Error';
-                this.message = err.body;
-                this.creating = false;
-            });
-        },
-        closeForm () {
-            this.creating = false;
-            this.$emit('closeModal');
-
-        },
-        closeModal() {
-            this.showModal = false;
-        }
+  data() {
+    return {
+      t: {
+        taskName: '',
+        description: '',
+        assignee: '',
+      },
+      submitted: false,
+      creating: false,
+      projectName: localStorage.getItem('projectName'),
+      moduleName: localStorage.getItem('moduleName'),
+      showModal: false,
+      title: '',
+      message: ''
     }
+  },
+  components: {
+    simpleModal
+  },
+  props: {
+    insertUser: {
+      type: Boolean
+    }
+  },
+  methods: {
+    handleSubmit() {
+      this.submitted = true;
+      if (this.t.taskName && this.t.description && ((this.insertUser && this.t.assignee) || !this.insertUser)) {
+        this.addTask();
+      }
+    },
+    addTask() {
+        this.creating = true;
+        var tokenjson = { headers: { Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
+        var state;
+        if (this.insertUser) {
+          state = "ASSIGNED";
+        } else {
+          state = "TO-DO";
+        }
+        var json = {
+          "name": this.t.taskName,
+          "description": this.t.description,
+          "status": state,
+          "assignee": this.t.assignee
+        }
+        
+        this.$http.post(localStorage.getItem('path') + '/projects/' + this.projectName + '/modules/' + this.moduleName + "/kanban" , json, tokenjson).then(function() {
+          this.$emit('taskAdded');
+          this.closeForm();
+        }, (err) => {
+          console.log(err.body);
+          this.showModal = true;
+          this.title = 'Error';
+          this.message = err.body;
+          this.creating = false;
+        });
+    },
+    closeForm() {
+      this.creating = false;
+      this.$emit('closeModal');
+    },
+    closeModal() {
+      this.showModal = false;
+    }
+  },
+  mounted() {
+    this.projectName = localStorage.getItem('projectName');
+    this.moduleName = localStorage.getItem('moduleName');
+  }
 }
 </script>
 
@@ -170,22 +162,9 @@ export default {
   color: #42b983;
 }
 
-.modal-body {
-  /*margin: 20px 0;*/
-}
-
 .modal-default-button {
   float: right;
 }
-
-/*
- * The following styles are auto-applied to elements with
- * transition="modal" when their visibility is toggled
- * by Vue.js.
- *
- * You can easily play with the modal transition by editing
- * these styles.
- */
 
 .modal-enter {
   opacity: 0;

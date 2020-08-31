@@ -12,7 +12,7 @@
 		</li>
         <div>
             <ul v-if="dispReady" class="list-group">
-                <projectTile v-for="(tile, index) in display" :item="tile" :key="index" @openDetail="openDetail" @projectDeleted="updateProjectsList" :isChief="isChief[page+index]" :isMember="isModulesMember[page+index]" :index="index" :page="page"></projectTile>
+                <projectTile v-for="(tile, index) in display" :item="tile" :key="index" @openDetail="openDetail" @projectDeleted="updateProjectsList" :isChief="isChief[page+index]" :isMember="isModulesMember[page + index]" :index="index" :page="page"></projectTile>
 		    </ul>
         <pagination v-if="ready" :array="projectsArr" limit="6" @displayChanged="dispatchedPagination($event)" shown="8" :bottom="true"></pagination>
         </div>
@@ -24,16 +24,19 @@ import projectTile from '../components/ProjectTile.vue'
 import pagination from '../components/Pagination.vue'
 
 export default {
-    data () {
+    data() {
         return {
             projectsArr: [],
             isModulesMember: [],
             isChief: [],
-            readu: false, //
             display: [],
             page: 0,
             dispReady: true
         }
+    },
+    components: {
+        projectTile,
+        pagination
     },
     props: {
         projects: {
@@ -43,24 +46,8 @@ export default {
             type: Array
         }
     },
-    created () {
-        this.showProjectList();
-        this.ready = true;
-
-        console.log("PL");
-        console.log(this.isMember);
-    },
-    components: {
-        projectTile,
-        pagination
-    },
     methods: {
-        showProjectCreation () {
-            this.$emit('showCreationForm');
-        },
-        showProjectList () {
-            console.log("PROJS")
-            console.log(this.projects);
+        showProjectList() {
             this.projects.forEach(p => {
                 this.projectsArr.push(p);
             });
@@ -69,37 +56,32 @@ export default {
             });
             var username = JSON.parse(localStorage.getItem('user')).email;
             this.projects.forEach(m => {
-                if(m.chief == username){
+                if (m.chief == username){
                     this.isChief.push(true);
-                }else{
+                } else {
                     this.isChief.push(false);
                 }
             });
         },
-        openDetail (event1, event2) {
-            this.$emit('detail', event1, event2);
-        },
         dispatchedPagination: function (toDisplay) {
             this.dispReady = false;
-            //finding actual page
-            var tmp = this.projectsArr.indexOf(toDisplay[0]);
-            this.page = tmp;
-
-
-            //console.log(this.isModulesMember);
-            //console.log(tmp+2)
-            //console.log(this.isModulesMember[tmp+2])
-            //alert(this.isModulesMember[2+tmp])
-            console.log("çççççççççççççççççççççççççç")
-
-
+            this.page = this.projectsArr.indexOf(toDisplay[0]);
             this.display = toDisplay;
-
             this.dispReady = true;
         },
-        updateProjectsList () {
+        openDetail(event1, event2) {
+            this.$emit('detail', event1, event2);
+        },
+        updateProjectsList() {
             this.$emit('projectDeleted');
-        }
+        },
+        showProjectCreation() {
+            this.$emit('showCreationForm');
+        },
+    },
+    created() {
+        this.showProjectList();
+        this.ready = true;
     }
 };
 </script>

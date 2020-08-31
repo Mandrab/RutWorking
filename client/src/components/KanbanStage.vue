@@ -10,30 +10,17 @@
 import taskTile from '../components/TaskTile.vue';
 
 export default {
-    data () {
+    data() {
         return {
             stageTasks: [],
             createButton: false,
             userInForm: false,
             isModuleChief: false,
             ready: false
-            //showModalFormTask: false
         }
     },
     components: {
        taskTile
-    },
-    computed: {
-      
-    },
-    mounted() {
-        if(this.title == "TO-DO" || this.title == "ASSIGNED")
-            this.createButton = true;
-        console.log(this.tasks);
-        this.init();
-    },
-    created () {
-        
     },
     props: {
         title: {
@@ -42,67 +29,40 @@ export default {
         },
         tasks: {
           type: Array
-          //required: true,
         }
     },
-    watch: {
-        /*isModuleChief: function () {
-            alert(this.isModuleChief);
-        }*/
-        
-    },
     methods: {
-        init () {
+        init() {
             this.ready = false;
-            /*this.tasks.forEach(t => {
-                this.stageTasks.push(t);
-            });*/
             this.stageTasks = this.tasks.slice();
-            console.log("stageTasks");
-            console.log(this.stageTasks);
-
-
             var value = localStorage.getItem('isModuleChief');
-            if (value == "true"){
-            this.isModuleChief = true;
+            if (value == "true") {
+                this.isModuleChief = true;
             }
-            else{
+            else {
                 this.isModuleChief = false;
             }
             this.ready = true;
         },
+        addTask(){
+            this.userInForm = false;
+            if (this.title == "ASSIGNED") {
+                this.userInForm = true;
+            }
+            this.$emit('addTask', this.userInForm);
+        },
         updateTask () {
-            console.log("ENTROOOOO")
             this.$emit('updateTask');
         },
-        addTask (/*event*/){
-            
-            this.userInForm = false;
-            //if(this.title == "TO-DO" )
-            //showModalTaskForm();
-            if(this.title == "ASSIGNED")
-            this.userInForm = true;
-            
-            this.$emit('addTask',this.userInForm);
-
-
-            //this.showModalTaskForm();
-        },
-        showButton(){
-            //alert("ready - createbutton - ischief: "+this.ready +" " +this.createButton +" "+ this.isModuleChief  +"   title:"+ this.title)
-            if( this.ready && this.createButton && this.isModuleChief )
-                return true;
-            else
-                return false;
-
-            
+        showButton() {
+            return (this.ready && this.createButton && this.isModuleChief);
         }
-        /*showModalTaskForm(){
-            this.showModalFormTask = true;
-        },
-        hideModalTaskForm(){
-            this.showModalFormTask = false;
-        }*/
+    },
+    mounted() {
+        if (this.title == "TO-DO" || this.title == "ASSIGNED") {
+            this.createButton = true;
+        }
+        this.init();
     }
 };
 </script>

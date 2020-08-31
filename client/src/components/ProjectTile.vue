@@ -16,13 +16,7 @@
 
 <script>
 export default {
-    watch: {
-        item: function () {
-            this.isProjectChief = this.isChief;
-            this.checkDeadline();
-        }
-    },
-    data () {
+    data() {
         return {
             ready: false,
             deadlineColor: 'black',
@@ -30,17 +24,6 @@ export default {
             isModulesMember: [],
             projectIndexInList: 0
         }
-    },
-    created () {
-        console.log(this.item);
-        this.isProjectChief = this.isChief;
-        this.checkDeadline();
-        
-        console.log(this.isMember)
-        this.isModulesMember = this.isMember;
-        this.projectIndexInList = this.index;
-        console.log("PT");
-        console.log(this.isModulesMember);
     },
     props: {
         item: {
@@ -59,6 +42,12 @@ export default {
             type: Boolean
         }
     },
+    watch: {
+        item: function () {
+            this.isProjectChief = this.isChief;
+            this.checkDeadline();
+        }
+    },
     methods: {
         checkDeadline() {
             this.ready = false;
@@ -68,28 +57,31 @@ export default {
             weekLater.setDate(today.getDate() + 7);
             if (projectDeadline >= today && projectDeadline <= weekLater ) {
                 this.deadlineColor = 'orange';
-            }
-            else if(projectDeadline < today) {
+            } else if(projectDeadline < today) {
                 this.deadlineColor = 'red';
             } else { 
                 this.deadlineColor = 'green';
             }
             this.ready = true;
         },
-        open () {
+        open() {
             this.$emit('openDetail', this.item, this.projectIndexInList + this.page);
         },
-        deleteProject () {
-            var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
+        deleteProject() {
+            var tokenJson = { headers: { Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
 
-            this.$http.delete(localStorage.getItem('path') + '/projects/project/' + this.item.name, tokenJson).then(function(response) {
-                console.log(response.body);
-
+            this.$http.delete(localStorage.getItem('path') + '/projects/project/' + this.item.name, tokenJson).then(function() {
                 this.$emit('projectDeleted');
             }, (err) => {
                 console.log(err.body);
             }); 
         }
+    },
+    created() {
+        this.isProjectChief = this.isChief;
+        this.checkDeadline();
+        this.isModulesMember = this.isMember;
+        this.projectIndexInList = this.index;
     }
 };
 </script>

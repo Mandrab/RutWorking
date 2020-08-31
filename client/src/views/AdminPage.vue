@@ -15,7 +15,7 @@ import navbar from '../components/Navbar.vue';
 import usersList from '../components/UsersList.vue'
 
 export default {
-    data () {
+    data() {
         return {
             username: '',
             password: '',
@@ -26,22 +26,22 @@ export default {
         navbar,
         usersList
     },
-    created () {
-        this.init();
-    },
     methods: {
-        init () {
+        init() {
             this.showUserName();
         },
-        showUserName () {
+        showUserName() {
             this.username = JSON.parse(localStorage.getItem('user')).email;
         },
-        openPersonalArea () {
+        openPersonalArea() {
             this.$router.push('/personalarea');
         },
-        logout () {
+        logout() {
             this.$router.push('/login');
         }
+    },
+    created() {
+        this.init();
     }
 };
 </script>
@@ -54,5 +54,4 @@ export default {
 .b-dropdown:hover {
     background-color: #F8F9FA;
 }
-
 </style>

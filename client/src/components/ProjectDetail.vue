@@ -43,7 +43,7 @@ import createModuleFormModal from './CreateModuleFormModal.vue';
 import modulesList from './ModulesList.vue';
 
 export default {
-    data () {
+    data() {
         return {
             creating: false,
             projectsArr: [],
@@ -70,16 +70,6 @@ export default {
             type: Array
         }
     },
-    created() {
-        this.getProjectInfo();
-        this.checkDeadline();
-        if (JSON.parse(localStorage.getItem('user')).email == this.project.chief) {
-            this.isProjectChief = true;
-        }
-        this.projectInfo = { 'projectName': this.project.name, 'isProjectChief': this.isProjectChief };
-
-        this.isModulesMember = this.isMember;
-    },
     watch: {
         project: function () {
             if (JSON.parse(localStorage.getItem('user')).email == this.project.chief) {
@@ -87,49 +77,27 @@ export default {
             } else {
                 this.isProjectChief = false;
             }
-
             this.checkDeadline();
             this.getProjectInfo();
-            this.projectInfo = {'projectName': this.project.name, 'isProjectChief': this.isProjectChief }
+            this.projectInfo = { 'projectName': this.project.name, 'isProjectChief': this.isProjectChief }
         },
         isMember: function () {
             this.isModulesMember = this.isMember;
         }
     },
     methods: {
-        showModalForm () {
-            this.showModal = true;
-        },
-        closeModal () {
-            this.showModal = false;
-        },
-        updateList(){
-            this.$emit('getModulesInfo');
-        },
         getProjectInfo() {
             this.projectReady = false;
-
             localStorage.removeItem('projectName');
-            localStorage.setItem('projectName', this.project.name); ////////
-
+            localStorage.setItem('projectName', this.project.name);
             localStorage.removeItem('isProjectChief');
-            localStorage.setItem('isProjectChief', this.isProjectChief); ///////
-            
-            
+            localStorage.setItem('isProjectChief', this.isProjectChief);
             var tokenJson = { headers: { Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
-            console.log(localStorage.getItem('path') + '/projects/project/'+this.project.name);
-
-
+            
             this.$http.get(localStorage.getItem('path') + '/projects/project/' + localStorage.getItem('projectName'), tokenJson).then(function(response) {
-                console.log(response.body);
                 var res = response.body;
-                
                 this.projectDetail = res;
-
                 this.modulesArr = res.modules;
-
-                console.log(this.modulesArr);
-
                 this.projectReady = true;
             }, (err) => {
                 console.log(err.body);
@@ -142,54 +110,57 @@ export default {
             var today = new Date();
             var weekLater = new Date(today);
             weekLater.setDate(today.getDate() + 7);
-            if (projectDeadline >= today && projectDeadline <= weekLater ) {
+            if (projectDeadline >= today && projectDeadline <= weekLater) {
                 this.deadlineColor = 'orange';
-            }
-            else if(projectDeadline < today) {
+            } else if(projectDeadline < today) {
                 this.deadlineColor = 'red';
             } else { 
                 this.deadlineColor = 'green';
             }
             this.deadlineReady = true;
         },
+        showModalForm() {
+            this.showModal = true;
+        },
+        closeModal() {
+            this.showModal = false;
+        },
+        updateList(){
+            this.$emit('getModulesInfo');
+        },
         openModule(event) {
-            console.log(event);
-            //if (JSON.parse(localStorage.getItem('module'))) {
-                //alert("errore: c'è già qualcosa dentro al localstorage");
-            //} else {
-                event["project"] = this.project.name;
-                localStorage.removeItem('module');
-                localStorage.setItem('module', JSON.stringify(event));
-                var isModuleChief = false;
-                console.log("AAAAAAAA");
-                console.log(JSON.stringify(event));
-                console.log(JSON.parse(localStorage.getItem('user')).email);
-                if (JSON.parse(localStorage.getItem('user')).email == event.chief) {
-                    isModuleChief = true;
-                    console.log("XXXXXXXXXX");
-                    console.log(isModuleChief);
-                }
-                localStorage.removeItem('isModuleChief');
-                localStorage.setItem('isModuleChief', isModuleChief); ///
-                
-                localStorage.removeItem('isProjectChief');
-                localStorage.setItem('isProjectChief', this.isProjectChief);
-                
-                this.$router.push('/workingarea');
-            //}
+            event["project"] = this.project.name;
+            localStorage.removeItem('module');
+            localStorage.setItem('module', JSON.stringify(event));
+            var isModuleChief = false;
+            if (JSON.parse(localStorage.getItem('user')).email == event.chief) {
+                isModuleChief = true;
+            }
+            localStorage.removeItem('isModuleChief');
+            localStorage.setItem('isModuleChief', isModuleChief);
+            localStorage.removeItem('isProjectChief');
+            localStorage.setItem('isProjectChief', this.isProjectChief);
             
+            this.$router.push('/workingarea');
         }
+    },
+    created() {
+        this.getProjectInfo();
+        this.checkDeadline();
+        if (JSON.parse(localStorage.getItem('user')).email == this.project.chief) {
+            this.isProjectChief = true;
+        }
+        this.projectInfo = { 'projectName': this.project.name, 'isProjectChief': this.isProjectChief };
+        this.isModulesMember = this.isMember;
     }
 };
 </script>
 
 <style scoped>
-
 @media (max-width: 576px) {
     .detail-project {
       padding: 0px !important;
     }
 }
-
 </style>
 
