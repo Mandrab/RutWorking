@@ -2,7 +2,7 @@
     <div class="mt-2 mb-2">
         <li v-if="isModuleMember" class="list-group-item" id="member" @click="openModule">
             <div>
-                <div class="row">
+                <div class="row mb-3">
                     <div v-if="ready" style="position: absolute; top: 15px; right: 15px; font-size: 12px;" v-bind:style="{ color: deadlineColor }">
                         {{ new Date(item.deadline).getDate() }}/{{ new Date(item.deadline).getMonth() + 1 }}/{{ new Date(item.deadline).getFullYear() }}
                     </div>
@@ -13,20 +13,14 @@
                         <div class="hovered" @click.stop="toggleDesc" v-bind:class="{ 'hide-desc': isDescHide }"> {{ item.description }} </div>  
                     </div>
 
-                    <div v-if="isModuleChief" class="col-9 col-sm-9 col-md-10 col-lg-11 text-left">
+                    <div v-if="isModuleChief" class="col-9 col-sm-9 col-md-10 col-lg-10 text-left">
                         <div class="hovered" @click.stop="toggleDesc" v-bind:class="{ 'hide-desc': isDescHide }"> {{ item.description }} </div>  
                     </div>
-                    <div v-if="ready && isModuleChief" class="col-3 col-sm-3 col-md-2 col-lg-1 text-right float-right small px-0">
-                        <div v-if="isModuleChief">
-                            <b-dropdown size="sm" id="dropdown-options" right class="m-2">
-                                <template v-slot:button-content>
-                                    <font-awesome-icon icon="ellipsis-h"/>
-                                </template>
-                                <b-dropdown-item v-if="isModuleChief && isUserCreationHide" @click.stop="expandUserCreation"><font-awesome-icon icon="user-plus"/> Add user</b-dropdown-item>
-                                <b-dropdown-item v-if="isModuleChief && !isUserCreationHide" @click.stop="reduceUserCreation"><font-awesome-icon icon="times"/> Close user</b-dropdown-item>
-                                <b-dropdown-divider></b-dropdown-divider>
-                                <b-dropdown-item v-if="isModuleChief" @click.stop="askConfirmation" ><font-awesome-icon icon="trash-alt"/> <a href="#" class="r">Delete module</a></b-dropdown-item>
-                            </b-dropdown>
+                    <div v-if="ready && isModuleChief" class="col-3 col-sm-3 col-md-2 col-lg-2 text-right float-right small px-0">
+                        <div class="row col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12" v-if="isModuleChief">
+                            <div v-if="isModuleChief && isUserCreationHide" @click.stop="expandUserCreation" class="add-user-btn"><font-awesome-icon icon="user-plus" class="add-user-icon" size="2x"/></div>
+                            <div v-if="isModuleChief && !isUserCreationHide" @click.stop="reduceUserCreation" class="add-user-btn"><font-awesome-icon icon="user-times" class="add-user-icon" size="2x"/></div>
+                            <div v-if="isModuleChief" @click.stop="askConfirmation" class="delete-btn"><font-awesome-icon icon="trash-alt" class="delete-icon" size="2x"/></div>
                         </div>
                     </div>
 
@@ -142,7 +136,7 @@ export default {
             var date = new Date(this.item.deadline);
             var weekLater = new Date();
             var today = new Date();
-            weekLater.setDate(today.getDate()+7);
+            weekLater.setDate(today.getDate() + 7);
             if (date >= today && date <= weekLater ) {
                 this.deadlineColor = 'orange';
             } else if (date < today) {
@@ -227,13 +221,14 @@ export default {
 #member:hover {
     background-color: lightgray;
 }
+
 @media (max-width: 576px) {
     .btns-opts {
       padding-left: 0px !important;
     }
 }
 
-.hide-desc{
+.hide-desc {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow-x: hidden;
@@ -246,7 +241,53 @@ export default {
     text-decoration-line: underline;
 }
 
-.r{
-    color:red;
+.add-user-btn {
+    position: absolute;
+    top: 1px;
+    right: 20px;
+    bottom: 20px;
+    margin: 3px;
+    background-color: none;
+    cursor: pointer;
 }
+
+.add-user-icon {
+    position: absolute;
+    top: 1px;
+    right: 20px;
+    bottom: 20px;
+    padding: 0px;
+    margin: 3px;
+    color: #007BFF;
+}
+
+.add-user-icon:hover {
+    color: #0069D9;
+}
+
+.delete-btn {
+    position: absolute;
+    top: 1px;
+    right: 2px;
+    bottom: 20px;
+    margin: 3px;
+    color: #be0000;
+    background-color: none;
+    cursor: pointer;
+}
+
+.delete-icon {
+    position: absolute;
+    top: 1px;
+    right: 2px;
+    bottom: 20px;
+    padding: 0px;
+    margin: 3px;
+    color: #be0000;
+}
+
+.delete-icon:hover {
+    color: #a50000;
+}
+
 </style>

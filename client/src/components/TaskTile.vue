@@ -226,7 +226,6 @@ export default {
     border-left: solid 1px darkgray;
 }
 
-
 .delete-btn {
     position: absolute;
     top: 1px;
@@ -236,10 +235,6 @@ export default {
     cursor: pointer;
 }
 
-.delete-icon:hover {
-    color: #a50000;
-}
-
 .delete-icon {
     position: absolute;
     top: 1px;
@@ -247,6 +242,10 @@ export default {
     padding: 0px;
     margin: 0px;
     color: #be0000;
+}
+
+.delete-icon:hover {
+    color: #a50000;
 }
 
 .crop {

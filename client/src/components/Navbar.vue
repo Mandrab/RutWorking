@@ -31,13 +31,13 @@
                     <b-dropdown-item v-for="(n, index) in notificationsList" :key="index"> 
                         <div class="row" style="font-size: 12px">
                             <div class="col-md-12" v-if="n.topic == 'chat_message'">
-                                <b style="color: #0069D9;"> {{ n.senderEmail }} </b> <br/> Sent a message in {{ n.moduleName }} of {{ n.projectName }} 
+                                <b style="color: #007BFF;"> {{ n.senderEmail }} </b> <br/> Sent a message in {{ n.moduleName }} of {{ n.projectName }} 
                             </div>
                             <div class="col-md-12" v-if="n.topic == 'developer_added'">
-                                <b style="color: #0069D9;"> {{ n.senderEmail }} </b> <br/> Added you in {{ n.moduleName }} of {{ n.projectName }} 
+                                <b style="color: #007BFF;"> {{ n.senderEmail }} </b> <br/> Added you in {{ n.moduleName }} of {{ n.projectName }} 
                             </div>
                             <div class="col-md-12" v-if="n.topic == 'task_completed'">
-                                <b style="color: #0069D9;"> {{ n.senderEmail }} </b> <br/> Completed a task in {{ n.moduleName }} of {{ n.projectName }} 
+                                <b style="color: #007BFF;"> {{ n.senderEmail }} </b> <br/> Completed a task in {{ n.moduleName }} of {{ n.projectName }} 
                             </div>
                         </div>
                     </b-dropdown-item>
