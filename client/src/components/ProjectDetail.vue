@@ -76,7 +76,7 @@ export default {
         if (JSON.parse(localStorage.getItem('user')).email == this.project.chief) {
             this.isProjectChief = true;
         }
-        this.projectInfo = {'projectName': this.project.name, 'isProjectChief': this.isProjectChief };
+        this.projectInfo = { 'projectName': this.project.name, 'isProjectChief': this.isProjectChief };
 
         this.isModulesMember = this.isMember;
     },
@@ -109,15 +109,10 @@ export default {
         getProjectInfo() {
             this.projectReady = false;
 
-            if(localStorage.getItem('projectName')){
-                localStorage.removeItem('projectName');
-            }
-            if(localStorage.getItem('isProjectChief')){
-                localStorage.removeItem('isProjectChief');
-            }
-
+            localStorage.removeItem('projectName');
             localStorage.setItem('projectName', this.project.name); ////////
 
+            localStorage.removeItem('isProjectChief');
             localStorage.setItem('isProjectChief', this.isProjectChief); ///////
             
             
@@ -163,6 +158,7 @@ export default {
                 //alert("errore: c'è già qualcosa dentro al localstorage");
             //} else {
                 event["project"] = this.project.name;
+                localStorage.removeItem('module');
                 localStorage.setItem('module', JSON.stringify(event));
                 var isModuleChief = false;
                 console.log("AAAAAAAA");
@@ -173,9 +169,12 @@ export default {
                     console.log("XXXXXXXXXX");
                     console.log(isModuleChief);
                 }
+                localStorage.removeItem('isModuleChief');
                 localStorage.setItem('isModuleChief', isModuleChief); ///
                 
+                localStorage.removeItem('isProjectChief');
                 localStorage.setItem('isProjectChief', this.isProjectChief);
+                
                 this.$router.push('/workingarea');
             //}
             

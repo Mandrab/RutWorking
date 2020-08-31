@@ -141,7 +141,7 @@ export default {
                 console.log("DOPO IL CONTROLLO");
                 console.log(this.isModuleChief);
 
-                this.moduleInfo = {'moduleName': this.item.name, 'isModuleChief': this.isModuleChief};
+                this.moduleInfo = { 'moduleName': this.item.name, 'isModuleChief': this.isModuleChief };
                 //localStorage.setItem('isModuleChief', this.isModuleChief); // SBAGLIATO, così sovrascrivo
                 //localStorage.setItem('moduleName', this.item.name); ////////
 
@@ -182,7 +182,10 @@ export default {
         },
         openModule() {
             // PROVARE QUI
+            localStorage.removeItem('isModuleChief');
             localStorage.setItem('isModuleChief', this.isModuleChief);
+
+            localStorage.removeItem('moduleName');
             localStorage.setItem('moduleName', this.item.name);
 
             localStorage.removeItem('developers');

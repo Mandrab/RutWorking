@@ -3,21 +3,21 @@
     <navbar :firstDropdownItem="firstDropdownItem"></navbar>
     
     <div class="row mt-5">
-			<div class="col-12 col-sm-12 col-md-3 col-xl-3 mb-5">
-                <projectsList v-if="projectsReady" @showCreationForm="showProjectCreationForm" @detail="showProjectDetail" @projectDeleted="deleteProject" :projects="projectsArr" :isMember="isMember"></projectsList>
-                <font-awesome-icon v-if="!projectsReady" style="color: gray;" icon="spinner" pulse size="2x"/>
-			</div>
-			<div class="col-12 col-sm-12 col-md-9 col-xl-9">
-				<div>
-                    <createProjectForm v-if="creating" @projectAdded="addProject" @hide="hideProjectCreationForm"></createProjectForm>
-				</div>
-                <div class="detail bg-light p-4 rounded" v-if="showDetail">
-                    <projectDetail v-if="showDetail && projectsReady" :project="projectDetail" :isMember="isMember[projectIndex]" @getModulesInfo="getProjectList"></projectDetail>
-				</div>
-                <div class="default-msg" v-if="!creating && !showDetail">
-                    <h2>Select a project</h2>
-                </div>
-			</div>
+        <div class="col-12 col-sm-12 col-md-3 col-xl-3 mb-5">
+            <projectsList v-if="projectsReady" @showCreationForm="showProjectCreationForm" @detail="showProjectDetail" @projectDeleted="deleteProject" :projects="projectsArr" :isMember="isMember"></projectsList>
+            <font-awesome-icon v-if="!projectsReady" style="color: gray;" icon="spinner" pulse size="2x"/>
+        </div>
+        <div class="col-12 col-sm-12 col-md-9 col-xl-9">
+            <div>
+                <createProjectForm v-if="creating" @projectAdded="addProject" @hide="hideProjectCreationForm"></createProjectForm>
+            </div>
+            <div class="detail bg-light p-4 rounded" v-if="showDetail">
+                <projectDetail v-if="showDetail && projectsReady" :project="projectDetail" :isMember="isMember[projectIndex]" @getModulesInfo="getProjectList"></projectDetail>
+            </div>
+            <div class="default-msg" v-if="!creating && !showDetail">
+                <h2>Select a project</h2>
+            </div>
+        </div>
 	</div>
   </div>
 </template>
@@ -29,7 +29,7 @@ import createProjectForm from '../components/CreateProjectForm.vue';
 import projectDetail from '../components/ProjectDetail.vue';
 
 export default {
-    data () {
+    data() {
         return {
             username: '',
             firstDropdownItem: 'personal-area',
@@ -49,10 +49,14 @@ export default {
         createProjectForm,
         projectDetail
     },
-    created () {
+    created() {
         this.init();
     },
     methods: {
+        init () {
+            this.showUserName();
+            this.getProjectList();
+        },
         addProject () {
             this.getProjectList();
         },
@@ -123,11 +127,6 @@ export default {
         logout () {
             this.$router.push('/login');
         },
-        init () {
-            //this.getNotificationsNumber();
-            this.showUserName();
-            this.getProjectList();
-        },
         openPersonalArea () {
             this.$router.push('/personalarea');
         },
@@ -138,6 +137,7 @@ export default {
             //TODO
             this.$http.get(localStorage.getItem('path') + '/projects/0/' + this.username/*, json*/, tokenJson).then(function(response) {
                 console.log(response.body);
+                localStorage.removeItem('notifications');
                 localStorage.setItem('notifications', response.body);
                 this.notificationsNumber = response.body;
 

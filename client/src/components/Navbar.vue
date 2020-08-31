@@ -125,6 +125,7 @@ export default {
             this.$http.get(localStorage.getItem('path') + '/notifications/unseen/count', tokenJson).then(function(response) {
                 var res = response.body.unseenNotifications;
                 this.notificationsNumber = res;
+                localStorage.removeItem('notifications');
                 localStorage.setItem('notifications', res);
             }, (err) => {
                 console.log(err.body);
@@ -140,6 +141,7 @@ export default {
                 this.notificationsReady = true;
 
                 this.notificationsNumber = 0;
+                localStorage.removeItem('notifications');
                 localStorage.setItem('notifications', 0);
             }, (err) => {
                 console.log(err.body);

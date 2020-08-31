@@ -64,6 +64,7 @@ export default {
         },
         login(username, password) {
             var path = 'http://localhost:8080';
+            localStorage.removeItem('path');
             localStorage.setItem('path', path);
             this.loggingIn = true;
             var json = { 'userEmail': username, 'password': password };
@@ -95,7 +96,7 @@ export default {
                 this.showModal = true;
             });
         },
-        logout () {
+        logout() {
             localStorage.removeItem('user');
         }
     }
