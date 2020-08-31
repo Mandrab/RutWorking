@@ -70,7 +70,6 @@ export default {
       return this.window.width >= 768;
     },
     handleResize() {
-      console.log(this.window.width);
       this.window.width = window.innerWidth;
       this.window.height = window.innerHeight;
     },

@@ -17,14 +17,12 @@ let firebaseToken
 async function setToken() {
     try {
         let newToken = await messaging.getToken()
-        console.log(newToken);
         if (!newToken || newToken == firebaseToken) return
         firebaseToken = newToken
 
-        console.log("firebase token: " + newToken)
         await fetch('http://localhost:8080/firebase/notification', {
             headers: {
-                'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('user')).token, // TODO ????
+                'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('user')).token,
                 'Content-Type': 'application/json'
             },
             method: 'PUT',

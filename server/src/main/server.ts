@@ -11,7 +11,7 @@ const setup = async () => {
     const app = express()
 
     // allow cross-origin resource sharing only with client (8081)
-    app.use(cors({ origin: "http://localhost:8081" }))
+    app.use(cors({ origin: ["http://localhost:8081", "http://localhost:5000"] }))
 
     // parse requests of content-type application/json
     app.use(json())

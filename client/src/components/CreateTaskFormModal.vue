@@ -23,9 +23,9 @@
                         <div v-show="submitted && !t.description" class="invalid-feedback">Description is required</div>
                       </div>
                       <div v-if="insertUser" class="form-group">
-                        <label for="assignee">Assignee</label>
+                        <label for="assignee">Assignee e-mail</label>
                         <input type="text" v-model="t.assignee" name="assignee" class="form-control" :class="{ 'is-invalid': submitted && !t.assignee }" />
-                        <div v-show="submitted && !t.assignee" class="invalid-feedback">Assignee is required</div>
+                        <div v-show="submitted && !t.assignee" class="invalid-feedback">Assignee e-mail is required</div>
                       </div>
                       <div class="form-group">
                         <button v-if="!creating" @click.prevent="handleSubmit" class="btn btn-primary" :disabled="creating">Confirm</button>

@@ -49,7 +49,7 @@ export default {
             this.skipN = 100;
             var tokenJson = { headers: { Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
             
-            this.$http.get(localStorage.getItem('path') + '/users', tokenJson).then(function() {
+            this.$http.get(localStorage.getItem('path') + '/users', tokenJson).then(function(response) {
                 var res = response.body;
                 this.usersArr = res;
                 if (this.usersArr.length == 100) {
