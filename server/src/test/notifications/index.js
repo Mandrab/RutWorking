@@ -6,7 +6,15 @@
  */
 const USER = { email: 'x@y.z' }
 
-firebase.initializeApp(/* PUT YOUR CONFIG HERE */)
+firebase.initializeApp({
+    apiKey: "AIzaSyD0JvtDU737L2QjlEWhkUYd446v2G5FvTQ",
+    authDomain: "rutworking-f724c.firebaseapp.com",
+    databaseURL: "https://rutworking-f724c.firebaseio.com",
+    projectId: "rutworking-f724c",
+    storageBucket: "rutworking-f724c.appspot.com",
+    messagingSenderId: "531000857071",
+    appId: "1:531000857071:web:178bfa6e4e173e5a66261a"
+})
 const messaging = firebase.messaging()
 
 async function notifications() {
