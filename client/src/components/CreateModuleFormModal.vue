@@ -4,13 +4,11 @@
         <div class="modal-mask">
           <div class="modal-wrapper">
             <div class="modal-container">
-            
               <div class="modal-header text-secondary">
                 <slot name="header">
                   Create module
                 </slot>
               </div>
-
               <div class="modal-body">
                 <slot name="body">
                     <form @submit.prevent="handleSubmit">
@@ -50,128 +48,128 @@
 import simpleModal from './SimpleModal.vue'
 
 export default {
-    data () {
-        return {
-            mod: {
-                moduleName: '',
-                description: '',
-            },
-            deadline: '',
-            submitted: false,
-            creating: false,
-            showModal: false,
-            title: '',
-            message: ''
-        }
-    },
-    components: {
-      simpleModal
-    },
-    props: {
-        project: {
-            type: Object
-        }
-    },
-    watch: {
-        deadline: function () {
-            console.log(this.deadline.toString())
-            var date = new Date(this.deadline.toString());
-            var today = new Date();
-            var projectDline = new Date(this.project.deadline);
-            if (date > projectDline) {
-              
-              //alert("oppala")
-              //alert(this.deadline);
-              //this.deadline = new Date(projectDline.getFullYear()+"-"+projectDline.getMonth()+1+"-"+projectDline.getDate());
-              
-              
-
-              var day = ("0" + projectDline.getDate()).slice(-2);
-              var month = ("0" + (projectDline.getMonth() + 1)).slice(-2);
-
-              var newDate = projectDline.getFullYear() + "-" + (month) + "-" + (day) ;
-
-              this.deadline = newDate;
-              //alert(this.deadline);
-
-              //var date = new Date('2011', '01', '18');
-              //alert('the original date is ' + date);
-              //alert(date.getDate());
-
-              /*
-              var newdate = new Date(date);
-              newdate.setDate(newdate.getDate() - (date.getDate()-1)); // minus the date
-
-              */
-
-              //var nd = new Date(newdate);
-              //alert('the new date is ' + nd);
-
-              /*
-              if(newdate>=projectDline){
-                //qui sei nel mese proprio sbagliato
-                alert("Invalid date!");
-                this.deadline = new Date(projectDline)
-              }else{
-                this.deadline = new Date(projectDline)
-              }
-
-              */
-
-              /*
-              var firstDayMonth = new Date();
-              console.log(date)
-              console.log(date.getDate())
-              console.log(date.getDate())
-              console.log("§§§§§§§§§§§§§§§§§§§")
-              firstDayMonth.setDate(date.getDate()-(date.getDate()+1));
-              console.log(firstDayMonth.getDate())
-              console.log(firstDayMonth)
-              */
-            }
-            if (date < today) {
-                this.deadline = '';
-                this.title = 'Choose a date';
-                this.message = "Invalid date!";
-                this.showModal = true;
-            }
-        }
-    },
-    methods: {
-        handleSubmit() {
-            this.submitted = true;
-            if (this.mod.moduleName && this.mod.description && this.deadline) {
-                this.addModule();
-            }
-        },
-        addModule() {
-            this.creating = true;
-            var tokenjson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
-            var json = {
-                "description": this.mod.description,
-                "deadline": this.deadline.toString()
-            }
-            
-            this.$http.post(localStorage.getItem('path') + '/projects/' + this.project.name+'/modules/' + this.mod.moduleName, json, tokenjson).then(function(response) {
-                console.log(response.body);
-                this.$emit('moduleAdded');
-                this.closeForm();
-            }, (err) => {
-                console.log(err.body);
-                this.showModal = true;
-                this.title = 'Error';
-                this.message = err.body;
-                this.creating = false;
-            });
-        },
-        closeForm () {
-            this.creating = false;
-            this.$emit('closeModal');
-        },
-        closeModal() {
-            this.showModal = false;
-        }
+  data() {
+    return {
+      mod: {
+          moduleName: '',
+          description: '',
+      },
+      deadline: '',
+      submitted: false,
+      creating: false,
+      showModal: false,
+      title: '',
+      message: ''
     }
+  },
+  components: {
+    simpleModal
+  },
+  props: {
+      project: {
+          type: Object
+      }
+  },
+  watch: {
+      deadline: function () {
+          console.log(this.deadline.toString())
+          var date = new Date(this.deadline.toString());
+          var today = new Date();
+          var projectDline = new Date(this.project.deadline);
+          if (date > projectDline) {
+            
+            //alert("oppala")
+            //alert(this.deadline);
+            //this.deadline = new Date(projectDline.getFullYear()+"-"+projectDline.getMonth()+1+"-"+projectDline.getDate());
+            
+            
+
+            var day = ("0" + projectDline.getDate()).slice(-2);
+            var month = ("0" + (projectDline.getMonth() + 1)).slice(-2);
+
+            var newDate = projectDline.getFullYear() + "-" + (month) + "-" + (day) ;
+
+            this.deadline = newDate;
+            //alert(this.deadline);
+
+            //var date = new Date('2011', '01', '18');
+            //alert('the original date is ' + date);
+            //alert(date.getDate());
+
+            /*
+            var newdate = new Date(date);
+            newdate.setDate(newdate.getDate() - (date.getDate()-1)); // minus the date
+
+            */
+
+            //var nd = new Date(newdate);
+            //alert('the new date is ' + nd);
+
+            /*
+            if(newdate>=projectDline){
+              //qui sei nel mese proprio sbagliato
+              alert("Invalid date!");
+              this.deadline = new Date(projectDline)
+            }else{
+              this.deadline = new Date(projectDline)
+            }
+
+            */
+
+            /*
+            var firstDayMonth = new Date();
+            console.log(date)
+            console.log(date.getDate())
+            console.log(date.getDate())
+            console.log("§§§§§§§§§§§§§§§§§§§")
+            firstDayMonth.setDate(date.getDate()-(date.getDate()+1));
+            console.log(firstDayMonth.getDate())
+            console.log(firstDayMonth)
+            */
+          }
+          if (date < today) {
+              this.deadline = '';
+              this.title = 'Choose a date';
+              this.message = "Invalid date!";
+              this.showModal = true;
+          }
+      }
+  },
+  methods: {
+      handleSubmit() {
+          this.submitted = true;
+          if (this.mod.moduleName && this.mod.description && this.deadline) {
+              this.addModule();
+          }
+      },
+      addModule() {
+          this.creating = true;
+          var tokenjson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
+          var json = {
+              "description": this.mod.description,
+              "deadline": this.deadline.toString()
+          }
+          
+          this.$http.post(localStorage.getItem('path') + '/projects/' + this.project.name+'/modules/' + this.mod.moduleName, json, tokenjson).then(function(response) {
+              console.log(response.body);
+              this.$emit('moduleAdded');
+              this.closeForm();
+          }, (err) => {
+              console.log(err.body);
+              this.showModal = true;
+              this.title = 'Error';
+              this.message = err.body;
+              this.creating = false;
+          });
+      },
+      closeForm () {
+          this.creating = false;
+          this.$emit('closeModal');
+      },
+      closeModal() {
+          this.showModal = false;
+      }
+  }
 }
 </script>
 
@@ -215,22 +213,9 @@ export default {
   color: #42b983;
 }
 
-.modal-body {
-  /*margin: 20px 0;*/
-}
-
 .modal-default-button {
   float: right;
 }
-
-/*
- * The following styles are auto-applied to elements with
- * transition="modal" when their visibility is toggled
- * by Vue.js.
- *
- * You can easily play with the modal transition by editing
- * these styles.
- */
 
 .modal-enter {
   opacity: 0;

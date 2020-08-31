@@ -13,24 +13,24 @@
                 <slot name="body">
                     <form @submit.prevent="handleSubmit">
                       <div class="form-group">
-                          <label for="old-password">Old password</label>
-                          <input type="password" v-model="oldPassword" name="old-password" class="form-control" :class="{ 'is-invalid': submitted && !oldPassword }" />
-                          <div v-show="submitted && !oldPassword" class="invalid-feedback">Old password is required</div>
+                        <label for="old-password">Old password</label>
+                        <input type="password" v-model="oldPassword" name="old-password" class="form-control" :class="{ 'is-invalid': submitted && !oldPassword }" />
+                        <div v-show="submitted && !oldPassword" class="invalid-feedback">Old password is required</div>
                       </div>
                       <div class="form-group">
-                          <label for="new-password">New password</label>
-                          <input type="password" v-model="newPassword" name="new-password" class="form-control" :class="{ 'is-invalid': submitted && !newPassword }" />
-                          <div v-show="submitted && !newPassword" class="invalid-feedback">New password is required</div>
+                        <label for="new-password">New password</label>
+                        <input type="password" v-model="newPassword" name="new-password" class="form-control" :class="{ 'is-invalid': submitted && !newPassword }" />
+                        <div v-show="submitted && !newPassword" class="invalid-feedback">New password is required</div>
                       </div>
                       <div class="form-group">
-                          <label for="confirm-new-password">Confirm new password</label>
-                          <input type="password" v-model="newPassword2" name="confirm-new-password" class="form-control" :class="{ 'is-invalid': submitted && !newPassword2 }" />
-                          <div v-show="submitted && !newPassword2" class="invalid-feedback">New password confirmation is required</div>
+                        <label for="confirm-new-password">Confirm new password</label>
+                        <input type="password" v-model="newPassword2" name="confirm-new-password" class="form-control" :class="{ 'is-invalid': submitted && !newPassword2 }" />
+                        <div v-show="submitted && !newPassword2" class="invalid-feedback">New password confirmation is required</div>
                       </div>
                       <div class="form-group">
-                          <button v-if="!changingPassword" @click.prevent="handleSubmit" class="btn btn-primary" :disabled="changingPassword">Confirm</button>
-                          <font-awesome-icon v-if="changingPassword" style="color: gray;" icon="spinner" pulse size="2x"/>
-                          <button v-if="!changingPassword" @click.prevent="closeForm" class="btn btn-link">Cancel</button>
+                        <button v-if="!changingPassword" @click.prevent="handleSubmit" class="btn btn-primary" :disabled="changingPassword">Confirm</button>
+                        <font-awesome-icon v-if="changingPassword" style="color: gray;" icon="spinner" pulse size="2x"/>
+                        <button v-if="!changingPassword" @click.prevent="closeForm" class="btn btn-link">Cancel</button>
                       </div>
                     </form>
                   </slot>
@@ -48,64 +48,64 @@
 import simpleModal from './SimpleModal.vue'
 
 export default {
-    data() {
-      return {
-          oldPassword: '',
-          newPassword: '',
-          newPassword2: '',
-          submitted: false,
-          changingPassword: false,
-          showModal: false,
-          title: '',
-          message: ''
-      }
-    },
-    components: {
-      simpleModal
-    },
-    methods: {
-      handleSubmit() {
-          this.showModal = false;
-          if (this.newPassword != this.newPassword2) {
-            this.title = 'Password update';
-            this.message = 'The new passwords do not match!';
-            this.showModal = true;
-          }
-          this.submitted = true;
-          if (this.oldPassword && this.newPassword && this.newPassword2 && (this.newPassword == this.newPassword2)) {
-              this.changePassword();
-          }
-      },
-      changePassword() {
-          this.changingPassword = true;
-          var tokenjson = { headers: { Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
-          var json = {
-              "oldPassword": this.oldPassword,
-              "newPassword": this.newPassword,
-          }
-          var mail = JSON.parse(localStorage.getItem('user')).email;
-          
-          this.$http.put(localStorage.getItem('path') + '/user/' + mail, json, tokenjson).then(function(response) {
-              console.log(response.body);
-              this.title = 'Password update';
-              this.message = 'Password changed successfully!';
-              this.showModal = true;
-              this.closeForm();
-          }, (err) => {
-              this.changingPassword = false;
-              this.title = 'Error';
-              this.message = err.body;
-              this.showModal = true;
-          });
-      },
-      closeForm() {
-          this.changingPassword = false;
-          this.$emit('closeModal');
-      },
-      closeModal() {
-          this.showModal = false;
-      }
+  data() {
+    return {
+      oldPassword: '',
+      newPassword: '',
+      newPassword2: '',
+      submitted: false,
+      changingPassword: false,
+      showModal: false,
+      title: '',
+      message: ''
     }
+  },
+  components: {
+    simpleModal
+  },
+  methods: {
+    handleSubmit() {
+      this.showModal = false;
+      if (this.newPassword != this.newPassword2) {
+        this.title = 'Password update';
+        this.message = 'The new passwords do not match!';
+        this.showModal = true;
+      }
+      this.submitted = true;
+      if (this.oldPassword && this.newPassword && this.newPassword2 && (this.newPassword == this.newPassword2)) {
+        this.changePassword();
+      }
+    },
+    changePassword() {
+      this.changingPassword = true;
+      var tokenjson = { headers: { Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
+      var json = {
+        "oldPassword": this.oldPassword,
+        "newPassword": this.newPassword,
+      }
+      var mail = JSON.parse(localStorage.getItem('user')).email;
+      
+      this.$http.put(localStorage.getItem('path') + '/user/' + mail, json, tokenjson).then(function() {
+        this.title = 'Password update';
+        this.message = 'Password changed successfully!';
+        this.showModal = true;
+        this.closeForm();
+      }, (err) => {
+        console.log(err.body);
+        this.changingPassword = false;
+        this.title = 'Error';
+        this.message = err.body;
+        this.showModal = true;
+      });
+    },
+    closeForm() {
+      this.changingPassword = false;
+      this.$emit('closeModal');
+    },
+    closeModal() {
+      this.showModal = false;
+    }
+  }
 }
 </script>
 
@@ -149,22 +149,9 @@ export default {
   color: #42b983;
 }
 
-.modal-body {
-  /*margin: 20px 0;*/
-}
-
 .modal-default-button {
   float: right;
 }
-
-/*
- * The following styles are auto-applied to elements with
- * transition="modal" when their visibility is toggled
- * by Vue.js.
- *
- * You can easily play with the modal transition by editing
- * these styles.
- */
 
 .modal-enter {
   opacity: 0;

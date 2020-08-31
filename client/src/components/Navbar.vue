@@ -22,7 +22,7 @@
                 <b-dropdown-item @click="logout"><font-awesome-icon icon="sign-out-alt"/> Logout</b-dropdown-item>
             </b-dropdown>
 
-            <b-dropdown class="d-block d-sm-block d-md-block d-lg-block float-right" style="z-index:2; padding" right variant="light">
+            <b-dropdown v-if="role == 'user'" class="d-block d-sm-block d-md-block d-lg-block float-right" style="z-index:2; padding" right variant="light">
                 <template v-slot:button-content>
                     <span @click="getNotificationsList">
                         <font-awesome-icon icon="bell" size="lg"/><div v-if="notificationsNumber != 0" style=" border-radius: 10px; background-color: #f33d3d; position: absolute; top: 18px; right: 17px; height: 15px; width: 15px; padding: 0px; margin: 0px; font-size: 10px;">{{notificationsNumber}}</div><!--{{notificationsNumber}}--></span>
@@ -50,14 +50,14 @@
     </nav>
 </template>
 
-
 <script>
 import { messaging } from '../../firebase'
 
 export default {
-    data () {
+    data() {
         return {
             username: '',
+            role: '',
             notificationsList: [],
             notificationsNumber: 0,
             notificationsReady: false
@@ -83,6 +83,7 @@ export default {
         init() {
             this.showUserName();
             this.getNotificationsNumber();
+            this.role = localStorage.getItem('role');
 
             messaging.onMessage(payload => {
                 var notifications = localStorage.getItem('notifications');
@@ -153,7 +154,7 @@ export default {
         openHomePage() {
             if (localStorage.getItem('role') == 'user') {
                 this.$router.push('/').catch(err => {
-                    // Ignore the vuex err regarding  navigating to the page they are already on.
+                    // Ignore the vuex err regarding navigating to the page they are already on
                     if (
                     err.name !== 'NavigationDuplicated' &&
                     !err.message.includes('Avoided redundant navigation to current location')
@@ -164,7 +165,7 @@ export default {
                 });
             } else {
                 this.$router.push('/adminpage').catch(err => {
-                    // Ignore the vuex err regarding  navigating to the page they are already on.
+                    // Ignore the vuex err regarding navigating to the page they are already on
                     if (
                     err.name !== 'NavigationDuplicated' &&
                     !err.message.includes('Avoided redundant navigation to current location')
