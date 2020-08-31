@@ -6,7 +6,7 @@
                 {{ item.email }}
             </div>
             <div class="col-3 col-sm-3 col-md-3 col-xl-3 text-right">
-                <button @click.stop="askConfirmation" class="btn btn-danger"><font-awesome-icon icon="ban"/></button>
+                <button @click.stop="askConfirmation" class="btn btn-link">Block</button>
             </div>
         </div>
         <div v-if="isBlocked" class="row">
@@ -14,7 +14,7 @@
                 {{ item.email }}
             </div>
             <div class="col-3 col-sm-3 col-md-3 col-xl-3 text-right">
-                <button disabled class="btn btn-danger"><font-awesome-icon icon="ban"/></button>
+                <button disabled class="btn btn-link p-1">Blocked</button>
             </div>
         </div>
     </li>
