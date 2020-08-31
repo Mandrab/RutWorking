@@ -53,6 +53,8 @@ export async function sendNotification(
 
     if (!receivers.some(it => it._id().toString() === module.chiefID().toString()))
         receivers = receivers.concat(await module.chief())
+    receivers = receivers.filter(it => it._id().toString() !== sender.toString())
+
     let tokens = receivers.filter(dev => dev.firebaseToken()).map(dev => dev.firebaseToken())
 
     let notification = {
