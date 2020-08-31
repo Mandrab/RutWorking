@@ -4,9 +4,8 @@ info:
   version: "1.0.0"
   title: RutWorking
   description: >-
-    RESTful API for the RutWorking service.
+    REST API for the RutWorking service.
 
-# TODO ?
 security:
   - bearerAuth: []
 
@@ -18,9 +17,9 @@ tags:
   - name: modules
     description: Module management. Creation, management, etc..
   - name: chats
-    description: Operations on chat messages. Push, get, etc..
+    description: Operations on chat/messages. Push, get, etc..
   - name: kanbans
-    description: Operations on kanban tasks. Push, obtainment, get, etc..
+    description: Operations on kanban/tasks. Push, obtainment, get, etc..
   - name: contest
     description: Gamification of the platform. Allow to get contest status and reset it
   - name: notifications
@@ -32,8 +31,7 @@ paths:
     post:
       tags: [users]
       summary: Login with an user and get an access token (JWT)
-      security:
-        - bearerAuth: []
+      security: []
       requestBody:
         content:
           application/json:
@@ -207,10 +205,10 @@ paths:
       tags: [users]
       security: 
         - bearerAuth: []
-      summary: Get list first 100 of users
+      summary: Get first 100 users
       responses:
         200:
-          description: List of first 100 (the ones with highest score) users
+          description: List of first 100 users
           content:
             application/json:
               schema:
@@ -246,7 +244,7 @@ paths:
       parameters:
         - in: path
           name: skipN
-          description: Skip first N users while getting 100 users by score
+          description: Skip first N users while getting 100 users
           schema:
             type: string
           required: true
@@ -282,10 +280,10 @@ paths:
   '/projects':
     get:
       tags: [projects]
-      summary: Get info of first 100 projects
+      summary: Get info of projects
       responses:
         200:
-          description: Up to FIRST 100 project
+          description: Array of projects' info
           content:
             application/json:
               schema:
@@ -330,7 +328,7 @@ paths:
   '/projects/{skipN}':
     get:
       tags: [projects]
-      summary: Get info of 100 projects from a certain value (i.e., skipping first Ns)
+      summary: Array of projects' info after skipping the first Ns
       parameters:
         - in: path
           name: skipN
@@ -340,7 +338,7 @@ paths:
           required: true
       responses:
         200:
-          description: Up to 100 project
+          description: Get projects' info from a certain value (i.e., skipping first Ns)
           content:
             application/json:
               schema:
@@ -385,7 +383,7 @@ paths:
   '/projects/{skipN}/{user}':
     get:
       tags: [projects]
-      summary: Get info of 100 projects from a certain value and related to specified user (i.e., in wich works or is chief)
+      summary: Array of projects in which the user works skipping the first Ns
       parameters:
         - in: path
           name: skipN
@@ -401,7 +399,7 @@ paths:
           required: true
       responses:
         200:
-          description: Up to 100 project
+          description: Get projects' info from a certain value and related to specified user (i.e., in wich works or is chief)
           content:
             application/json:
               schema:
@@ -465,10 +463,10 @@ paths:
               properties:
                 description:
                   type: string
-                  description: Description of the project
+                  description: Description of the project. OPTIONAL VALUE
                 deadline:
                   type: string
-                  description: Deadline of the project
+                  description: Deadline of the project. OPTIONAL VALUE
         required: true
       responses:
         201:
@@ -481,7 +479,7 @@ paths:
           description: Project with same name already exists
     get:
       tags: [projects]
-      summary: Get project info (submodules). Needs to be a member of the project
+      summary: Info about a specific project
       parameters:
         - in: path
           name: projectName
@@ -491,7 +489,7 @@ paths:
           required: true
       responses:
         200:
-          description: Info of the project
+          description: Get project info including submodules. Needs to be a member of the project
           content:
             application/json:
               schema:
@@ -532,7 +530,7 @@ paths:
           description: Project or user-token not found
     delete:
       tags: [projects]
-      summary: Delete specified project
+      summary: Delete specific project
       parameters:
         - in: path
           name: projectName
@@ -576,6 +574,12 @@ paths:
                 chief:
                   type: string
                   description: Email of the future module chief
+                description:
+                  type: string
+                  description: Description of the project. OPTIONAL VALUE
+                deadline:
+                  type: string
+                  description: Deadline of the project. OPTIONAL VALUE
       responses:
         201:
           description: Module created
@@ -627,7 +631,7 @@ paths:
                     type: array
                     items:
                       type: string
-                      description: email of the developer
+                      description: email of the developers
         403:
           description: Not project/module-chief nor developer or admin. Otherwise the account is blocked.
         404:
@@ -692,7 +696,8 @@ paths:
           description: Project, module or user-token not found
     delete:
       tags: [modules]
-      summary: Remove a developer from a project. It reset it's assigned tasks as 'TO-DO'
+      summary: Remove a developer from a project
+      description: Remove a developer from a project. It reset his assigned and uncompleted tasks as 'TO-DO'
       security:
         - bearerAuth: []
       parameters:
@@ -803,7 +808,8 @@ paths:
   '/projects/{projectName}/modules/{moduleName}/messages/{skipN}':
     get:
       tags: [chats]
-      summary: Get 100 messages from the module chat from a certain value (i.e., skipping first Ns)
+      summary: Get 100 messages from the module chat skipping Ns
+      description: Get 100 messages from the module chat from a certain value (i.e., skipping first Ns)
       security:
         - bearerAuth: []
       parameters:
@@ -897,7 +903,7 @@ paths:
           description: No task specified or task with same name already exist inside the kanban
     get:
       tags: [kanbans]
-      summary: Get first 100 tasks from the module kanban
+      summary: Get tasks from the module kanban
       security:
         - bearerAuth: []
       parameters:
@@ -915,7 +921,7 @@ paths:
           required: true
       responses:
         200:
-          description: Up to 100 tasks
+          description: Array of tasks' info
           content:
             application/json:
               schema:
@@ -947,7 +953,8 @@ paths:
   '/projects/{projectName}/modules/{moduleName}/kanban/{skipN}':
     get:
       tags: [kanbans]
-      summary: Get 100 tasks from the module kanban from a certain value (i.e., skipping first Ns)
+      summary: Get tasks from the module kanban skipping first Ns
+      description: Get tasks from the module kanban from a certain value (i.e., skipping first Ns)
       security:
         - bearerAuth: []
       parameters:
@@ -971,7 +978,7 @@ paths:
           required: true
       responses:
         200:
-          description: Up to 100 tasks
+          description: Array of tasks' info skipping the first Ns
           content:
             application/json:
               schema:
@@ -1099,12 +1106,13 @@ paths:
   '/contest/ranking':
     get:
       tags: [contest]
-      summary: List 100 users with scores from higher to lower
+      summary: List top raking users
+      description: List first 100 users with highest scores. If query-user is not present in the list, return his score as the last one.
       security:
         - bearerAuth: []
       responses:
         200:
-          description: List of 100 users
+          description: List of 100 (at most 101) users with highest scores
           content:
             application/json:
               schema:
@@ -1134,7 +1142,8 @@ paths:
   '/contest/ranking/{skipN}':
     get:
       tags: [contest]
-      summary: List 100 users with scores from higher to lower skipping first N
+      summary: List top raking users skipping first N
+      description: List 100 users with highest scores skipping first N. If query-user is not present in the list, return his score as the last one.
       security:
         - bearerAuth: []
       parameters:
@@ -1146,7 +1155,7 @@ paths:
           required: true
       responses:
         200:
-          description: List of 100 users
+          description: List of 100 (at most 101) users
           content:
             application/json:
               schema:
@@ -1236,6 +1245,7 @@ paths:
                       description: True if the notification was seen
         403:
           description: Unauthorized
+
   '/notifications/unseen/count':
     get:
       tags: [notifications]
