@@ -12,7 +12,7 @@
 		</li>
         <div>
             <ul v-if="dispReady" class="list-group">
-                <projectTile v-for="(tile, index) in display" :item="tile" :key="index" @openDetail="openDetail" @projectDeleted="updateProjectsList" :isMember="isModulesMember[page+index]" :index="index" :page="page"></projectTile>
+                <projectTile v-for="(tile, index) in display" :item="tile" :key="index" @openDetail="openDetail" @projectDeleted="updateProjectsList" :isChief="isChief[page+index]" :isMember="isModulesMember[page+index]" :index="index" :page="page"></projectTile>
 		    </ul>
         <pagination v-if="ready" :array="projectsArr" limit="6" @displayChanged="dispatchedPagination($event)" shown="8" :bottom="true"></pagination>
         </div>
@@ -28,6 +28,7 @@ export default {
         return {
             projectsArr: [],
             isModulesMember: [],
+            isChief: [],
             readu: false, //
             display: [],
             page: 0,
@@ -65,6 +66,14 @@ export default {
             });
             this.isMember.forEach(m => {
                 this.isModulesMember.push(m);
+            });
+            var username = JSON.parse(localStorage.getItem('user')).email;
+            this.projects.forEach(m => {
+                if(m.chief == username){
+                    this.isChief.push(true);
+                }else{
+                    this.isChief.push(false);
+                }
             });
         },
         openDetail (event1, event2) {

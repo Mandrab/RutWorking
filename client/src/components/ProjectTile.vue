@@ -18,6 +18,7 @@
 export default {
     watch: {
         item: function () {
+            this.isProjectChief = this.isChief;
             this.checkDeadline();
         }
     },
@@ -32,11 +33,7 @@ export default {
     },
     created () {
         console.log(this.item);
-        if (JSON.parse(localStorage.getItem('user')).email == this.item.chief) {
-            this.isProjectChief = true;
-        } else {
-            this.isProjectChief = false;
-        }
+        this.isProjectChief = this.isChief;
         this.checkDeadline();
         
         console.log(this.isMember)
@@ -57,6 +54,9 @@ export default {
         },
         page: {
             type: Number
+        },
+        isChief: {
+            type: Boolean
         }
     },
     methods: {
