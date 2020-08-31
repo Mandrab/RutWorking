@@ -61,11 +61,13 @@
             </div>  
         </li>
 
+        <simpleModal v-if="showModal" :title="title" :message="message" @closeModal="closeModal"></simpleModal>
         <confirmationModal v-if="showConfirmationModal" :title="title" :message="message" @proceed="proceed" @cancel="cancel"></confirmationModal>
     </div>
 </template>
 
 <script>
+import simpleModal from '../components/SimpleModal.vue'
 import confirmationModal from './ConfirmationModal.vue'
 
 export default {
@@ -84,12 +86,14 @@ export default {
             email: '',
             submitted: false,
             adding: false,
+            showModal: false,
             showConfirmationModal: false,
             title: '',
             message: ''
         }
     },
     components: {
+        simpleModal,
         confirmationModal
     },
     props: {
@@ -190,6 +194,7 @@ export default {
         },
         handleSubmit() {
             this.submitted = true;
+            this.showModal = false;
             if (this.email) {
                 this.addUser(this.email);
             }
@@ -204,9 +209,14 @@ export default {
                 this.email = '';
                 this.submitted = false;
             }, (err) => {
-                console.log(err.body);
                 this.adding = false;
+                this.title = 'Error';
+                this.message = err.body;
+                this.showModal = true;
             });
+        },
+        closeModal() {
+            this.showModal = false;
         }
     },
     created() {

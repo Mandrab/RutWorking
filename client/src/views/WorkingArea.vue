@@ -6,6 +6,7 @@
         <div class="row pb-1">
             <div class="col-12 col-sm-8 col-md-8 col-xl-8 text-left">
                 <h2> <b>[{{ module.project }}]</b> {{ module.name }} </h2>
+                <div v-if="isModuleChief" class="add-user-btn" @click.stop="addDeveloper"><font-awesome-icon icon="user-plus" class="add-user-icon" size="lg"/></div>
             </div>
             <div class="col-12 col-sm-4 col-md-4 col-xl-4 text-right" v-bind:style="{ color: deadlineColor }">
                 Deadline: {{ new Date(module.deadline).getDate() }}/{{ new Date(module.deadline).getMonth() + 1}}/{{ new Date(module.deadline).getFullYear() }}
@@ -32,33 +33,39 @@
         </div>
     </div>
 
+    <addUserInModuleFormModal v-if="showModal" :projectName="module.project" :moduleName="module.name" @closeModal="closeModal"></addUserInModuleFormModal>
   </div>
 </template>
 
 <script>
-import navbar from '../components/Navbar.vue';
-import kanban from '../components/Kanban.vue';
-import chat from '../components/Chat.vue';
+import navbar from '../components/Navbar.vue'
+import addUserInModuleFormModal from '../components/AddUserInModuleFormModal.vue'
+import chat from '../components/Chat.vue'
+import kanban from '../components/Kanban.vue'
 
 export default {
     data() {
         return {
             username: '',
+            isModuleChief: false,
             firstDropdownItem: 'personal-area',
             notificationsNumber: 0,
             module: {},
             moduleReady: false,
             deadlineColor: 'black',
-            statuses: ['TO-DO', 'ASSIGNED', 'IN-PROGRESS', 'DONE']
+            statuses: ['TO-DO', 'ASSIGNED', 'IN-PROGRESS', 'DONE'],
+            showModal: false
         }
     },
     components: {
         navbar,
+        addUserInModuleFormModal,
         kanban,
         chat
     },
     methods: {
         init() {
+            this.isModuleChief = localStorage.getItem('isModuleChief');
             this.showUserName();
             this.module = JSON.parse(localStorage.getItem('module'));
             this.moduleReady = true;
@@ -81,6 +88,12 @@ export default {
             }
             this.moduleReady = true;
         },
+        addDeveloper() {
+            this.showModal = true;
+        },
+        closeModal() {
+            this.showModal = false;
+        },
         updateNavbarNotificationsCount($event) {
             this.notificationsNumber = Number.parseInt($event);
         },
@@ -100,4 +113,30 @@ export default {
     }
 };
 </script>
+
+<style scoped>
+.add-user-btn {
+    position: absolute;
+    top: 1px;
+    right: 0px;
+    bottom: 20px;
+    margin: 3px;
+    background-color: none;
+    cursor: pointer;
+}
+
+.add-user-icon {
+    position: absolute;
+    top: 1px;
+    right: 0px;
+    bottom: 20px;
+    padding: 0px;
+    margin: 3px;
+    color: #007BFF;
+}
+
+.add-user-icon:hover {
+    color: #0069D9;
+}
+</style>
 
