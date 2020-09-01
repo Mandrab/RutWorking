@@ -28,6 +28,11 @@
                         <div v-show="submitted && !deadline" class="invalid-feedback">Deadline is required</div>
                       </div>
                       <div class="form-group">
+                        <label for="chief">E-mail chief</label>
+                        <input type="email" v-model="mod.chief" name="chief" class="form-control" />
+                        
+                      </div>
+                      <div class="form-group">
                         <button v-if="!creating" @click.prevent="handleSubmit" class="btn btn-primary" :disabled="creating">Confirm</button>
                         <button v-if="!creating" @click.prevent="closeForm" class="btn btn-link">Cancel</button>
                         <font-awesome-icon v-if="creating" style="color: gray;" icon="spinner" pulse size="2x"/>
@@ -53,6 +58,7 @@ export default {
       mod: {
         moduleName: '',
         description: '',
+        chief: ''
       },
       deadline: '',
       submitted: false,
@@ -104,11 +110,12 @@ export default {
       this.creating = true;
       var tokenjson = { headers: { Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
       var json = {
+        "chief": this.mod.chief,
         "description": this.mod.description,
         "deadline": this.deadline.toString()
       }
       
-      this.$http.post(localStorage.getItem('path') + '/projects/' + this.project.name+'/modules/' + this.mod.moduleName, json, tokenjson).then(function() {
+      this.$http.post(localStorage.getItem('path') + '/projects/' + this.project.name + '/modules/' + this.mod.moduleName, json, tokenjson).then(function() {
         this.$emit('moduleAdded');
         this.closeForm();
       }, (err) => {

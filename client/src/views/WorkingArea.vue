@@ -26,7 +26,7 @@
 
     <div class="row mt-3">
         <div class="col-sm-12 col-md-12 col-xl-12">
-            <kanban :stages="statuses" :module="module"></kanban>
+            <kanban ref="children" :stages="statuses" :module="module" @showConfirmationModal="askConfirmation"></kanban>
         </div>
         <div style="z-index: 2;">
             <chat :module="module" @notificationsNumber="updateNavbarNotificationsCount"></chat>
@@ -34,6 +34,7 @@
     </div>
 
     <addUserInModuleFormModal v-if="showModal" :projectName="module.project" :moduleName="module.name" @closeModal="closeModal"></addUserInModuleFormModal>
+    <confirmationModal v-if="showConfirmationModal" :title="title" :message="message" @proceed="proceed" @cancel="cancel"></confirmationModal>
   </div>
 </template>
 
@@ -42,6 +43,7 @@ import navbar from '../components/Navbar.vue'
 import addUserInModuleFormModal from '../components/AddUserInModuleFormModal.vue'
 import chat from '../components/Chat.vue'
 import kanban from '../components/Kanban.vue'
+import confirmationModal from '../components/ConfirmationModal.vue'
 
 export default {
     data() {
@@ -54,14 +56,18 @@ export default {
             moduleReady: false,
             deadlineColor: 'black',
             statuses: ['TO-DO', 'ASSIGNED', 'IN-PROGRESS', 'DONE'],
-            showModal: false
+            showModal: false,
+            showConfirmationModal: false,
+            title: '',
+            message: ''
         }
     },
     components: {
         navbar,
         addUserInModuleFormModal,
         kanban,
-        chat
+        chat,
+        confirmationModal
     },
     destroyed() {
         localStorage.removeItem('projectName');
@@ -100,6 +106,28 @@ export default {
         },
         closeModal() {
             this.showModal = false;
+        },
+        askConfirmation() {
+            this.title = 'Delete task';
+            this.message = 'Do you want to delete this task?';
+            this.showConfirmationModal = true;
+        },
+        proceed() {
+            this.showConfirmationModal = false;
+            var projectName = localStorage.getItem('projectName');
+            var moduleName = JSON.parse(localStorage.getItem('module')).name;
+            var taskId = localStorage.getItem('taskId');
+            var tokenJson = { headers: { Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
+
+            this.$http.delete(localStorage.getItem('path') + '/projects/' + projectName + '/modules/' + moduleName + '/kanban/' + taskId, tokenJson).then(function() {
+                this.$refs.children.getTasks();;
+            }, (err) => {
+                console.log(err.body);
+            }); 
+            //this.$refs.children.prova();
+        },
+        cancel() {
+            this.showConfirmationModal = false;
         },
         updateNavbarNotificationsCount($event) {
             this.notificationsNumber = Number.parseInt($event);

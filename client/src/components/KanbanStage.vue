@@ -1,6 +1,6 @@
 <template>
     <div v-if="ready" class="container pt-3">
-        <taskTile v-for="(tile, index) in stageTasks" :item="tile" :key="index" @updateTask="updateTask"></taskTile>
+        <taskTile v-for="(tile, index) in stageTasks" :item="tile" :key="index" @updateTask="updateTask" @showConfirmationModal="showConfirmationModal"></taskTile>
         <div class="mb-3" style="color: gray;" v-if="stageTasks.length == 0"> Empty </div>
         <button v-if="showButton()" @click="addTask" class="btn btn-primary"><font-awesome-icon icon="plus"/></button>
     </div>
@@ -51,11 +51,17 @@ export default {
             }
             this.$emit('addTask', this.userInForm);
         },
-        updateTask () {
+        updateTask() {
             this.$emit('updateTask');
         },
         showButton() {
             return (this.ready && this.createButton && this.isModuleChief);
+        },
+        showConfirmationModal() {
+            this.$emit('showConfirmationModal');
+        },
+        prova2() {
+            alert("DOPO");
         }
     },
     mounted() {
