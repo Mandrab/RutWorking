@@ -14,6 +14,18 @@
             <font-awesome-icon v-if="title != 'DONE'" class="float-right" style="color: gray;" icon="angle-right" size="lg"/>
             <font-awesome-icon v-if="title != 'TO-DO'" class="float-left" style="color: gray;" icon="angle-left" size="lg"/>
             <kanbanStage v-if="areTasksReady" :title="title" :tasks="groupedTasks[index + 1]" @addTask="showModalTaskForm" @updateTask="getTasks" @showConfirmationModal="showConfirmationModal" :isModuleChief="isModuleChief"></kanbanStage>
+
+            <span>
+              <font-awesome-icon v-if="index == 0" class="" style="color: darkgray;" icon="circle" size="xs"/>
+              <font-awesome-icon :icon="['far', 'circle']" style="color: gray;" size="xs"/>
+              <font-awesome-icon v-if="index == 1" class="" style="color: darkgray;" icon="circle" size="xs"/>
+              <font-awesome-icon :icon="['far', 'circle']" style="color: gray;" size="xs"/>
+              <font-awesome-icon v-if="index == 2" class="" style="color: darkgray;" icon="circle" size="xs"/>
+              <font-awesome-icon :icon="['far', 'circle']" style="color: gray;" size="xs"/>
+              <font-awesome-icon v-if="index == 3" class="" style="color: darkgray;" icon="circle" size="xs"/>
+
+            </span>
+            
           </swiper-slide>
           <div class="swiper-pagination" slot="pagination"></div>
         </swiper>
