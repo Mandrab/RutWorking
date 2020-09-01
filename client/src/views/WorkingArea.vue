@@ -8,7 +8,7 @@
                 <h2> <b>[{{ module.project }}]</b> {{ module.name }} <span v-if="isModuleChief" class="add-user-btn" @click.stop="addDeveloper"><font-awesome-icon icon="user-plus" class="add-user-icon" size="sm"/></span> </h2> 
                 
             </div>
-            <div class="col-12 col-sm-4 col-md-4 col-xl-4 text-right p-0" v-bind:style="{ color: deadlineColor }">
+            <div class="col-12 col-sm-4 col-md-4 col-xl-4 text-right px-4" v-bind:style="{ color: deadlineColor }">
                 Deadline: {{ new Date(module.deadline).getDate() }}/{{ new Date(module.deadline).getMonth() + 1}}/{{ new Date(module.deadline).getFullYear() }}
             </div>
         </div>
