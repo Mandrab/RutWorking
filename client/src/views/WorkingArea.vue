@@ -5,10 +5,10 @@
     <div v-if="moduleReady" class="mt-4"> 
         <div class="row pb-1">
             <div class="col-12 col-sm-8 col-md-8 col-xl-8 text-left">
-                <h2> <b>[{{ module.project }}]</b> {{ module.name }} </h2>
-                <div v-if="isModuleChief" class="add-user-btn" @click.stop="addDeveloper"><font-awesome-icon icon="user-plus" class="add-user-icon" size="lg"/></div>
+                <h2> <b>[{{ module.project }}]</b> {{ module.name }} <span v-if="isModuleChief" class="add-user-btn" @click.stop="addDeveloper"><font-awesome-icon icon="user-plus" class="add-user-icon" size="sm"/></span> </h2> 
+                
             </div>
-            <div class="col-12 col-sm-4 col-md-4 col-xl-4 text-right" v-bind:style="{ color: deadlineColor }">
+            <div class="col-12 col-sm-4 col-md-4 col-xl-4 text-right p-0" v-bind:style="{ color: deadlineColor }">
                 Deadline: {{ new Date(module.deadline).getDate() }}/{{ new Date(module.deadline).getMonth() + 1}}/{{ new Date(module.deadline).getFullYear() }}
             </div>
         </div>
@@ -123,21 +123,12 @@ export default {
 
 <style scoped>
 .add-user-btn {
-    position: absolute;
-    top: 1px;
-    right: 0px;
-    bottom: 20px;
     margin: 3px;
     background-color: none;
     cursor: pointer;
 }
 
 .add-user-icon {
-    position: absolute;
-    top: 1px;
-    right: 0px;
-    bottom: 20px;
-    padding: 0px;
     margin: 3px;
     color: #007BFF;
 }
