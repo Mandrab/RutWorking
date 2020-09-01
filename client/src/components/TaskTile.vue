@@ -21,13 +21,10 @@
             <div v-if="isRightArrowDisabled" class="col-1 p-0"></div>
             <button v-if="!isRightArrowDisabled" class="btn btn-light right-arrow col-1 p-0 m-0" @click="moveToNextStage"><font-awesome-icon icon="angle-right" size="lg"/></button>
         </div>
-
-        <confirmationModal v-if="showConfirmationModal" :title="title" :message="message" @proceed="proceed" @cancel="cancel"></confirmationModal>
     </div>
 </template>
 
 <script>
-import confirmationModal from './ConfirmationModal.vue'
 
 export default {
     data() {
@@ -40,14 +37,8 @@ export default {
             isLeftArrowDisabled: false,
             isRightArrowDisabled: false,
             taskReady: false,
-            initialized: false,
-            showConfirmationModal: false,
-            title: '',
-            message: ''
+            initialized: false
         }
-    },
-    components: {
-        confirmationModal
     },
     props: {
         item: {
@@ -150,19 +141,25 @@ export default {
             });
         },
         askConfirmation() {
-            this.title = 'Delete task';
-            this.message = 'Do you want to delete this task?';
-            this.showConfirmationModal = true;
-        },
+            //this.title = 'Delete task';
+            //this.message = 'Do you want to delete this task?';
+            //this.showConfirmationModal = true;
+            //console.log(localStorage.getItem('projectName'));
+            //console.log(JSON.parse(localStorage.getItem('module')).name);
+            localStorage.removeItem('taskId');
+            localStorage.setItem('taskId', this.item.id);
+            this.$emit('showConfirmationModal');
+        }
+        /*,
         proceed() {
             this.showConfirmationModal = false;
             this.deleteTask();
         },
         cancel() {
             this.showConfirmationModal = false;
-        },
+        }*/,
         deleteTask() {
-            var tokenJson = { headers: {Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
+            var tokenJson = { headers: { Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user')).token } };
 
             this.$http.delete(localStorage.getItem('path') + '/projects/' + this.projectName + '/modules/' + this.moduleName + '/kanban/' + this.item.id, tokenJson).then(function() {
                 this.$emit('updateTask');

@@ -3,17 +3,17 @@
     <div v-if="isSwiper()" class="row" style="font-size: 20px;">
       <div class="col-md-3 p-1" v-for="(title, index) in stages" :key="index">
         <b> {{ title }} </b>
-        <kanbanStage v-if="areTasksReady" :title="title" :tasks="groupedTasks[index + 1]" @addTask="showModalTaskForm" @updateTask="getTasks"></kanbanStage>
+        <kanbanStage v-if="areTasksReady" :title="title" :tasks="groupedTasks[index + 1]" @addTask="showModalTaskForm" @updateTask="getTasks" @showConfirmationModal="showConfirmationModal"></kanbanStage>
       </div>
     </div>
     <div v-else class="row" style="font-size: 20px;">
       <div class="col-12">
-        <swiper>
+        <swiper :options="swiperOptions">
           <swiper-slide v-for="(title, index) in stages" class="px-2 m-0" :key="index">
             <b> {{ title }} </b>
             <font-awesome-icon v-if="title != 'DONE'" class="float-right" style="color: gray;" icon="angle-right" size="lg"/>
             <font-awesome-icon v-if="title != 'TO-DO'" class="float-left" style="color: gray;" icon="angle-left" size="lg"/>
-            <kanbanStage v-if="areTasksReady" :title="title" :tasks="groupedTasks[index + 1]" @addTask="showModalTaskForm" @updateTask="getTasks"></kanbanStage>
+            <kanbanStage v-if="areTasksReady" :title="title" :tasks="groupedTasks[index + 1]" @addTask="showModalTaskForm" @updateTask="getTasks" @showConfirmationModal="showConfirmationModal"></kanbanStage>
           </swiper-slide>
           <div class="swiper-pagination" slot="pagination"></div>
         </swiper>
@@ -23,6 +23,11 @@
     <createTaskFormModal v-if="showModalFormTask" :insertUser="isUserRequired" @closeModal="hideModalTaskForm"></createTaskFormModal>
   </div>
 </template>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.7/js/swiper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<!-- Swiper JS Vue -->
+<script src="https://cdn.jsdelivr.net/npm/vue-awesome-swiper@3.0.4/dist/vue-awesome-swiper.js"></script>
 
 <script>
 import kanbanStage from '../components/KanbanStage.vue';
@@ -104,6 +109,13 @@ export default {
     hideModalTaskForm() {
       this.getTasks();
       this.showModalFormTask = false;
+    },
+    showConfirmationModal() {
+      this.$emit('showConfirmationModal');
+    },
+    prova() {
+      alert("CIAO");
+      this.$refs.children2.prova2();
     }
   },
   created() {
