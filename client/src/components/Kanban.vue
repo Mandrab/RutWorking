@@ -16,7 +16,7 @@
             <kanbanStage v-if="areTasksReady" :title="title" :tasks="groupedTasks[index + 1]" @addTask="showModalTaskForm" @updateTask="getTasks" @showConfirmationModal="showConfirmationModal" :isModuleChief="isModuleChief"></kanbanStage>
 
             <span>
-              <font-awesome-icon v-if="index == 0" class="" style="color: darkgray;" icon="circle" size="xs"/>
+              <font-awesome-icon v-if="index == 0" class="" style="color: rgb(60, 118, 251);" icon="circle" size="xs"/>
               <font-awesome-icon :icon="['far', 'circle']" style="color: gray;" size="xs"/>
               <font-awesome-icon v-if="index == 1" class="" style="color: darkgray;" icon="circle" size="xs"/>
               <font-awesome-icon :icon="['far', 'circle']" style="color: gray;" size="xs"/>
