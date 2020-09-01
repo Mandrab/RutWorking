@@ -23,6 +23,7 @@
 </template>
 
 <script>
+import { setToken } from '../../firebase'
 import simpleModal from '../components/SimpleModal.vue'
 
 export default {
@@ -58,7 +59,7 @@ export default {
             this.loggingIn = true;
             var json = { 'userEmail': username, 'password': password };
 
-            this.$http.post(localStorage.getItem('path') + '/login', json).then(function(response) {
+            this.$http.post(localStorage.getItem('path') + '/login', json).then(async function(response) {
                 var obj = { email: username, token: response.body.accessToken };
                 localStorage.removeItem('user');
                 localStorage.setItem('user', JSON.stringify(obj));
@@ -67,6 +68,7 @@ export default {
                 localStorage.setItem('role', role);
                 localStorage.removeItem('notifications');
                 localStorage.setItem('notifications', 0);
+                await setToken();
                 if (role == "admin") {
                     this.$router.push('/adminpage');
                 } else {

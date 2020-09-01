@@ -12,29 +12,25 @@ const app = initializeApp({
 
 export const messaging = app.messaging()
 
-let firebaseToken
-
-async function setToken() {
+export async function setToken() {
     try {
+        let userToken = JSON.parse(localStorage.getItem('user')).token
         let newToken = await messaging.getToken()
-        if (!newToken || newToken == firebaseToken) return
-        firebaseToken = newToken
+        if (!newToken || !userToken) return
 
         await fetch('http://localhost:8080/firebase/notification', {
             headers: {
-                'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('user')).token,
+                'Authorization': 'Bearer ' + userToken,
                 'Content-Type': 'application/json'
             },
             method: 'PUT',
             body: JSON.stringify({ firebaseToken: newToken })
         })
-    } catch (e) { 
+    } catch (e) {
         if (JSON.parse(localStorage.getItem('user')) != null) {
             console.log(e);
         }
     }
 }
-
-setToken()
 
 messaging.onTokenRefresh(setToken())

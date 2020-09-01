@@ -4,7 +4,7 @@
  * @author Paolo Baldini
  */
 export const config = {
-    service: 'your-service',
-    email: 'your-email',
-    password: 'password'
+    service: 'gmail',
+    email: 'noreply.rutworking@gmail.com',
+    password: 'behjndtbidcfeoqd'
 }
