@@ -18,11 +18,11 @@
             <span>
               <font-awesome-icon v-if="index == 0" class="" style="color: rgb(60, 118, 251);" icon="circle" size="xs"/>
               <font-awesome-icon :icon="['far', 'circle']" style="color: gray;" size="xs"/>
-              <font-awesome-icon v-if="index == 1" class="" style="color: darkgray;" icon="circle" size="xs"/>
+              <font-awesome-icon v-if="index == 1" class="" style="color: rgb(60, 118, 251);" icon="circle" size="xs"/>
               <font-awesome-icon :icon="['far', 'circle']" style="color: gray;" size="xs"/>
-              <font-awesome-icon v-if="index == 2" class="" style="color: darkgray;" icon="circle" size="xs"/>
+              <font-awesome-icon v-if="index == 2" class="" style="color: rgb(60, 118, 251);" icon="circle" size="xs"/>
               <font-awesome-icon :icon="['far', 'circle']" style="color: gray;" size="xs"/>
-              <font-awesome-icon v-if="index == 3" class="" style="color: darkgray;" icon="circle" size="xs"/>
+              <font-awesome-icon v-if="index == 3" class="" style="color: rgb(60, 118, 251);" icon="circle" size="xs"/>
 
             </span>
             
