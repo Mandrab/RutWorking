@@ -124,10 +124,6 @@ export default {
   },
   destroyed() {
     window.removeEventListener('resize', this.handleResize);
-    localStorage.removeItem('projectName');
-    localStorage.removeItem('moduleName');
-    localStorage.removeItem('isProjectChief');
-    localStorage.removeItem('isModuleChief');
   }
 };
 </script>

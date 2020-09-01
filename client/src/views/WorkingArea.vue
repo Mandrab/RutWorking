@@ -69,6 +69,13 @@ export default {
         chat,
         confirmationModal
     },
+    destroyed() {
+        localStorage.removeItem('projectName');
+        localStorage.removeItem('moduleName');
+        localStorage.removeItem('isProjectChief');
+        localStorage.removeItem('isModuleChief')
+    },
+    
     methods: {
         init() {
             this.isModuleChief = localStorage.getItem('isModuleChief');
