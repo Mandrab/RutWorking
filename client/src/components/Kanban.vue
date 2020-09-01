@@ -3,7 +3,7 @@
     <div v-if="isSwiper()" class="row" style="font-size: 20px;">
       <div class="col-md-3 p-1" v-for="(title, index) in stages" :key="index">
         <b> {{ title }} </b>
-        <kanbanStage v-if="areTasksReady" :title="title" :tasks="groupedTasks[index + 1]" @addTask="showModalTaskForm" @updateTask="getTasks" @showConfirmationModal="showConfirmationModal"></kanbanStage>
+        <kanbanStage v-if="areTasksReady" :title="title" :tasks="groupedTasks[index + 1]" @addTask="showModalTaskForm" @updateTask="getTasks" @showConfirmationModal="showConfirmationModal" :isModuleChief="isModuleChief"></kanbanStage>
       </div>
     </div>
     <div v-else class="row" style="font-size: 20px;">
@@ -60,7 +60,8 @@ export default {
         height: 0
       },
       showModalFormTask: false,
-      isUserRequired: false
+      isUserRequired: false,
+      isModuleChief: false
     }
   },
   components:{
@@ -78,6 +79,12 @@ export default {
       window.addEventListener('resize', this.handleResize);
       this.handleResize();
       this.module = JSON.parse(localStorage.getItem('module'));
+      var username = JSON.parse(localStorage.getItem('user')).email;
+      if(this.module.chief == username){
+        this.isModuleChief = true;
+      }else{
+        this.isModuleChief = false;
+      }
     },
     isSwiper(){
       return this.window.width >= 768;
