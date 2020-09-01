@@ -28,7 +28,7 @@
                         <div v-show="submitted && !deadline" class="invalid-feedback">Deadline is required</div>
                       </div>
                       <div class="form-group">
-                        <label for="chief">E-mail chief</label>
+                        <label for="chief">E-mail chief (optional)</label>
                         <input type="email" v-model="mod.chief" name="chief" class="form-control" />
                         
                       </div>

@@ -3,7 +3,7 @@
     <div v-if="isSwiper()" class="row" style="font-size: 20px;">
       <div class="col-md-3 p-1" v-for="(title, index) in stages" :key="index">
         <b> {{ title }} </b>
-        <kanbanStage v-if="areTasksReady" :title="title" :tasks="groupedTasks[index + 1]" @addTask="showModalTaskForm" @updateTask="getTasks" @showConfirmationModal="showConfirmationModal" :isModuleChief="isModuleChief"></kanbanStage>
+        <kanbanStage v-if="areTasksReady" :title="title" :tasks="groupedTasks[index + 1]" @addTask="showModalTaskForm" @updateTask="getTasks" @showConfirmationModal="showConfirmationModal"></kanbanStage>
       </div>
     </div>
     <div v-else class="row" style="font-size: 20px;">
@@ -13,7 +13,7 @@
             <b> {{ title }} </b>
             <font-awesome-icon v-if="title != 'DONE'" class="float-right" style="color: gray;" icon="angle-right" size="lg"/>
             <font-awesome-icon v-if="title != 'TO-DO'" class="float-left" style="color: gray;" icon="angle-left" size="lg"/>
-            <kanbanStage v-if="areTasksReady" :title="title" :tasks="groupedTasks[index + 1]" @addTask="showModalTaskForm" @updateTask="getTasks" @showConfirmationModal="showConfirmationModal" :isModuleChief="isModuleChief"></kanbanStage>
+            <kanbanStage v-if="areTasksReady" :title="title" :tasks="groupedTasks[index + 1]" @addTask="showModalTaskForm" @updateTask="getTasks" @showConfirmationModal="showConfirmationModal"></kanbanStage>
           </swiper-slide>
           <div class="swiper-pagination" slot="pagination"></div>
         </swiper>
@@ -21,13 +21,9 @@
     </div>
 
     <createTaskFormModal v-if="showModalFormTask" :insertUser="isUserRequired" @closeModal="hideModalTaskForm"></createTaskFormModal>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.7/css/swiper.min.css" rel="stylesheet">
   </div>
 </template>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.7/js/swiper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/vue"></script>
-<!-- Swiper JS Vue -->
-<script src="https://cdn.jsdelivr.net/npm/vue-awesome-swiper@3.0.4/dist/vue-awesome-swiper.js"></script>
 
 <script>
 import kanbanStage from '../components/KanbanStage.vue';
@@ -52,8 +48,7 @@ export default {
         height: 0
       },
       showModalFormTask: false,
-      isUserRequired: false,
-      isModuleChief: false
+      isUserRequired: false
     }
   },
   components:{
@@ -71,13 +66,6 @@ export default {
       window.addEventListener('resize', this.handleResize);
       this.handleResize();
       this.module = JSON.parse(localStorage.getItem('module'));
-
-      var username = JSON.parse(localStorage.getItem('user')).email;
-      if(this.module.chief == username){
-        this.isModuleChief = true;
-      }else{
-        this.isModuleChief = false;
-      }
     },
     isSwiper(){
       return this.window.width >= 768;
