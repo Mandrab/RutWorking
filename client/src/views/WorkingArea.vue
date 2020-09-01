@@ -78,9 +78,16 @@ export default {
     
     methods: {
         init() {
-            this.isModuleChief = localStorage.getItem('isModuleChief');
+            
             this.showUserName();
             this.module = JSON.parse(localStorage.getItem('module'));
+            
+            var username = JSON.parse(localStorage.getItem('user')).email;
+            if(this.module.chief == username){
+                this.isModuleChief = true;
+            }else{
+                this.isModuleChief = false;
+            }
             this.moduleReady = true;
         },
         showUserName() {
