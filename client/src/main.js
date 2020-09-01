@@ -4,7 +4,6 @@ import router from "./router";
 import store from "./store";
 import VueResource from "vue-resource";
 
-
 import VeeValidate from 'vee-validate';
 Vue.use(VeeValidate);
 Vue.use(VueResource);
@@ -19,23 +18,17 @@ import 'swiper/swiper.scss'
 import 'swiper/swiper-bundle.css'
 Vue.use(VueAwesomeSwiper)
 
-
-//import VueWindowSize from 'vue-window-size';
-//Vue.use(VueWindowSize);
-
 import Chat from 'vue-beautiful-chat'
 Vue.use(Chat)
 
-
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faUserSecret, faUser, faUserPlus, faUserTimes, faTimes, faTrashAlt, faAngleLeft, faAngleRight, faPlus, faBars, faEllipsisH, faBan, faSignOutAlt, faHome, faBell, faSpinner, faCircleNotch, faCircle } from '@fortawesome/free-solid-svg-icons'
+import { faUserSecret, faUser, faUserPlus, faUserTimes, faTimes, faTrashAlt, faAngleLeft, faAngleRight, faPlus, faUserCog, faEllipsisH, faBan, faSignOutAlt, faHome, faBell, faSpinner, faCircleNotch, faCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faCircle as farCoffee } from '@fortawesome/free-regular-svg-icons'
 
-library.add(faUserSecret, faUser, faUserPlus, faUserTimes, faTimes, faTrashAlt, faAngleLeft, faAngleRight, faPlus, faBars, faEllipsisH, faBan, faSignOutAlt, faHome, faBell, faSpinner, faCircleNotch, faCircle, farCoffee)
+library.add(faUserSecret, faUser, faUserPlus, faUserTimes, faTimes, faTrashAlt, faAngleLeft, faAngleRight, faPlus, faUserCog, faEllipsisH, faBan, faSignOutAlt, faHome, faBell, faSpinner, faCircleNotch, faCircle, farCoffee)
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
-
 
 Vue.config.productionTip = false;
 

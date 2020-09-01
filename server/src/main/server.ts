@@ -23,7 +23,7 @@ const setup = async () => {
     })
 
     // register default admin
-    try { await register('x', 'y', 'admin@email.com', 'ADMIN_PASSWORD', Roles.USER) } catch(_) { }
+    try { await register('x', 'y', 'admin@email.com', 'ADMIN_PASSWORD', Roles.ADMIN) } catch(_) { }
 
     // insert default roles (if they do not exist)
     try {

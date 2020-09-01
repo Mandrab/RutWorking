@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid">
+  <div class="container-fluid" >
     <navbar :firstDropdownItem="firstDropdownItem" :chatNotifications="notificationsNumber"></navbar>
 
     <div v-if="moduleReady" class="mt-4"> 

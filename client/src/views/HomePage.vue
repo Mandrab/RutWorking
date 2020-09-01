@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid">
+  <div class="container-fluid" style="padding-bottom: 60px;">
     <navbar :firstDropdownItem="firstDropdownItem"></navbar>
     
     <div class="row mt-5">

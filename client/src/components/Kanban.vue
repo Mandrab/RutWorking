@@ -11,8 +11,6 @@
         <swiper :options="swiperOptions">
           <swiper-slide v-for="(title, index) in stages" class="px-2 m-0" :key="index">
             <b> {{ title }} </b>
-            <font-awesome-icon v-if="title != 'DONE'" class="float-right" style="color: gray;" icon="angle-right" size="lg"/>
-            <font-awesome-icon v-if="title != 'TO-DO'" class="float-left" style="color: gray;" icon="angle-left" size="lg"/>
             <kanbanStage v-if="areTasksReady" :title="title" :tasks="groupedTasks[index + 1]" @addTask="showModalTaskForm" @updateTask="getTasks" @showConfirmationModal="showConfirmationModal" :isModuleChief="isModuleChief"></kanbanStage>
 
             <span>
@@ -23,7 +21,6 @@
               <font-awesome-icon v-if="index == 2" class="" style="color: rgb(60, 118, 251);" icon="circle" size="xs"/>
               <font-awesome-icon :icon="['far', 'circle']" style="color: gray;" size="xs"/>
               <font-awesome-icon v-if="index == 3" class="" style="color: rgb(60, 118, 251);" icon="circle" size="xs"/>
-
             </span>
             
           </swiper-slide>
@@ -33,7 +30,6 @@
     </div>
 
     <createTaskFormModal v-if="showModalFormTask" :insertUser="isUserRequired" @closeModal="hideModalTaskForm"></createTaskFormModal>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.7/css/swiper.min.css" rel="stylesheet">
   </div>
 </template>
 
@@ -80,9 +76,9 @@ export default {
       this.handleResize();
       this.module = JSON.parse(localStorage.getItem('module'));
       var username = JSON.parse(localStorage.getItem('user')).email;
-      if(this.module.chief == username){
+      if (this.module.chief == username) {
         this.isModuleChief = true;
-      }else{
+      } else {
         this.isModuleChief = false;
       }
     },
