@@ -33,7 +33,6 @@ export default {
             projectName: '',
             moduleName: '',
             isProjectChief: false,
-            isModuleChief: false,
             isLeftArrowDisabled: false,
             isRightArrowDisabled: false,
             taskReady: false,
@@ -43,6 +42,9 @@ export default {
     props: {
         item: {
             type: Object
+        },
+        isModuleChief: {
+            type: Boolean
         }
     },
     methods: {
@@ -50,13 +52,7 @@ export default {
             this.username = JSON.parse(localStorage.getItem('user')).email;
             this.projectName = localStorage.getItem('projectName');
             this.moduleName = localStorage.getItem('moduleName');
-            var value = localStorage.getItem('isModuleChief');
-            if (value == "true") {
-                this.isModuleChief = true;
-            } else {
-                this.isModuleChief = false;
-            }
-            value = localStorage.getItem('isProjectChief');
+            var value = localStorage.getItem('isProjectChief');
             if (value == "true") {
                 this.isProjectChief = true;
             } else {
