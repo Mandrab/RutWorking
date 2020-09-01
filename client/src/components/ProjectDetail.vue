@@ -112,7 +112,7 @@ export default {
             weekLater.setDate(today.getDate() + 7);
             if (projectDeadline >= today && projectDeadline <= weekLater) {
                 this.deadlineColor = 'orange';
-            } else if(projectDeadline < today) {
+            } else if (projectDeadline < today) {
                 this.deadlineColor = 'red';
             } else { 
                 this.deadlineColor = 'green';

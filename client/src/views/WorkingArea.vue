@@ -78,14 +78,13 @@ export default {
     
     methods: {
         init() {
-            
             this.showUserName();
             this.module = JSON.parse(localStorage.getItem('module'));
             
             var username = JSON.parse(localStorage.getItem('user')).email;
-            if(this.module.chief == username){
+            if (this.module.chief == username) {
                 this.isModuleChief = true;
-            }else{
+            } else {
                 this.isModuleChief = false;
             }
             this.moduleReady = true;
@@ -95,13 +94,13 @@ export default {
         },
         checkDeadline() {
             this.moduleReady = false;
-            var date = new Date(this.module.deadline);
-            var weekLater = new Date();
+            var moduleDeadline = new Date(this.module.deadline);
             var today = new Date();
-            weekLater.setDate(date.getDate()+7);
-            if (date >= today && date <= weekLater ) {
+            var weekLater = new Date(today);
+            weekLater.setDate(today.getDate() + 7);
+            if (moduleDeadline >= today && moduleDeadline <= weekLater) {
                 this.deadlineColor = 'orange';
-            } else if (date < today) {
+            } else if (moduleDeadline < today) {
                 this.deadlineColor = 'red';
             } else { 
                 this.deadlineColor = 'green';
