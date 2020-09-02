@@ -8,8 +8,6 @@ export { login, register, getUsers, getUserNotification, getUserNotificationCoun
 
 export { Role, Roles } from './role'
 
-export { State } from './status'
-
 export { Project } from './project'
 export { newProject, getProjects, getProjectInfo } from './utils/projects'
 
