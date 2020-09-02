@@ -76,6 +76,12 @@ router.beforeEach((to, from, next) => {
 
   if (authRequired && !loggedIn) {
     return next('/login');
+  } else if (loggedIn) {
+    if (localStorage.getItem('role') == 'user' && to.path == '/adminpage') {
+      return next('/');
+    } else if (localStorage.getItem('role') == 'admin' && (to.path == '/' || to.path == '/workingarea')) {
+      return next('/adminpage');
+    }
   }
   document.title = to.meta.title;
   next();

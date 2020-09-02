@@ -68,11 +68,12 @@ export default {
                 localStorage.setItem('role', role);
                 localStorage.removeItem('notifications');
                 localStorage.setItem('notifications', 0);
-                await setToken();
                 if (role == "admin") {
                     this.$router.push('/adminpage');
                 } else {
+                    await setToken();
                     this.$router.push('/');
+                    
                 }
             }, (err) => {
                 this.loginResponse = err.body;
