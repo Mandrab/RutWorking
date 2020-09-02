@@ -73,7 +73,6 @@ export default {
                 } else {
                     await setToken();
                     this.$router.push('/');
-                    
                 }
             }, (err) => {
                 this.loginResponse = err.body;
