@@ -12,6 +12,7 @@ import {
     getUserNotificationCount as _getUserNotificationCount
 } from '../models'
 import { sendEmail } from './mailer'
+import * as EmailValidator from 'email-validator'
 
 /**
  * Allow a user to log into the system
@@ -40,6 +41,7 @@ export async function register(request: any, result: any) {
         if (!request.body.role) return result.status(400).send('Role missing in body!')
         if (!request.body.name) return result.status(400).send('Name missing in body!')
         if (!request.body.surname) return result.status(400).send('Surname missing in body!')
+        if (!EmailValidator.validate(request.params.userEmail)) return result.status(400).send('Invalid email format!')
 
         let password = Math.random().toString(36).substring(2)
         await _register(
